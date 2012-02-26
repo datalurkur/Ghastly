@@ -12,7 +12,8 @@ public:
     static void Teardown();
 
     static T* Get(const std::string &name);
-    static T* Load(const std::string &name);
+	static T* Load(const std::string &name, T* t);
+
 	static void LoadAllFromPath();
     static unsigned int LoadNextFromPath_r(unsigned int &pos);
 
@@ -73,9 +74,8 @@ T* ResourceManager<T,F>::Get(const std::string &name) {
 }
 
 template <typename T, typename F>
-T* ResourceManager<T,F>::Load(const std::string &name) {
-    T* t;
-    t = new T();
+T* ResourceManager<T,F>::Load(const std::string &name, T* t = 0) {
+	if(!t) { t = new T(); }
 
 	F::DoLoad(name, t);
 	F::Register(name, t);
@@ -192,7 +192,7 @@ void ResourceManager<T,F>::LoadAllFromPath() {
 template <typename T, typename F>
 unsigned int ResourceManager<T,F>::LoadNextFromPath_r(unsigned int &pos) {
     if(pos < F::AvailableResources.size()) {
-        F::Load(F::AvailableResources[pos]);
+        F::Load(F::AvailableResources[pos], 0);
         pos++;
         return ((unsigned int)F::AvailableResources.size() - pos);
     } else {

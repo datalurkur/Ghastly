@@ -41,7 +41,7 @@ public:
     static void Teardown();
 
     static T* Get(const std::string &name);
-    static T* Load(const std::string &name);
+    static T* Load(const std::string &name, T* t);
     static void Unload(T* t);
 	static void Unload(const std::string &name);
 	static void Reload(T* t);
@@ -120,11 +120,9 @@ T* ThreadedResourceManager<T,F>::Get(const std::string &name) {
 }
 
 template <typename T, typename F>
-T* ThreadedResourceManager<T,F>::Load(const std::string &name) {
-	T* t = 0;
-
+T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t = 0) {
 	LOCK_MUTEX;
-    t = new T();
+	if(!t) { t = new T(); }
 	ResourceThreadParams params(name, (void*)t, F::Lock);
     SDL_Thread *thread = SDL_CreateThread(F::ThreadedLoad, (void*)&params);
     F::Threads[t] = ThreadInfo(thread);

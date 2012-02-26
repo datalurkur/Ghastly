@@ -1,7 +1,7 @@
 #ifndef WORLDMANAGER_H
 #define WORLDMANAGER_H
 
-#include <Game/World.h>
+#include <Engine/World.h>
 #include <Resource/ThreadedResourceManager.h>
 
 class WorldManager;

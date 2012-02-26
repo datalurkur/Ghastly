@@ -46,6 +46,12 @@ bool UDPSocket::open() {
 }
 
 void UDPSocket::close() {
+#if SYS_PLATFORM == PLATFORM_WIN32
+	closesocket(_socketHandle);
+#else
+	close(_socketHandle);
+#endif
+	_socketHandle = 0;
     _open = false;
 }
 

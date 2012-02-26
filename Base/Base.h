@@ -57,7 +57,9 @@
 #endif
 
 #if SYS_PLATFORM == PLATFORM_WIN32
-# include "Windows.h"
+// This is causing problems with winsock2.h
+//# include "Windows.h"
+# define WIN32_LEAN_AND_MEAN
 # define sleep(seconds) Sleep(seconds*1000)
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>

@@ -11,6 +11,7 @@
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <fcntl.h>
+# include <arpa/inet.h>
 #endif
 
 class Socket {
@@ -22,8 +23,8 @@ public:
     Socket();
     virtual ~Socket();
 
-    virtual bool open() = 0;
-    virtual void close() = 0;
+    virtual bool openSocket() = 0;
+    virtual void closeSocket() = 0;
 
     bool isOpen() const;
 

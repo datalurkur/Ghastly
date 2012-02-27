@@ -1,14 +1,14 @@
 #include <Network/UDPSocket.h>
 #include <Base/Log.h>
 
-UDPSocket::UDPSocket(unsigned short port, bool blocking = false): _blocking(blocking), _port(port) {
+UDPSocket::UDPSocket(unsigned short port, bool blocking = false): _port(port), _blocking(blocking) {
 }
 
 UDPSocket::~UDPSocket() {
-    if(_open) { close(); }
+    if(_open) { closeSocket(); }
 }
 
-bool UDPSocket::open() {
+bool UDPSocket::openSocket() {
     sockaddr_in addr;
 
     // Create the socket
@@ -34,7 +34,7 @@ bool UDPSocket::open() {
         if(ioctlsocket(_socketHandle, FIONBIO, &nonBlock) != 0) {
 #else
         int nonBlock = 1;
-        if(fcntl(_socketHandle, F_SETFL, 0_NONBLOCK, nonBlock) == -1) {
+        if(fcntl(_socketHandle, F_SETFL, O_NONBLOCK, nonBlock) == -1) {
 #endif
             Error("Failed to set socket as non-blocking.");
             return false;
@@ -45,7 +45,7 @@ bool UDPSocket::open() {
 	return true;
 }
 
-void UDPSocket::close() {
+void UDPSocket::closeSocket() {
 #if SYS_PLATFORM == PLATFORM_WIN32
 	closesocket(_socketHandle);
 #else
@@ -64,7 +64,7 @@ unsigned int UDPSocket::getMaxPacketSize() const {
 }
 
 bool UDPSocket::send(const NetAddress &dest, const char *data, unsigned int size) {
-    int bytesSent;
+    unsigned int bytesSent;
 
     ASSERT(_open);
 

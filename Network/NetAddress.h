@@ -14,7 +14,7 @@ public:
     const sockaddr *getSockAddr() const;
 	unsigned int getSockAddrSize() const;
 
-	inline bool operator==(const NetAddress& rhs) {
+	inline void operator=(const NetAddress& rhs) {
 		_ipv4Addr = rhs._ipv4Addr;
 		_ipv6Addr = rhs._ipv6Addr;
 		_ipVersion = rhs._ipVersion;

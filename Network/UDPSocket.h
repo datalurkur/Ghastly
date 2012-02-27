@@ -12,8 +12,8 @@ public:
     UDPSocket(unsigned short port, bool blocking);
     virtual ~UDPSocket();
 
-    bool open();
-    void close();
+    bool openSocket();
+    void closeSocket();
 
 	void setMaxPacketSize(unsigned int size);
 	unsigned int getMaxPacketSize() const;

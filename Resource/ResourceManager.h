@@ -85,7 +85,7 @@ T* ResourceManager<T,F>::Load(const std::string &name) {
 }
 
 template <typename T, typename F>
-T* ResourceManager<T,F>::Load(const std::string &name, T* t = 0) {
+T* ResourceManager<T,F>::Load(const std::string &name, T* t) {
 	if(!t) { t = new T(); }
 
 	F::DoLoad(name, t);

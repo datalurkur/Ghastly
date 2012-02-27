@@ -23,6 +23,7 @@
 #include <list>
 #include <vector>
 
+// SDL
 #include "SDL/SDL.h"
 
 // Platform-specific defines

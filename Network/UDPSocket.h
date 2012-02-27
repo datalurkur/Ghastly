@@ -18,8 +18,7 @@ public:
 	void setMaxPacketSize(unsigned int size);
 	unsigned int getMaxPacketSize() const;
 
-	// Returns true if the packet was sent successfully
-    bool send(const NetAddress &dest, const char *data, unsigned int size);
+    bool send(const NetAddress &dst, const char *data, unsigned int size);
     void recv(NetAddress &src, char *data, unsigned int &size);
 
 private:

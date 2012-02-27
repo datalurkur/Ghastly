@@ -6,6 +6,7 @@
 // Currently does not support IPv6
 class NetAddress {
 public:
+    NetAddress();
     NetAddress(const char *addr, unsigned short port, unsigned char ipVersion);
 	NetAddress(const sockaddr_in *addrData);
 	NetAddress(const sockaddr_in6 *addrData);

@@ -63,7 +63,7 @@ unsigned int UDPSocket::getMaxPacketSize() const {
 	return _maxPacketSize;
 }
 
-bool UDPSocket::send(const NetAddress &dest, const char *data, unsigned int size) {
+bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size) {
     unsigned int bytesSent;
 
     ASSERT(_open);
@@ -72,7 +72,7 @@ bool UDPSocket::send(const NetAddress &dest, const char *data, unsigned int size
 		Warn("Packet size exceeds receive window.  This could mean something is amiss.");
 	}
 
-    bytesSent = sendto(_socketHandle, data, size, 0, dest.getSockAddr(), dest.getSockAddrSize());
+    bytesSent = sendto(_socketHandle, data, size, 0, dst.getSockAddr(), dst.getSockAddrSize());
 	if(bytesSent != size) {
 		Error("Failed to send UDP packet: Sent " << bytesSent << " bytes out of " << size);
 		return false;

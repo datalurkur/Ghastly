@@ -1,7 +1,11 @@
 #include <Network/NetAddress.h>
 #include <Base/Base.h>
 
-NetAddress::NetAddress(const char *addr, unsigned short port, unsigned char ipVersion): _ipVersion(ipVersion) {
+NetAddress::NetAddress() {
+}
+
+NetAddress::NetAddress(const char *addr, unsigned short port, unsigned char ipVersion):
+    _ipVersion(ipVersion) {
     if(_ipVersion == 4) {
         _ipv4Addr.sin_family = AF_INET;
         _ipv4Addr.sin_port = htons(port);

@@ -23,10 +23,10 @@ public:
     Socket();
     virtual ~Socket();
 
+    bool isOpen() const;
+
     virtual bool openSocket() = 0;
     virtual void closeSocket() = 0;
-
-    bool isOpen() const;
 
 protected:
     bool _open;

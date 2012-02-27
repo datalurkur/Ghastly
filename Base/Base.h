@@ -19,6 +19,7 @@
 
 // Standard data structure libs
 #include <stack>
+#include <queue>
 #include <map>
 #include <list>
 #include <vector>

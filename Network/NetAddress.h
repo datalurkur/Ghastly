@@ -20,7 +20,7 @@ public:
 		_ipVersion = rhs._ipVersion;
 	}
 
-    inline bool operator==(const NetAddress& rhs) {
+    inline bool operator==(const NetAddress& rhs) const {
         return (_ipVersion == rhs._ipVersion) &&
                (    (_ipVersion == 4 &&
                         (_ipv4Addr.sin_addr.s_addr == rhs._ipv4Addr.sin_addr.s_addr &&
@@ -32,6 +32,8 @@ public:
                     )
                );
     }
+
+    inline bool operator!=(const NetAddress &rhs) const { return !(*this == rhs); }
 
 protected:
     sockaddr_in   _ipv4Addr;

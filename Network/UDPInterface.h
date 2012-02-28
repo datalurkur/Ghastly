@@ -2,6 +2,7 @@
 #define UDPINTERFACE_H
 
 #include <Network/UDPSocket.h>
+#include <Network/NetInterface.h>
 
 class UDPInterface: public NetInterface {
 public:

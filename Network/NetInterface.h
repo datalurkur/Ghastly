@@ -13,29 +13,31 @@ public:
     NetInterface();
     virtual ~NetInterface();
 
-    virtual void recv(unsigned int &id, char *data, unsigned int &size) = 0;
-    virtual bool send(unsigned int id, const char *data, unsigned int size) = 0;
+    virtual void recv(NetworkID &id, char *data, unsigned int &size) = 0;
+    virtual bool send(NetworkID id, const char *data, unsigned int size) = 0;
 
     // Responsible for negotiating packets from addresses that don't yet have an ID
-    void processUnmappedPacket(const Address &addr, const char *data, unsigned int size);
+    void processUnmappedPacket(const NetAddress &addr, const char *data, unsigned int size);
 
     void setMaxPacketSize(unsigned int maxSize);
     unsigned int getMaxPacketSize() const;
 
 protected:
     unsigned int getNetworkID(const NetAddress &addr) const;
-    const NetAddress& getNetworkAddress(unsigned int id) const;
+    const NetAddress& getNetworkAddress(NetworkID id) const;
 
-    bool setNetworkID(const NetAddress &addr, unsigned int id);
+    bool netIDKnown(NetworkID id) const;
+    bool setNetworkID(const NetAddress &addr, NetworkID id);
+
+protected:
+    bool _server;
+    unsigned int _clientID;
+
+    unsigned int _maxPacketSize;
 
 private:
     typedef std::map<NetworkID,NetAddress> NetIDMap;
     NetIDMap _idMap;
-
-    unsigned int _maxPacketSize;
-
-    unsigned int _clientID;
-    bool _server;
 };
 
 #endif

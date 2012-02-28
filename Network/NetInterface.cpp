@@ -1,4 +1,5 @@
 #include <Network/NetInterface.h>
+#include <Base/Log.h>
 
 NetInterface::NetInterface(): _server(true), _clientID(0), _maxPacketSize(DEFAULT_MAX_PACKET_SIZE) {
 }
@@ -6,8 +7,8 @@ NetInterface::NetInterface(): _server(true), _clientID(0), _maxPacketSize(DEFAUL
 NetInterface::~NetInterface() {
 }
 
-void NetInterface::processUnmappedPacket(const Address &addr, const char *data, unsigned int size) {
-    
+void NetInterface::processUnmappedPacket(const NetAddress &addr, const char *data, unsigned int size) {
+
 }
 
 void NetInterface::setMaxPacketSize(unsigned int maxSize) {
@@ -19,7 +20,7 @@ unsigned int NetInterface::getMaxPacketSize() const {
 }
 
 unsigned int NetInterface::getNetworkID(const NetAddress &addr) const {
-    NetIDMap::iterator itr;
+    NetIDMap::const_iterator itr;
     for(itr = _idMap.begin(); itr != _idMap.end(); itr++) {
         if(itr->second == addr) {
             return itr->first;
@@ -28,16 +29,17 @@ unsigned int NetInterface::getNetworkID(const NetAddress &addr) const {
     return ID_NOT_FOUND;
 }
 
-const NetAddress& NetInterface::getNetworkAddress(unsigned int id) const {
-    if(_idMap.find(id) == _idMap.end()) {
-        Warn("Network ID " << id << " not found.");
-        return NetAddress();
-    } else {
-        return _idMap[id];
-    }
+const NetAddress& NetInterface::getNetworkAddress(NetworkID id) const {
+    NetIDMap::const_iterator itr = _idMap.find(id);
+    ASSERT(itr != _idMap.end());
+    return itr->second;
 }
 
-bool NetInterface::setNetworkID(const NetAddress &addr, unsigned int id) {
+bool NetInterface::netIDKnown(NetworkID id) const {
+    return (_idMap.find(id) != _idMap.end());
+}
+
+bool NetInterface::setNetworkID(const NetAddress &addr, NetworkID id) {
     if(_idMap.find(id) == _idMap.end()) {
         _idMap[id] = addr;
         return true;

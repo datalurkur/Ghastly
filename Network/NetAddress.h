@@ -21,6 +21,12 @@ public:
 		_ipVersion = rhs._ipVersion;
 	}
 
+    inline bool operator==(const NetAddress& rhs) {
+        return (_ipVersion == rhs._ipVersion) &&
+               ((_ipVersion == 4 && (_ipv4Addr == rhs._ipv4Addr)) ||
+                (_ipVersion == 6 && (_ipv6Addr == rhs._ipv6Addr)));
+    }
+
 protected:
     sockaddr_in   _ipv4Addr;
     sockaddr_in6  _ipv6Addr;

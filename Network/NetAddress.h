@@ -3,7 +3,6 @@
 
 #include <Network/Socket.h>
 
-// Currently does not support IPv6
 class NetAddress {
 public:
     NetAddress();
@@ -23,8 +22,15 @@ public:
 
     inline bool operator==(const NetAddress& rhs) {
         return (_ipVersion == rhs._ipVersion) &&
-               ((_ipVersion == 4 && (_ipv4Addr == rhs._ipv4Addr)) ||
-                (_ipVersion == 6 && (_ipv6Addr == rhs._ipv6Addr)));
+               (    (_ipVersion == 4 &&
+                        (_ipv4Addr.sin_addr.s_addr == rhs._ipv4Addr.sin_addr.s_addr &&
+                         _ipv4Addr.sin_port        == rhs._ipv4Addr.sin_port)
+                    ) ||
+                    (_ipVersion == 6 &&
+                        (_ipv6Addr.sin6_addr.s6_addr == rhs._ipv6Addr.sin6_addr.s6_addr &&
+                         _ipv6Addr.sin6_port         == rhs._ipv6Addr.sin6_port)
+                    )
+               );
     }
 
 protected:

@@ -1,7 +1,7 @@
 #include <Network/UDPSocket.h>
 #include <Base/Log.h>
 
-UDPSocket::UDPSocket(unsigned short port, bool blocking = false): _port(port), _blocking(blocking) {
+UDPSocket::UDPSocket(unsigned short port, bool blocking): _port(port), _blocking(blocking) {
 }
 
 UDPSocket::~UDPSocket() {
@@ -55,22 +55,10 @@ void UDPSocket::closeSocket() {
     _open = false;
 }
 
-void UDPSocket::setMaxPacketSize(unsigned int size) {
-	_maxPacketSize = size;
-}
-
-unsigned int UDPSocket::getMaxPacketSize() const {
-	return _maxPacketSize;
-}
-
 bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size) {
     unsigned int bytesSent;
 
     ASSERT(_open);
-
-	if(size > _maxPacketSize) {
-		Warn("Packet size exceeds receive window.  This could mean something is amiss.");
-	}
 
     bytesSent = sendto(_socketHandle, data, size, 0, dst.getSockAddr(), dst.getSockAddrSize());
 	if(bytesSent != size) {
@@ -81,7 +69,7 @@ bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size)
 	return true;
 }
 
-void UDPSocket::recv(NetAddress &src, char *data, unsigned int &size) {
+void UDPSocket::recv(NetAddress &src, char *data, unsigned int &size, unsigned int maxSize) {
     // This is where, normally, we'd split between IPv4 and IPv6
 	// For simplicity, and because no-one uses IPv6 yet, we're doing IPv4
 	sockaddr_in sndAddr;
@@ -89,9 +77,8 @@ void UDPSocket::recv(NetAddress &src, char *data, unsigned int &size) {
 
 	ASSERT(_open);
 
-	// WARNING: Any packets received that are larger than _maxPacketSize are SILENTLY discarded
+	// WARNING: Any packets received that are larger than maxSize are SILENTLY discarded
 	// I know, right? How ridiculous is that? Thanks, OBAMA.
-	data = (char*)calloc(_maxPacketSize, sizeof(char));
-	size = recvfrom(_socketHandle, data, _maxPacketSize, 0, (sockaddr*)&sndAddr, &sndAddrSize);
+	size = recvfrom(_socketHandle, data, maxSize, 0, (sockaddr*)&sndAddr, &sndAddrSize);
 	src = NetAddress(&sndAddr);
 }

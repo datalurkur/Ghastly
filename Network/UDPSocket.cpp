@@ -58,6 +58,7 @@ void UDPSocket::closeSocket() {
 bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size) {
     unsigned int bytesSent;
 
+	Info("Sending packet");
     ASSERT(_open);
 
     bytesSent = sendto(_socketHandle, data, size, 0, dst.getSockAddr(), dst.getSockAddrSize());
@@ -69,7 +70,7 @@ bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size)
 	return true;
 }
 
-void UDPSocket::recv(NetAddress &src, char *data, unsigned int &size, unsigned int maxSize) {
+void UDPSocket::recv(NetAddress &src, char *data, int &size, unsigned int maxSize) {
     // This is where, normally, we'd split between IPv4 and IPv6
 	// For simplicity, and because no-one uses IPv6 yet, we're doing IPv4
 	sockaddr_in sndAddr;

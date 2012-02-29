@@ -17,7 +17,7 @@ public:
 	unsigned int getMaxPacketSize() const;
 
     bool send(const NetAddress &dst, const char *data, unsigned int size);
-    void recv(NetAddress &src, char *data, unsigned int &size, unsigned int maxSize);
+    void recv(NetAddress &src, char *data, int &size, unsigned int maxSize);
 
 private:
 	unsigned short _port;

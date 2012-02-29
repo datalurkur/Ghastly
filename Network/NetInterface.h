@@ -2,32 +2,39 @@
 #define NETINTERFACE_H
 
 #include <Network/NetAddress.h>
-
-typedef unsigned int NetworkID;
-const NetworkID ID_NOT_FOUND = 0xffffffff;
+#include <Network/GhastlyProtocol.h>
+#include <Network/PacketListener.h>
 
 const unsigned int DEFAULT_MAX_PACKET_SIZE = 1024;
 
 class NetInterface {
 public:
     NetInterface();
+	NetInterface(const NetAddress &server);
     virtual ~NetInterface();
-
-    virtual void recv(NetworkID &id, char *data, unsigned int &size) = 0;
-    virtual bool send(NetworkID id, const char *data, unsigned int size) = 0;
-
-    // Responsible for negotiating packets from addresses that don't yet have an ID
-    void processUnmappedPacket(const NetAddress &addr, const char *data, unsigned int size);
 
     void setMaxPacketSize(unsigned int maxSize);
     unsigned int getMaxPacketSize() const;
 
-protected:
-    unsigned int getNetworkID(const NetAddress &addr) const;
-    const NetAddress& getNetworkAddress(NetworkID id) const;
+	virtual void processPackets() = 0;
+	bool send(NetworkID id, const GhastlyPacket &packet);
 
-    bool netIDKnown(NetworkID id) const;
+	void registerPacketListener(PacketListener *listener);
+	void unregisterPacketListener(PacketListener *listener);
+
+protected:
+	virtual bool send(const NetAddress &addr, const GhastlyPacket &packet) = 0;
+
+	void setup();
+	void teardown();
+
+    unsigned int getNetworkID(const NetAddress &addr) const;
+    const NetAddress& getNetAddress(NetworkID id) const;
+
+    bool netAddressKnown(NetworkID id) const;
     bool setNetworkID(const NetAddress &addr, NetworkID id);
+
+	void processPacket(NetworkID id, const NetAddress &addr, const GhastlyPacket *packet, bool mapped);
 
 protected:
     bool _server;
@@ -38,6 +45,9 @@ protected:
 private:
     typedef std::map<NetworkID,NetAddress> NetIDMap;
     NetIDMap _idMap;
+
+	typedef std::list<PacketListener*> ListenerList;
+	ListenerList _listeners;
 };
 
 #endif

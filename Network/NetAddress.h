@@ -6,7 +6,7 @@
 class NetAddress {
 public:
     NetAddress();
-    NetAddress(const char *addr, unsigned short port, unsigned char ipVersion);
+    NetAddress(const char *addr, unsigned short port, unsigned char ipVersion = 4);
 	NetAddress(const sockaddr_in *addrData);
 	NetAddress(const sockaddr_in6 *addrData);
     ~NetAddress();

@@ -18,6 +18,10 @@ class Socket {
 public:
     static bool InitializeSocketLayer();
     static void ShutdownSocketLayer();
+	static bool IsSocketLayerReady();
+
+private:
+	static bool SocketLayerInitialized;
 
 public:
     Socket();

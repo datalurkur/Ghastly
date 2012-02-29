@@ -6,11 +6,18 @@
 
 class UDPInterface: public NetInterface {
 public:
-    UDPInterface(UDPSocket *socket);
+    UDPInterface(unsigned short port);
+	UDPInterface(unsigned short port, const NetAddress &server);
     virtual ~UDPInterface();
 
-    void recv(unsigned int &id, char *data, unsigned int &size);
-    bool send(unsigned int id, const char *data, unsigned int size);
+	void processPackets();
+
+protected:
+	bool send(const NetAddress &addr, const GhastlyPacket &packet);
+
+private:
+	void setup(unsigned short port);
+	void teardown();
 
 private:
     UDPSocket *_socket;

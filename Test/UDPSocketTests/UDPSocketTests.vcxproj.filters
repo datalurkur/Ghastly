@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Ghastly">
+      <UniqueIdentifier>{a613970f-00ff-4864-8968-09bdb5c793e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ghastly\Base">
+      <UniqueIdentifier>{9c9e6fc1-13b1-4bb3-b9fe-e859c37a9ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ghastly\Network">
+      <UniqueIdentifier>{57a5af44-68c2-49bd-8da7-2852c250ebc7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Base\Base.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\Log.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\NetAddress.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\Socket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\UDPSocket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Base\Log.cpp">
+      <Filter>Ghastly\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\NetAddress.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\Socket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\UDPSocket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPSocketTests.cpp" />
+  </ItemGroup>
+</Project>

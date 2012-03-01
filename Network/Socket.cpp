@@ -34,10 +34,18 @@ Socket::Socket(): _socketHandle(0) {
 	if(!IsSocketLayerReady()) {
 		Warn("Socket layer not yet initialized! Please call InitializeSocketLayer if you expect your sockets to send data.");
 	}
+    _lock = SDL_CreateMutex();
 }
 
-Socket::~Socket() {}
+Socket::~Socket() {
+    if(_lock) {
+        SDL_DestroyMutex(_lock);
+        _lock = 0;
+    }
+}
 
 bool Socket::isOpen() const {
     return _open;
 }
+
+//SDL_mutex *Socket::getLock() { return _lock; }

@@ -13,8 +13,7 @@ public:
     bool openSocket();
     void closeSocket();
 
-	void setMaxPacketSize(unsigned int size);
-	unsigned int getMaxPacketSize() const;
+    unsigned short getPort();
 
     bool send(const NetAddress &dst, const char *data, unsigned int size);
     void recv(NetAddress &src, char *data, int &size, unsigned int maxSize);

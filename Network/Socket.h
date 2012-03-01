@@ -14,6 +14,8 @@
 # include <arpa/inet.h>
 #endif
 
+#include <SDL/SDL_mutex.h>
+
 class Socket {
 public:
     static bool InitializeSocketLayer();
@@ -32,7 +34,10 @@ public:
     virtual bool openSocket() = 0;
     virtual void closeSocket() = 0;
 
+    //SDL_mutex *getLock();
+
 protected:
+    SDL_mutex *_lock;
     bool _open;
     int _socketHandle;
 };

@@ -1,0 +1,128 @@
+# depslib dependency file v1.0
+1330362031 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Base/Log.cpp
+	<Base/Log.h>
+
+1330362031 /home/ajean/Ghost-in-the-Machine/Ghastly/Base/Log.h
+	<Base/Base.h>
+
+1330392404 /home/ajean/Ghost-in-the-Machine/Ghastly/Base/Base.h
+	<string>
+	<sstream>
+	<stdarg.h>
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<algorithm>
+	<cmath>
+	<stack>
+	<queue>
+	<map>
+	<list>
+	<vector>
+	"SDL/SDL.h"
+	<assert.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1330627864 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/ConnectionBuffer.cpp
+	<Network/ConnectionBuffer.h>
+
+1330631447 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/ConnectionBuffer.h
+	<SDL/SDL_mutex.h>
+	<SDL/SDL_thread.h>
+	<Network/Packet.h>
+
+1330619410 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/NetAddress.h
+	<Network/Socket.h>
+
+1330618967 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/Socket.h
+	<Base/Base.h>
+	<winsock2.h>
+	<ws2tcpip.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<fcntl.h>
+	<arpa/inet.h>
+	<SDL/SDL_mutex.h>
+
+1330631431 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/ConnectionProvider.cpp
+	<Network/ConnectionProvider.h>
+	<Base/Log.h>
+
+1330631431 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/ConnectionProvider.h
+	<Network/UDPBuffer.h>
+	<Network/TCPBuffer.h>
+
+1330621979 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPBuffer.h
+	<Network/ConnectionBuffer.h>
+	<Network/UDPSocket.h>
+
+1330618967 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPSocket.h
+	<Network/Socket.h>
+	<Network/NetAddress.h>
+
+1330620157 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/TCPBuffer.h
+	<Network/ConnectionBuffer.h>
+	<Network/TCPSocket.h>
+
+1330619879 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/TCPSocket.h
+	<Network/Socket.h>
+	<Network/NetAddress.h>
+
+1330392404 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/NetAddress.cpp
+	<Network/NetAddress.h>
+	<Base/Base.h>
+
+1330618964 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/PacketListener.cpp
+	<Network/NetInterface.h>
+
+1330618964 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/NetInterface.h
+	<Network/NetAddress.h>
+	<Network/GhastlyProtocol.h>
+	<Network/PacketListener.h>
+
+1330618964 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/GhastlyProtocol.h
+	<Network/NetAddress.h>
+
+1330618964 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/PacketListener.h
+	<Network/GhastlyProtocol.h>
+
+1330620124 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/NetInterface.cpp
+	<Network/NetInterface.h>
+	<Base/Log.h>
+
+1330620095 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/Socket.cpp
+	<Network/Socket.h>
+	<Base/Log.h>
+
+1330620141 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/TCPBuffer.cpp
+	<Network/TCPBuffer.h>
+
+1330620208 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/TCPSocket.cpp
+	<Network/TCPSocket.h>
+	<Base/Log.h>
+
+1330627892 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPBuffer.cpp
+	<Network/UDPBuffer.h>
+
+1330618964 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPInterface.cpp
+	<Network/UDPInterface.h>
+	<Base/Log.h>
+
+1330618964 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPInterface.h
+	<Network/UDPSocket.h>
+	<Network/NetInterface.h>
+
+1330631134 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/UDPSocket.cpp
+	<Network/UDPSocket.h>
+	<Base/Log.h>
+
+1330631096 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Test/NetworkTests/NetworkTests.cpp
+	<Network/UDPSocket.h>
+
+1330631554 /home/ajean/Ghost-in-the-Machine/Ghastly/Network/Packet.h
+	<Network/NetAddress.h>
+
+1330631511 source:/home/ajean/Ghost-in-the-Machine/Ghastly/Network/Packet.cpp
+	<Network/Packet.h>
+

@@ -88,7 +88,7 @@ void UDPSocket::closeSocket() {
     SDL_mutexV(_lock);
 }
 
-unsigned short UDPSocket::getPort() { return _port; }
+unsigned short UDPSocket::getPort() const { return _port; }
 
 bool UDPSocket::send(const NetAddress &dst, const char *data, unsigned int size) {
     unsigned int bytesSent;

@@ -1,6 +1,12 @@
 #include <Network/Packet.h>
+#include <Base/Log.h>
 
-Packet::Packet(): size(0), data(0) {}
+Packet::Packet(): size(0), data(0) {
+}
+
+Packet::Packet(const Packet &other): size(0), data(0) {
+    duplicate(other);
+}
 
 Packet::Packet(const NetAddress &a, const char *d, unsigned int s): addr(a), size(s) {
     data = (char*)calloc(size, sizeof(char));
@@ -8,14 +14,21 @@ Packet::Packet(const NetAddress &a, const char *d, unsigned int s): addr(a), siz
 }
 
 Packet::~Packet() {
-    free(data);
+    if(data) {
+        free(data);
+    }
 }
 
 const Packet& Packet::operator=(const Packet &rhs) {
-    if(data) { free(data); }
-    addr = rhs.addr;
-    size = rhs.size;
-    data = (char*)calloc(size, sizeof(char));
-    memcpy(data, rhs.data, size);
+    duplicate(rhs);
     return *this;
+}
+
+void Packet::duplicate(const Packet &other) {
+    if(data) { free(data); }
+    addr = other.addr;
+    size = other.size;
+    data = (char*)calloc(size, sizeof(char));
+    memcpy(data, other.data, size);
+    ASSERT(data != other.data);
 }

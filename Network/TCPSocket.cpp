@@ -11,6 +11,7 @@ TCPSocket::~TCPSocket() {
 }
 
 bool TCPSocket::openSocket() {
+    return false;
 }
 
 void TCPSocket::closeSocket() {

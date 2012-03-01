@@ -13,7 +13,8 @@ public:
 
     void startBuffering();
     void stopBuffering();
-    virtual void doBuffering() = 0;
+    virtual void doInboundBuffering() = 0;
+    virtual void doOutboundBuffering() = 0;
 
     // Determine how many packets are buffered before they start being dropped
     void setMaxBufferSize(unsigned int maxPackets);
@@ -35,8 +36,8 @@ protected:
     static unsigned int DefaultMaxPacketSize;
 
     // Why SDL decided to capitalize Thread and not mutex escapes me
-    SDL_mutex *_lock, *_bufferLock;
-    SDL_Thread *_bufferThread;
+    SDL_mutex *_inboundQueueLock, *_outboundQueueLock, *_bufferLock;
+    SDL_Thread *_inboundThread, *_outboundThread;
 
     char *_packetBuffer;
 
@@ -56,7 +57,5 @@ protected:
     unsigned int _inboundPackets;
     unsigned int _outboundPackets;
 };
-
-extern int InvokeConnectionBufferThreadFunction(void *params);
 
 #endif

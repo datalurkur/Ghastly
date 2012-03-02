@@ -1,5 +1,6 @@
 #include <Engine/Window.h>
 #include <Base/Log.h>
+#include <Base/Assertion.h>
 
 Window::Window(): _w(0), _h(0), _videoFlags(0), _frameBuffer(0) { setup(); }
 Window::Window(int w, int h): _w(w), _h(h), _videoFlags(0), _frameBuffer(0) { setup(); }

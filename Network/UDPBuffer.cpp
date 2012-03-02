@@ -5,11 +5,11 @@
 //  (and also so our threads don't eat up tons of CPU time, gadflying for data)
 
 UDPBuffer::UDPBuffer() {
-    _socket = new UDPSocket(0, true);
+    _socket = new UDPSocket(0);
 }
 
 UDPBuffer::UDPBuffer(unsigned short localPort) {
-    _socket = new UDPSocket(localPort, true);
+    _socket = new UDPSocket(localPort);
 }
 
 UDPBuffer::~UDPBuffer() {
@@ -20,18 +20,15 @@ void UDPBuffer::doInboundBuffering() {
     int size;
     NetAddress addr;
 
-    Debug("Entering UDPBuffer buffering loop");
+    Debug("Entering UDPBuffer inbound packet buffering loop");
     while(true) {
         // Lock the packet buffer while it's in use
-        Debug("Acquiring buffer lock");
         SDL_mutexP(_bufferLock);
 
         // Get the next packet from the socket
-        Debug("Receiving data");
         _socket->recv(addr, _packetBuffer, size, _maxBufferSize);
 
         if(size > 0) {
-            Debug("Data received acquiring queue lock");
             SDL_mutexP(_inboundQueueLock);
             // Update received stats
             _receivedPackets++;
@@ -47,8 +44,6 @@ void UDPBuffer::doInboundBuffering() {
                 _inboundPackets++;
             }
             SDL_mutexV(_inboundQueueLock);
-        } else {
-            Debug("No data to receive");
         }
         // Unlock the packet buffer for potential resizing
         SDL_mutexV(_bufferLock);
@@ -59,6 +54,7 @@ void UDPBuffer::doOutboundBuffering() {
     bool ret;
     Packet packet;
 
+	Debug("Entering UDP outbound packet buffering loop");
     while(true) {
         SDL_mutexP(_outboundQueueLock);
         ret = _outbound.empty();
@@ -76,11 +72,8 @@ void UDPBuffer::doOutboundBuffering() {
         // TODO - This is where we'd sleep the thread when throttling bandwidth
 
         if(!ret) {
-            Debug("Sending packet from queue");
             // Send the next outgoing packet to the socket
             _socket->send(packet.addr, packet.data, packet.size);
-        } else {
-            Debug("No packets in queue to send");
         }
     }
 }

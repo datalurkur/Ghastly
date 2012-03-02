@@ -2,6 +2,7 @@
 #define MATRIX4_H
 
 #include <Base/Base.h>
+#include <Base/Assertion.h>
 
 class Matrix4 {
 protected:

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ghastly">
+      <UniqueIdentifier>{32699cb3-3860-4f66-a36b-fc86078ca365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ghastly\Network">
+      <UniqueIdentifier>{3c508cb9-eb5b-40b5-b63e-218ab00db61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ghastly\Base">
+      <UniqueIdentifier>{cb07794d-b61f-499d-a896-d6228913cae4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Network\ConnectionBuffer.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\ConnectionProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\NetAddress.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\Packet.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\Socket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\TCPBuffer.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\TCPSocket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\UDPBuffer.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\UDPSocket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\Log.cpp">
+      <Filter>Ghastly\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkTests.cpp">
+      <Filter>Ghastly</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Network\ConnectionBuffer.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\ConnectionProvider.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\NetAddress.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\Packet.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\Socket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\TCPBuffer.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\TCPSocket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\UDPBuffer.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\UDPSocket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\Base.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\Log.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\Assertion.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

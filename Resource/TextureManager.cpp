@@ -1,6 +1,7 @@
 #include <Resource/TextureManager.h>
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_image.h>
+#include <Base/Assertion.h>
 
 const std::string TextureManager::LoadDirectory = "Texture";
 

@@ -1,4 +1,5 @@
 #include <Network/UDPBuffer.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 bool testUDP(bool blocking) {
@@ -14,8 +15,7 @@ bool testUDP(bool blocking) {
 
     // Prepare for data buffering
     unsigned int maxSize = 1024;
-    char *dataBuffer = (char*)calloc(maxSize,sizeof(char)),
-         *cmpBuffer;
+    char *dataBuffer = (char*)calloc(maxSize,sizeof(char));
     int retSize;
     NetAddress retAddr;
 
@@ -41,12 +41,7 @@ bool testUDP(bool blocking) {
     socketB->recv(retAddr, dataBuffer, retSize, maxSize);
     ASSERT(retAddr == addrA);
     ASSERT(retSize == (int)strlen(stringA));
-
-    // Make sure strings compare
-    cmpBuffer = (char*)calloc(retSize, sizeof(char));
-    memcpy(cmpBuffer, dataBuffer, retSize);
-    ASSERT(strcmp(cmpBuffer, stringA) == 0);
-    free(cmpBuffer);
+    ASSERT(strncmp(dataBuffer, stringA, retSize) == 0);
 
     // Test socket sending from the other direction
     ret = socketB->send(addrA, stringB, strlen(stringB));
@@ -56,12 +51,7 @@ bool testUDP(bool blocking) {
     socketA->recv(retAddr, dataBuffer, retSize, maxSize);
     ASSERT(retAddr == addrB);
     ASSERT(retSize == (int)strlen(stringB));
-
-    // Compare strings once again
-    cmpBuffer = (char*)calloc(retSize, sizeof(char));
-    memcpy(cmpBuffer, dataBuffer, retSize);
-    ASSERT(strcmp(cmpBuffer, stringB) == 0);
-    free(cmpBuffer);
+    ASSERT(strncmp(dataBuffer, stringB, retSize) == 0);
 
     // Cleanup
     free(dataBuffer);
@@ -74,31 +64,30 @@ bool testUDP(bool blocking) {
 
 bool testPacketBuffering(unsigned int maxPackets) {
     std::queue<Packet> buffer;
-    unsigned int c, size;
+    unsigned int c, size, bufferSize;
     Packet packet;
-    char dataBuffer[1024];
+
+	bufferSize = 1024;
+    char *dataBuffer = (char*)calloc(bufferSize, sizeof(char));
 
     for(c=0; c<maxPackets; c++) {
-        size = sprintf(dataBuffer, "%u", c);
-        Info("Pushing " << dataBuffer);
+        size = sprintf_s(dataBuffer, bufferSize, "%u", c);
         buffer.push(Packet(NetAddress("127.0.0.1", c), dataBuffer, size));
-        packet = buffer.front();
-        buffer.pop();
-        Info("Verify: " << packet.data);
     }
-/*
+
     for(c=0; c<maxPackets; c++) {
         ASSERT(!buffer.empty());
         ASSERT(buffer.size() == maxPackets - c);
         packet = buffer.front();
-        Info("Popping " << packet.data << " sized " << packet.size);
-        buffer.pop_front();
-        size = sprintf(dataBuffer, "%u", c);
-        //ASSERT(size == packet.size);
-        //ASSERT(strcmp(packet.data, dataBuffer) == 0);
-        //ASSERT(packet.addr == NetAddress("127.0.0.1", c));
+        buffer.pop();
+        size = sprintf_s(dataBuffer, bufferSize, "%u", c);
+        ASSERT(size == packet.size);
+        ASSERT(strncmp(packet.data, dataBuffer, size) == 0);
+        ASSERT(packet.addr == NetAddress("127.0.0.1", c));
     }
-*/
+
+	free(dataBuffer);
+
     return true;
 }
 
@@ -130,36 +119,42 @@ bool testUDPBuffer(unsigned int maxPackets) {
     char *data = (char*)calloc(maxSrvPacketSize, sizeof(char));
     for(c=0; c<maxPackets; c++) {
         if(rand()%2==1) {
-            stringLength = sprintf(data, "%u", clientCounter);
+            stringLength = sprintf_s(data, maxSrvPacketSize, "%u", clientCounter);
             client->providePacket(Packet(serverAddr, data, stringLength));
             clientCounter++;
         }
         if(rand()%2==1) {
-            stringLength = sprintf(data, "%u", serverCounter);
+            stringLength = sprintf_s(data, maxSrvPacketSize, "%u", serverCounter);
             server->providePacket(Packet(clientAddr, data, stringLength));
             serverCounter++;
         }
     }
     free(data);
 
+	// Give the buffers some time to catch up
+	sleep(1);
+
     data = (char*)calloc(maxSrvPacketSize, sizeof(char));
     for(c=0; c<clientCounter; c++) {
         Packet packet;
-        stringLength = sprintf(data, "%u", clientCounter);
+        stringLength = sprintf_s(data, maxSrvPacketSize, "%u", c);
         ret = server->consumePacket(packet);
         ASSERT(ret);
         ASSERT(stringLength == packet.size);
-        ASSERT(strcmp(data, packet.data) == 0);
+        ASSERT(strncmp(data, packet.data, stringLength) == 0);
     }
     for(c=0; c<serverCounter; c++) {
         Packet packet;
-        stringLength = sprintf(data, "%u", serverCounter);
+        stringLength = sprintf_s(data, maxSrvPacketSize, "%u", c);
         ret = client->consumePacket(packet);
         ASSERT(ret);
         ASSERT(stringLength == packet.size);
-        ASSERT(strcmp(data, packet.data) == 0);
+        ASSERT(strncmp(data, packet.data, stringLength) == 0);
     }
     free(data);
+
+	client->stopBuffering();
+	server->stopBuffering();
 
     delete client;
     delete server;
@@ -167,13 +162,15 @@ bool testUDPBuffer(unsigned int maxPackets) {
     return true;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     Log::EnableAllChannels();
     Socket::InitializeSocketLayer();
+
     ASSERT(testUDP(true));
     ASSERT(testUDP(false));
-    ASSERT(testPacketBuffering(200));
-    //ASSERT(testUDPBuffer(1000));
+    ASSERT(testPacketBuffering(2056));
+    ASSERT(testUDPBuffer(2056));
+
     Socket::ShutdownSocketLayer();
     return 1;
 }

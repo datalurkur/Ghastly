@@ -3,6 +3,7 @@
 
 #include <Base/Base.h>
 #include <Base/Log.h>
+#include <Base/Assertion.h>
 
 class Vector3 {
 public:

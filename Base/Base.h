@@ -1,6 +1,9 @@
 #ifndef BASE_H
 #define BASE_H
 
+// TODO - Set this up as a project target property, so that it can be toggled on and off more easily
+#define DEBUG 1
+
 // String libs
 #include <string>
 #include <sstream>
@@ -40,32 +43,13 @@
 # define SYS_PLATFORM PLATFORM_LINUX
 #endif
 
-#if SYS_PLATFORM == PLATFORM_APPLE
-# define ASSERT_FUNCTION __asm__("int $03")
-#elif SYS_PLATFORM == PLATFORM_WIN32
-# define ASSERT_FUNCTION __asm { int 3 }
-#else
-# include <assert.h>
-# define ASSERT(conditional) assert(conditional)
-#endif
-
-#ifndef ASSERT
-# define ASSERT(conditional) \
-    do { \
-        if(!(conditional)) { \
-			ASSERT_FUNCTION; \
-		} \
-    } while(false)
-#endif
-
 #if SYS_PLATFORM == PLATFORM_WIN32
-// This is causing problems with winsock2.h
-//# include "Windows.h"
 # define WIN32_LEAN_AND_MEAN
 # define sleep(seconds) Sleep(seconds*1000)
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>
+# define sprintf_s(buffer, buffer_size, stringbuffer, ...) (sprintf(buffer, stringbuffer, __VA_ARGS__))
 #endif
 
 using namespace std;

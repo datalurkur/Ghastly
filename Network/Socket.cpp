@@ -30,7 +30,7 @@ bool Socket::IsSocketLayerReady() {
 
 bool Socket::SocketLayerInitialized = false;
 
-Socket::Socket(): _socketHandle(0) {
+Socket::Socket(): _socketHandle(0), _open(false) {
 	if(!IsSocketLayerReady()) {
 		Warn("Socket layer not yet initialized! Please call InitializeSocketLayer if you expect your sockets to send data.");
 	}

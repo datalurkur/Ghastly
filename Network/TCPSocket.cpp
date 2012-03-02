@@ -1,4 +1,5 @@
 #include <Network/TCPSocket.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 TCPSocket::TCPSocket(unsigned short port, bool blocking) {

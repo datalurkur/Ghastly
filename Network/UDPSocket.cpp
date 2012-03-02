@@ -1,4 +1,5 @@
 #include <Network/UDPSocket.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 UDPSocket::UDPSocket(unsigned short port, bool blocking): _port(port), _blocking(blocking) {

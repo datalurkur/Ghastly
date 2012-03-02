@@ -1,4 +1,5 @@
 #include <Network/ConnectionBuffer.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 int InvokeInboundConnectionBufferThreadFunction(void *params) {
@@ -28,7 +29,7 @@ ConnectionBuffer::ConnectionBuffer():
 }
 
 ConnectionBuffer::~ConnectionBuffer() {
-    stopBuffering();
+	ASSERT(!_inboundThread && !_outboundThread);
     SDL_DestroyMutex(_inboundQueueLock);
     SDL_DestroyMutex(_outboundQueueLock);
     SDL_DestroyMutex(_bufferLock);
@@ -38,7 +39,7 @@ void ConnectionBuffer::startBuffering() {
     if(!_inboundThread) {
         Debug("Inbound packet buffering begins");
         _packetBuffer = (char*)calloc(_maxPacketSize, sizeof(char));
-        //_inboundThread = SDL_CreateThread(InvokeInboundConnectionBufferThreadFunction, (void*)this);
+        _inboundThread = SDL_CreateThread(InvokeInboundConnectionBufferThreadFunction, (void*)this);
     }
     if(!_outboundThread) {
         Debug("Outbound packet buffering begins");

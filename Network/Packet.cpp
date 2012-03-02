@@ -1,4 +1,5 @@
 #include <Network/Packet.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 Packet::Packet(): size(0), data(0) {

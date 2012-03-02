@@ -31,12 +31,15 @@ public:
     // Returns false if there are no packets to consume
     bool consumePacket(Packet &packet);
 
+    // DEBUG
+    void logStatistics();
+
 protected:
     static unsigned int DefaultMaxBufferSize;
     static unsigned int DefaultMaxPacketSize;
 
     // Why SDL decided to capitalize Thread and not mutex escapes me
-    SDL_mutex *_inboundQueueLock, *_outboundQueueLock, *_bufferLock;
+    SDL_mutex *_inboundQueueLock, *_outboundQueueLock;
     SDL_Thread *_inboundThread, *_outboundThread;
 
     char *_packetBuffer;

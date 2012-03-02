@@ -6,8 +6,7 @@
 
 class TCPBuffer: public ConnectionBuffer {
 public:
-    TCPBuffer();
-    TCPBuffer(unsigned short localPort);
+    TCPBuffer(unsigned short localPort, const NetAddress &dest);
     virtual ~TCPBuffer();
 
     void doBuffering();

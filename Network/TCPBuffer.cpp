@@ -1,11 +1,8 @@
 #include <Network/TCPBuffer.h>
 
-TCPBuffer::TCPBuffer() {
-    _socket = new TCPSocket(0, true);
-}
-
-TCPBuffer::TCPBuffer(unsigned short localPort) {
-    _socket = new TCPSocket(localPort, true);
+TCPBuffer::TCPBuffer(unsigned short localPort, const NetAddress &dest) {
+    _socket = new TCPSocket();
+    _socket->connectSocket(localPort, dest);
 }
 
 TCPBuffer::~TCPBuffer() {

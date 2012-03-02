@@ -26,19 +26,31 @@ private:
 	static bool SocketLayerInitialized;
 
 public:
-    Socket();
+    Socket(bool blocking);
     virtual ~Socket();
+
+    bool createSocket(int type, int proto = 0);
+    bool bindSocket(unsigned short localPort);
+    void closeSocket();
 
     bool isOpen() const;
 
-    virtual bool openSocket() = 0;
-    virtual void closeSocket() = 0;
-
-    //SDL_mutex *getLock();
+protected:
+    typedef unsigned char SocketState;
+    enum SocketStates {
+        Uninitialized = 0,
+        Created,
+        Bound,
+        Listening,
+        Connected,
+        Closed
+    };
 
 protected:
     SDL_mutex *_lock;
-    bool _open;
+
+    SocketState _state;
+    bool _blocking;
     int _socketHandle;
 };
 

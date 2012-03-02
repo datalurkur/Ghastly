@@ -2,6 +2,7 @@
 #define RESOURCEMANAGER_H
 
 #include <Base/Base.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 #include <Base/FileSystem.h>
 

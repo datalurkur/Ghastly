@@ -1,4 +1,4 @@
-#include <Network/UDPBuffer.h>
+#include <Network/ConnectionProvider.h>
 #include <Base/Assertion.h>
 #include <Base/Log.h>
 
@@ -27,10 +27,12 @@ bool testUDP(bool blocking) {
     NetAddress addrA("127.0.0.1", portA), addrB("127.0.0.1", portB);
 
     // Test socket opening
-    socketA = new UDPSocket(portA, blocking);
+    socketA = new UDPSocket(blocking);
+    socketA->openSocket(portA);
     ASSERT(socketA->isOpen());
 
-    socketB = new UDPSocket(portB, blocking);
+    socketB = new UDPSocket(blocking);
+    socketB->openSocket(portB);
     ASSERT(socketB->isOpen());
 
     // Test socket sending
@@ -133,6 +135,8 @@ bool testUDPBuffer(unsigned int maxPackets) {
 
 	// Give the buffers some time to catch up
 	sleep(1);
+	client->logStatistics();
+	server->logStatistics();
 
     data = (char*)calloc(maxSrvPacketSize, sizeof(char));
     for(c=0; c<clientCounter; c++) {
@@ -158,6 +162,32 @@ bool testUDPBuffer(unsigned int maxPackets) {
 
     delete client;
     delete server;
+
+    return true;
+}
+
+bool testConnectionProvider(unsigned int fastPackets, unsigned int reliablePackets) {
+    ConnectionProvider client, server;
+    unsigned short clientPort, serverPort;
+    unsigned int c;
+
+    clientPort = rand() % 3000 + 3000;
+    serverPort = rand() % 3000 + 6000;
+
+    NetAddress clientAddr("127.0.0.1", clientPort),
+               serverAddr("127.0.0.1", serverPort);
+
+    client.setupFastBuffer(clientPort);
+    server.setupFastBuffer(serverPort);
+
+    // Reliable packets not yet coded
+    ASSERT(reliablePackets != 0);
+
+    for(c=0; c<fastPackets; c++) {
+        ASSERT(0);
+        // FINISH WRITING THIS TEST
+        // TODO
+    }
 
     return true;
 }

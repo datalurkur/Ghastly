@@ -6,11 +6,11 @@
 
 class TCPSocket: public Socket {
 public:
-    TCPSocket(unsigned short port, bool blocking = false);
+    TCPSocket(bool blocking = false);
     virtual ~TCPSocket();
 
-    bool openSocket();
-    void closeSocket();
+    bool connectSocket(unsigned short localPort, const NetAddress &dest);
+    bool listenSocket(unsigned short localPort);
 };
 
 #endif

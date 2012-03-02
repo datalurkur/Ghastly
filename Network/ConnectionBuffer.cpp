@@ -25,14 +25,12 @@ ConnectionBuffer::ConnectionBuffer():
 {
     _inboundQueueLock  = SDL_CreateMutex();
     _outboundQueueLock = SDL_CreateMutex();
-    _bufferLock        = SDL_CreateMutex();
 }
 
 ConnectionBuffer::~ConnectionBuffer() {
 	ASSERT(!_inboundThread && !_outboundThread);
     SDL_DestroyMutex(_inboundQueueLock);
     SDL_DestroyMutex(_outboundQueueLock);
-    SDL_DestroyMutex(_bufferLock);
 }
 
 void ConnectionBuffer::startBuffering() {
@@ -77,9 +75,9 @@ unsigned int ConnectionBuffer::getMaxBufferSize() {
 
 void ConnectionBuffer::setMaxPacketSize(unsigned int maxSize) {
     _maxPacketSize = maxSize;
-    SDL_mutexP(_bufferLock);
+    SDL_mutexP(_inboundQueueLock);
     _packetBuffer = (char*)realloc(_packetBuffer, _maxPacketSize*sizeof(char));
-    SDL_mutexV(_bufferLock);
+    SDL_mutexV(_inboundQueueLock);
 }
 
 unsigned int ConnectionBuffer::getMaxPacketSize() {
@@ -120,4 +118,16 @@ bool ConnectionBuffer::consumePacket(Packet &packet) {
     SDL_mutexV(_inboundQueueLock);
 
     return ret;
+}
+
+void ConnectionBuffer::logStatistics() {
+    SDL_mutexP(_inboundQueueLock);
+    SDL_mutexP(_outboundQueueLock);
+    Info("Inbound packets: " << _inboundPackets);
+    Info("Outbound packets: " << _outboundPackets);
+    Info("Dropped packets: " << _droppedPackets);
+    Info("Sent packets: " << _sentPackets);
+    Info("Received packets: " << _receivedPackets);
+    SDL_mutexV(_outboundQueueLock);
+    SDL_mutexV(_inboundQueueLock);
 }

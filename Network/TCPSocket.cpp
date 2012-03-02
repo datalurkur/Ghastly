@@ -2,18 +2,22 @@
 #include <Base/Assertion.h>
 #include <Base/Log.h>
 
-TCPSocket::TCPSocket(unsigned short port, bool blocking) {
-    // Not yet implemented
-    Error("TCP Sockets are not implemented.");
-    ASSERT(0);
+TCPSocket::TCPSocket(bool blocking): Socket(blocking) {
 }
 
 TCPSocket::~TCPSocket() {
 }
 
-bool TCPSocket::openSocket() {
-    return false;
+bool TCPSocket::connectSocket(unsigned short localPort, const NetAddress &dest) {
+    if(!createSocket(SOCK_STREAM, IPPROTO_TCP)) { return false; }
+    if(!bindSocket(localPort)) { return false; }
+
+	return true;
 }
 
-void TCPSocket::closeSocket() {
+bool TCPSocket::listenSocket(unsigned short localPort) {
+    if(!createSocket(SOCK_STREAM, IPPROTO_TCP)) { return false; }
+    if(!bindSocket(localPort)) { return false; }
+
+	return true;
 }

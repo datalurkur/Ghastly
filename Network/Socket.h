@@ -42,8 +42,7 @@ protected:
         Created,
         Bound,
         Listening,
-        Connected,
-        Closed
+        Connected
     };
 
 protected:

@@ -55,7 +55,9 @@ bool Socket::createSocket(int type, int proto) {
     }
 
     // Construct the socket type, including flags for nonblocking sockets
+#if SYS_PLATFORM != PLATFORM_WIN32
     if(!_blocking) { type |= SOCK_NONBLOCK; }
+#endif
 
     // Create the socket
     SDL_mutexP(_lock);
@@ -67,6 +69,18 @@ bool Socket::createSocket(int type, int proto) {
         _state = Created;
         ret = true;
     }
+
+#if SYS_PLATFORM == PLATFORM_WIN32
+	if(!_blocking) {
+		DWORD nonBlock = 1;
+        if(ioctlsocket(_socketHandle, FIONBIO, &nonBlock) != 0) {
+			Error("Failed to set socket non-blocking!");
+			closesocket(_socketHandle);
+			_state = Uninitialized;
+			ret = false;
+		}
+	}
+#endif
     SDL_mutexV(_lock);
 
     return ret;
@@ -112,7 +126,7 @@ void Socket::closeSocket() {
         close(_socketHandle);
 #endif
         _socketHandle = 0;
-        _state = Closed;
+        _state = Uninitialized;
     }
 
     SDL_mutexV(_lock);

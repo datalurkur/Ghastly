@@ -1,4 +1,5 @@
 #include <Network/Socket.h>
+#include <Base/Assertion.h>
 #include <Base/Log.h>
 
 bool Socket::InitializeSocketLayer() {
@@ -28,6 +29,14 @@ bool Socket::IsSocketLayerReady() {
 #endif
 }
 
+int Socket::LastSocketError() {
+#if SYS_PLATFORM == PLATFORM_WIN32
+	return WSAGetLastError();
+#else
+	return errno;
+#endif
+}
+
 bool Socket::SocketLayerInitialized = false;
 
 Socket::Socket(bool blocking): _state(Uninitialized), _blocking(blocking), _socketHandle(0) {
@@ -47,48 +56,32 @@ Socket::~Socket() {
 }
 
 bool Socket::createSocket(int type, int proto) {
-    bool ret;
+    bool ret = true;
 
     if(_state != Uninitialized) {
         Error("Failed to create socket, socket has already been created.");
         return false;
     }
 
-    // Construct the socket type, including flags for nonblocking sockets
-#if SYS_PLATFORM != PLATFORM_WIN32
-    if(!_blocking) { type |= SOCK_NONBLOCK; }
-#endif
-
     // Create the socket
-    SDL_mutexP(_lock);
+    SDL_LockMutex(_lock);
     _socketHandle = socket(AF_INET, type, proto);
     if(_socketHandle <= 0) {
         Error("Failed to create socket.");
         ret = false;
     } else {
         _state = Created;
-        ret = true;
     }
+    SDL_UnlockMutex(_lock);
 
-#if SYS_PLATFORM == PLATFORM_WIN32
-	if(!_blocking) {
-		DWORD nonBlock = 1;
-        if(ioctlsocket(_socketHandle, FIONBIO, &nonBlock) != 0) {
-			Error("Failed to set socket non-blocking!");
-			closesocket(_socketHandle);
-			_state = Uninitialized;
-			ret = false;
-		}
-	}
-#endif
-    SDL_mutexV(_lock);
+	setBlockingFlag(_blocking);
 
     return ret;
 }
 
 bool Socket::bindSocket(unsigned short localPort) {
     sockaddr_in addr;
-    bool ret;
+    bool ret = true;
 
     if(_state != Created) {
         if(_state == Uninitialized) {
@@ -100,7 +93,7 @@ bool Socket::bindSocket(unsigned short localPort) {
     }
 
     // Bind the socket
-    SDL_mutexP(_lock);
+    SDL_LockMutex(_lock);
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(localPort);
@@ -109,15 +102,31 @@ bool Socket::bindSocket(unsigned short localPort) {
         ret = false;
     } else {
         _state = Bound;
-        ret = true;
     }
-    SDL_mutexV(_lock);
+    SDL_UnlockMutex(_lock);
 
     return ret;
 }
 
+bool Socket::setBlockingFlag(bool value) {
+#if SYS_PLATFORM == PLATFORM_WIN32
+	DWORD nonBlock = (value ? 0 : 1);
+    if(ioctlsocket(_socketHandle, FIONBIO, &nonBlock) != 0) {
+#else
+	int nonBlock = (value ? 0 : 1);
+	if(fcntl(_socketHandle, F_SETFL, O_NONBLOCK, nonBlock) == -1) {
+#endif
+		Error("Failed to set socket non-blocking!");
+		closesocket(_socketHandle);
+		_state = Uninitialized;
+		return false;
+	} else {
+		return true;
+	}
+}
+
 void Socket::closeSocket() {
-    SDL_mutexP(_lock);
+    SDL_LockMutex(_lock);
 
     if(_socketHandle) {
 #if SYS_PLATFORM == PLATFORM_WIN32
@@ -129,15 +138,64 @@ void Socket::closeSocket() {
         _state = Uninitialized;
     }
 
-    SDL_mutexV(_lock);
+    SDL_UnlockMutex(_lock);
 }
 
-bool Socket::isOpen() const {
+bool Socket::isOpen() {
     bool ret;
 
-    SDL_mutexP(_lock);
-    ret = (_state == Bound || _state == Listening || _state == Connected);
-    SDL_mutexV(_lock);
+    SDL_LockMutex(_lock);
+    ret = (_state == Bound || _state == Listening || _state == Connecting || _state == Connected);
+    SDL_UnlockMutex(_lock);
 
     return ret;
+}
+
+unsigned short Socket::getLocalPort() {
+    unsigned short ret;
+    sockaddr_in addr;
+    socklen_t addrSize = sizeof(addr);
+
+    ASSERT(isOpen());
+
+    SDL_LockMutex(_lock);
+    if(getsockname(_socketHandle, (sockaddr*)&addr, &addrSize) == 0 && addr.sin_family == AF_INET && sizeof(addr) == addrSize) {
+        ret = ntohs(addr.sin_port);
+    } else {
+        Error("Failed to get local port for Socket");
+        ret = 0;
+    }
+    SDL_UnlockMutex(_lock);
+
+    return ret;
+}
+
+bool Socket::send(const char *data, unsigned int size, const sockaddr *addr, int addrSize) {
+	unsigned int bytesSent;
+
+    ASSERT(isOpen());
+
+    SDL_LockMutex(_lock);
+	bytesSent = sendto(_socketHandle, data, size, 0, addr, addrSize);
+    SDL_UnlockMutex(_lock);
+
+	if(bytesSent < 0) {
+		Error("Failed to write to socket");
+		return false;
+	} else if(bytesSent != size) {
+		Error("Bytes sent does not match bytes given: " << bytesSent << "/" << size);
+		return false;
+	} else {
+		return true;
+	}
+}
+
+// WARNING: Any packets received that are larger than maxSize are SILENTLY discarded
+// I know, right? How ridiculous is that? Thanks, OBAMA.
+void Socket::recv(char *data, int &size, unsigned int maxSize, sockaddr *addr, int &addrSize) {
+    ASSERT(isOpen());
+
+    SDL_LockMutex(_lock);
+	size = recvfrom(_socketHandle, data, maxSize, 0, addr, &addrSize);
+    SDL_UnlockMutex(_lock);
 }

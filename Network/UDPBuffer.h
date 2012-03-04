@@ -4,21 +4,17 @@
 #include <Network/ConnectionBuffer.h>
 #include <Network/UDPSocket.h>
 
-class UDPBuffer;
-
 class UDPBuffer: public ConnectionBuffer {
 public:
-    UDPBuffer();
-    UDPBuffer(unsigned short localPort);
+    UDPBuffer(unsigned short localPort = 0);
     virtual ~UDPBuffer();
 
     void doInboundBuffering();
     void doOutboundBuffering();
 
-    unsigned short getLocalPort() const;
-
 private:
-    UDPSocket *_socket;
+	// Make sure the Socket* is properly cast so the correct functions get called
+	inline UDPSocket* getSocket() { return (UDPSocket*)_socket; }
 };
 
 #endif

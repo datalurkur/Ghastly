@@ -45,6 +45,9 @@
     <ClCompile Include="NetworkTests.cpp">
       <Filter>Ghastly</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Network\ListenSocket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Network\ConnectionBuffer.h">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Base\Assertion.h">
       <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\ListenSocket.h">
+      <Filter>Ghastly\Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

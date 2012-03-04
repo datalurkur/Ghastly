@@ -3,11 +3,31 @@
 Log* Log::outputStream = 0;
 LogChannel Log::channelState = 0;
 
+SDL_mutex *Log::logLock = 0;
+
 Log::Log(): _outputStream(&std::cout) {
 }
 
 Log::~Log() {
     _outputStream->flush();
+}
+
+void Log::Setup() {
+	logLock = SDL_CreateMutex();
+	EnableAllChannels();
+}
+
+void Log::Teardown() {
+	DisableAllChannels();
+	SDL_DestroyMutex(logLock);
+}
+
+void Log::SetLock() {
+	SDL_LockMutex(logLock);
+}
+
+void Log::ReleaseLock() {
+	SDL_UnlockMutex(logLock);
 }
 
 void Log::EnableAllChannels() {

@@ -36,10 +36,35 @@ public:
 
     inline bool operator!=(const NetAddress &rhs) const { return !(*this == rhs); }
 
+	// Defined so NetAddress can be used as a key in std::map
+	inline bool operator<(const NetAddress &rhs) const {
+		if(_ipVersion == 4 && rhs._ipVersion == 4) {
+			if(_ipv4Addr.sin_addr.s_addr == rhs._ipv4Addr.sin_addr.s_addr) {
+				return (_ipv4Addr.sin_port < rhs._ipv4Addr.sin_port);
+			} else {
+				return (_ipv4Addr.sin_addr.s_addr < rhs._ipv4Addr.sin_addr.s_addr);
+			}
+		} else if(_ipVersion == 6 && rhs._ipVersion == 6) {
+			if(_ipv6Addr.sin6_addr.s6_addr == rhs._ipv6Addr.sin6_addr.s6_addr) {
+				return (_ipv6Addr.sin6_port < rhs._ipv6Addr.sin6_port);
+			} else {
+				return (_ipv6Addr.sin6_addr.s6_addr < rhs._ipv6Addr.sin6_addr.s6_addr);
+			}
+		} else if(_ipVersion == 4) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	void print(std::ostream &stream) const;
+
 protected:
     sockaddr_in   _ipv4Addr;
     sockaddr_in6  _ipv6Addr;
     unsigned char _ipVersion;
 };
+
+std::ostream& operator<<(std::ostream& lhs, const NetAddress &rhs);
 
 #endif

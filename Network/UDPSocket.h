@@ -12,10 +12,8 @@ public:
 
     bool openSocket(unsigned short localPort = 0);
 
-    unsigned short getLocalPort() const;
-
-    bool send(const NetAddress &dst, const char *data, unsigned int size);
-    void recv(NetAddress &src, char *data, int &size, unsigned int maxSize);
+    bool send(const char *data, unsigned int size, const NetAddress &addr);
+    void recv(char *data, int &size, unsigned int maxSize, NetAddress &addr);
 
 private:
 	unsigned short _port;

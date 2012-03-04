@@ -19,7 +19,7 @@ unsigned int ConnectionBuffer::DefaultMaxBufferSize = 5096;
 unsigned int ConnectionBuffer::DefaultMaxPacketSize = 1024;
 
 ConnectionBuffer::ConnectionBuffer():
-    _inboundThread(0), _outboundThread(0),
+    _socket(0), _inboundThread(0), _outboundThread(0),
     _packetBuffer(0), _maxBufferSize(DefaultMaxBufferSize), _maxPacketSize(DefaultMaxPacketSize),
     _droppedPackets(0), _receivedPackets(0), _sentPackets(0), _inboundPackets(0), _outboundPackets(0)
 {
@@ -48,9 +48,9 @@ void ConnectionBuffer::startBuffering() {
 void ConnectionBuffer::stopBuffering() {
     if(_inboundThread) {
         Debug("Inbound packet buffering ends");
-        SDL_mutexP(_inboundQueueLock);
+        SDL_LockMutex(_inboundQueueLock);
         SDL_KillThread(_inboundThread);
-        SDL_mutexV(_inboundQueueLock);
+        SDL_UnlockMutex(_inboundQueueLock);
         _inboundThread = 0;
 
         free(_packetBuffer);
@@ -58,9 +58,9 @@ void ConnectionBuffer::stopBuffering() {
     }
     if(_outboundThread) {
         Debug("Outbound packet buffering ends");
-        SDL_mutexP(_outboundQueueLock);
+        SDL_LockMutex(_outboundQueueLock);
         SDL_KillThread(_outboundThread);
-        SDL_mutexV(_outboundQueueLock);
+        SDL_UnlockMutex(_outboundQueueLock);
         _outboundThread = 0;
     }
 }
@@ -75,9 +75,9 @@ unsigned int ConnectionBuffer::getMaxBufferSize() {
 
 void ConnectionBuffer::setMaxPacketSize(unsigned int maxSize) {
     _maxPacketSize = maxSize;
-    SDL_mutexP(_inboundQueueLock);
+    SDL_LockMutex(_inboundQueueLock);
     _packetBuffer = (char*)realloc(_packetBuffer, _maxPacketSize*sizeof(char));
-    SDL_mutexV(_inboundQueueLock);
+    SDL_UnlockMutex(_inboundQueueLock);
 }
 
 unsigned int ConnectionBuffer::getMaxPacketSize() {
@@ -87,19 +87,19 @@ unsigned int ConnectionBuffer::getMaxPacketSize() {
 bool ConnectionBuffer::providePacket(const Packet &packet) {
     bool ret;
 
-    SDL_mutexP(_outboundQueueLock);
+    SDL_LockMutex(_outboundQueueLock);
     _outbound.push(packet);
     if(_outbound.size() > _maxBufferSize) {
         _outbound.pop();
-        SDL_mutexP(_inboundQueueLock);
+        SDL_LockMutex(_inboundQueueLock);
         _droppedPackets++;
-        SDL_mutexV(_inboundQueueLock);
+        SDL_UnlockMutex(_inboundQueueLock);
         ret = false;
     } else {
         _outboundPackets++;
         ret = true;
     }
-    SDL_mutexV(_outboundQueueLock);
+    SDL_UnlockMutex(_outboundQueueLock);
 
     return ret;
 }
@@ -107,7 +107,7 @@ bool ConnectionBuffer::providePacket(const Packet &packet) {
 bool ConnectionBuffer::consumePacket(Packet &packet) {
     bool ret;
 
-    SDL_mutexP(_inboundQueueLock);
+    SDL_LockMutex(_inboundQueueLock);
     if(_inbound.empty()) { ret = false; }
     else {
         packet = _inbound.front();
@@ -115,19 +115,27 @@ bool ConnectionBuffer::consumePacket(Packet &packet) {
         _inboundPackets--;
         ret = true;
     }
-    SDL_mutexV(_inboundQueueLock);
+    SDL_UnlockMutex(_inboundQueueLock);
 
     return ret;
 }
 
+unsigned short ConnectionBuffer::getLocalPort() const {
+    if(_socket) {
+        return _socket->getLocalPort();
+    } else {
+        return 0;
+    }
+}
+
 void ConnectionBuffer::logStatistics() {
-    SDL_mutexP(_inboundQueueLock);
-    SDL_mutexP(_outboundQueueLock);
+    SDL_LockMutex(_inboundQueueLock);
+    SDL_LockMutex(_outboundQueueLock);
     Info("Inbound packets: " << _inboundPackets);
     Info("Outbound packets: " << _outboundPackets);
     Info("Dropped packets: " << _droppedPackets);
     Info("Sent packets: " << _sentPackets);
     Info("Received packets: " << _receivedPackets);
-    SDL_mutexV(_outboundQueueLock);
-    SDL_mutexV(_inboundQueueLock);
+    SDL_UnlockMutex(_outboundQueueLock);
+    SDL_UnlockMutex(_inboundQueueLock);
 }

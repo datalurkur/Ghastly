@@ -36,3 +36,21 @@ const sockaddr *NetAddress::getSockAddr() const {
 unsigned int NetAddress::getSockAddrSize() const {
 	return (_ipVersion == 4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
 }
+
+void NetAddress::print(std::ostream &stream) const {
+	stream << "NetAddress(";
+	if(_ipVersion == 4) {
+		char addrBuffer[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, (void*)&(_ipv4Addr.sin_addr), addrBuffer, INET_ADDRSTRLEN);
+		stream << addrBuffer << "(4):" << ntohs(_ipv4Addr.sin_port) << ")";
+	} else {
+		char addrBuffer[INET6_ADDRSTRLEN];
+		inet_ntop(AF_INET6, (void*)&(_ipv6Addr.sin6_addr), addrBuffer, INET6_ADDRSTRLEN);
+		stream << addrBuffer << "(6):" << ntohs(_ipv6Addr.sin6_port) << ")";
+	}
+}
+
+std::ostream& operator<<(std::ostream& lhs, const NetAddress &rhs) {
+	rhs.print(lhs);
+	return lhs;
+}

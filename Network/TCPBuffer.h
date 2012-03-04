@@ -6,13 +6,25 @@
 
 class TCPBuffer: public ConnectionBuffer {
 public:
-    TCPBuffer(unsigned short localPort, const NetAddress &dest);
+    TCPBuffer(const NetAddress &dest, unsigned short localPort = 0);
+	TCPBuffer(TCPSocket *establishedSocket);
     virtual ~TCPBuffer();
 
-    void doBuffering();
+	void startBuffering();
+    void stopBuffering();
+
+    void doInboundBuffering();
+	void doOutboundBuffering();
+
+	int tcpSerialize(char *dest, const char *src, int size, int maxSize);
+	int tcpDeserialize(const char *srcData, char **data, int &size);
 
 private:
-    TCPSocket *_socket;
+	// Make sure the Socket* is properly cast so the correct functions get called
+	inline TCPSocket *getSocket() { return (TCPSocket*)_socket; }
+
+private:
+	char *_serializationBuffer;
 };
 
 #endif

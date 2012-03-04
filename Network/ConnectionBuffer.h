@@ -31,10 +31,14 @@ public:
     // Returns false if there are no packets to consume
     bool consumePacket(Packet &packet);
 
+    unsigned short getLocalPort() const;
+
     // DEBUG
     void logStatistics();
 
 protected:
+	Socket *_socket;
+
     static unsigned int DefaultMaxBufferSize;
     static unsigned int DefaultMaxPacketSize;
 

@@ -1,18 +1,13 @@
 #include <Network/UDPBuffer.h>
 #include <Base/Log.h>
 
-UDPBuffer::UDPBuffer() {
-    _socket = new UDPSocket();
-    _socket->openSocket();
-}
-
 UDPBuffer::UDPBuffer(unsigned short localPort) {
     _socket = new UDPSocket();
-    _socket->openSocket(localPort);
+    getSocket()->openSocket(localPort);
 }
 
 UDPBuffer::~UDPBuffer() {
-    if(_socket) { delete _socket; }
+    if(_socket) { delete getSocket(); }
 }
 
 void UDPBuffer::doInboundBuffering() {
@@ -21,10 +16,10 @@ void UDPBuffer::doInboundBuffering() {
 
     Debug("Entering UDPBuffer inbound packet buffering loop");
     while(true) {
-        SDL_mutexP(_inboundQueueLock);
+        SDL_LockMutex(_inboundQueueLock);
 
         // Get the next packet from the socket
-        _socket->recv(addr, _packetBuffer, size, _maxBufferSize);
+        getSocket()->recv(_packetBuffer, size, _maxBufferSize, addr);
 
         if(size > 0) {
             // Update received stats
@@ -34,14 +29,14 @@ void UDPBuffer::doInboundBuffering() {
             _inbound.push(Packet(addr, _packetBuffer, size));
             if(_inbound.size() > _maxBufferSize) {
                 _inbound.pop();
-                SDL_mutexP(_outboundQueueLock);
+                SDL_LockMutex(_outboundQueueLock);
                 _droppedPackets++;
-                SDL_mutexV(_outboundQueueLock);
+                SDL_UnlockMutex(_outboundQueueLock);
             } else {
                 _inboundPackets++;
             }
         }
-        SDL_mutexV(_inboundQueueLock);
+        SDL_UnlockMutex(_inboundQueueLock);
     }
 }
 
@@ -51,7 +46,7 @@ void UDPBuffer::doOutboundBuffering() {
 
 	Debug("Entering UDP outbound packet buffering loop");
     while(true) {
-        SDL_mutexP(_outboundQueueLock);
+        SDL_LockMutex(_outboundQueueLock);
         ret = _outbound.empty();
         if(!ret) {
             // Pop the next outgoing packet off the queue
@@ -62,17 +57,9 @@ void UDPBuffer::doOutboundBuffering() {
             // TODO - This is where we'd sleep the thread when throttling bandwidth
 
             // Send the next outgoing packet to the socket
-            _socket->send(packet.addr, packet.data, packet.size);
+            getSocket()->send(packet.data, packet.size, packet.addr);
             _sentPackets++;
         }
-        SDL_mutexV(_outboundQueueLock);
-    }
-}
-
-unsigned short UDPBuffer::getLocalPort() const {
-    if(_socket) {
-        return _socket->getLocalPort();
-    } else {
-        return 0;
+        SDL_UnlockMutex(_outboundQueueLock);
     }
 }

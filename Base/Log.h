@@ -23,6 +23,12 @@ public:
     static Log& GetLogStream(LogChannel channel);
     static void Flush();
 
+	static void Setup();
+	static void Teardown();
+
+	static void SetLock();
+	static void ReleaseLock();
+
 public:
     Log();
     virtual ~Log();
@@ -35,6 +41,8 @@ public:
 private:
     static Log *outputStream;
     static LogChannel channelState;
+
+	static SDL_mutex *logLock;
 
 private:
     std::ostream *_outputStream;
@@ -49,8 +57,10 @@ Log& Log::operator<<(const T &rhs) {
 #define LogToChannel(channel, msg) \
     do { \
         if(Log::IsChannelEnabled(channel)) { \
+			Log::SetLock(); \
             Log::GetLogStream(channel) << msg << "\n"; \
             Log::Flush(); \
+			Log::ReleaseLock(); \
         } \
     } while(false)
 

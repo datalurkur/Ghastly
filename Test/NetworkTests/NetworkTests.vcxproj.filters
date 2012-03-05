@@ -15,9 +15,6 @@
     <ClCompile Include="..\..\Network\ConnectionBuffer.cpp">
       <Filter>Ghastly\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Network\ConnectionProvider.cpp">
-      <Filter>Ghastly\Network</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Network\NetAddress.cpp">
       <Filter>Ghastly\Network</Filter>
     </ClCompile>
@@ -46,6 +43,24 @@
       <Filter>Ghastly</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Network\ListenSocket.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\Timestamp.cpp">
+      <Filter>Ghastly\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\ConnectionProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\ClientProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\ServerProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\SimpleUDPProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Network\SocketedUDPProvider.cpp">
       <Filter>Ghastly\Network</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,6 +102,21 @@
       <Filter>Ghastly\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Network\ListenSocket.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\Timestamp.h">
+      <Filter>Ghastly\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\ClientProvider.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\ServerProvider.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\SimpleUDPProvider.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\SocketedUDPProvider.h">
       <Filter>Ghastly\Network</Filter>
     </ClInclude>
   </ItemGroup>

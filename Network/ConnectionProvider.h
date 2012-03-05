@@ -1,31 +1,25 @@
 #ifndef CONNECTIONPROVIDER_H
 #define CONNECTIONPROVIDER_H
 
-#include <Network/UDPBuffer.h>
-#include <Network/TCPBuffer.h>
-#include <Network/ListenSocket.h>
+#include <Network/Packet.h>
 
-// TODO - Code reliable connections in the form of TCP
-class ConnectionProvider: public SocketCreationListener {
+class PacketListener {
 public:
-    ConnectionProvider();
-    virtual ~ConnectionProvider();
+	virtual void onPacketReceive(const Packet &packet) = 0;
+};
 
-    void sendFastPacket(const Packet &packet);
-    //void sendReliablePacket(const Packet &packet);
+class ConnectionProvider {
+public:
+	ConnectionProvider();
 
-    void setupFastBuffer(unsigned short port = 0);
-	void setupReliableBuffer(unsigned short port = 0);
+    virtual bool sendPacket(const Packet &packet) = 0;
+	virtual bool recvPacket(Packet &packet) = 0;
 
-	bool onSocketCreation(const NetAddress &client, TCPSocket *socket);
+	unsigned int dispatchIncomingPackets(unsigned int maxPackets);
+	void registerIncomingPacketListener(PacketListener *listener);
 
 private:
-    UDPBuffer *_fastBuffer;
-
-	ListenSocket *_listenSocket;
-
-    typedef std::map<NetAddress,TCPBuffer*> TCPBufferMap;
-    TCPBufferMap _tcpBufferMap;
+	PacketListener *_listener;
 };
 
 #endif

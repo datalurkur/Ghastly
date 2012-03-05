@@ -70,12 +70,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Base\Log.cpp" />
+    <ClCompile Include="..\..\Base\Timestamp.cpp" />
+    <ClCompile Include="..\..\Network\ClientProvider.cpp" />
     <ClCompile Include="..\..\Network\ConnectionBuffer.cpp" />
     <ClCompile Include="..\..\Network\ConnectionProvider.cpp" />
     <ClCompile Include="..\..\Network\ListenSocket.cpp" />
     <ClCompile Include="..\..\Network\NetAddress.cpp" />
     <ClCompile Include="..\..\Network\Packet.cpp" />
+    <ClCompile Include="..\..\Network\ServerProvider.cpp" />
+    <ClCompile Include="..\..\Network\SimpleUDPProvider.cpp" />
     <ClCompile Include="..\..\Network\Socket.cpp" />
+    <ClCompile Include="..\..\Network\SocketedUDPProvider.cpp" />
     <ClCompile Include="..\..\Network\TCPBuffer.cpp" />
     <ClCompile Include="..\..\Network\TCPSocket.cpp" />
     <ClCompile Include="..\..\Network\UDPBuffer.cpp" />
@@ -86,12 +91,17 @@
     <ClInclude Include="..\..\Base\Assertion.h" />
     <ClInclude Include="..\..\Base\Base.h" />
     <ClInclude Include="..\..\Base\Log.h" />
+    <ClInclude Include="..\..\Base\Timestamp.h" />
+    <ClInclude Include="..\..\Network\ClientProvider.h" />
     <ClInclude Include="..\..\Network\ConnectionBuffer.h" />
     <ClInclude Include="..\..\Network\ConnectionProvider.h" />
     <ClInclude Include="..\..\Network\ListenSocket.h" />
     <ClInclude Include="..\..\Network\NetAddress.h" />
     <ClInclude Include="..\..\Network\Packet.h" />
+    <ClInclude Include="..\..\Network\ServerProvider.h" />
+    <ClInclude Include="..\..\Network\SimpleUDPProvider.h" />
     <ClInclude Include="..\..\Network\Socket.h" />
+    <ClInclude Include="..\..\Network\SocketedUDPProvider.h" />
     <ClInclude Include="..\..\Network\TCPBuffer.h" />
     <ClInclude Include="..\..\Network\TCPSocket.h" />
     <ClInclude Include="..\..\Network\UDPBuffer.h" />

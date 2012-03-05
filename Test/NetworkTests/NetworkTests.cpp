@@ -1,8 +1,8 @@
-#include <Network/ConnectionProvider.h>
+#include <Network/ListenSocket.h>
+#include <Network/UDPBuffer.h>
+#include <Network/TCPBuffer.h>
 #include <Base/Assertion.h>
 #include <Base/Log.h>
-
-#define THE_DEMON_ERROR 200
 
 class SimpleConnectionListener: public SocketCreationListener {
 public:
@@ -345,53 +345,17 @@ bool testUDPBuffer(unsigned int maxPackets) {
     return true;
 }
 
-bool testConnectionProvider(unsigned int fastPackets, unsigned int reliablePackets) {
-    ConnectionProvider client, server;
-    unsigned short clientPort, serverPort;
-    unsigned int c, size, bufferSize;
-	char *buffer;
-
-	bufferSize = 1024;
-
-    clientPort = rand() % 3000 + 3000;
-    serverPort = rand() % 3000 + 6000;
-
-    NetAddress clientAddr("127.0.0.1", clientPort),
-               serverAddr("127.0.0.1", serverPort);
-
-	Info("Running connection provider tests");
-
-    client.setupFastBuffer(clientPort);
-    server.setupFastBuffer(serverPort);
-
-    // Reliable packets not yet coded
-    ASSERT(reliablePackets == 0);
-
-	buffer = (char*)calloc(bufferSize, sizeof(char));
-    for(c=0; c<fastPackets; c++) {
-		size = sprintf_s(buffer, bufferSize, "%u", c);
-		client.sendFastPacket(Packet(serverAddr, buffer, size));
-		server.sendFastPacket(Packet(clientAddr, buffer, size));
-    }
-	for(c=0; c<fastPackets; c++) {
-	}
-
-    return true;
-}
-
 int main(int argc, char *argv[]) {
     Log::Setup();
     Socket::InitializeSocketLayer();
 
-    /*ASSERT(testUDP(true));
+    ASSERT(testUDP(true));
     ASSERT(testUDP(false));
 	ASSERT(testTCP(true));
 	ASSERT(testTCP(false));
     ASSERT(testPacketBuffering(2056));
     ASSERT(testUDPBuffer(2056));
-	*/
 	ASSERT(testTCPBuffer(2056));
-	//ASSERT(testConnectionProvider(2056, 0));
 
     Socket::ShutdownSocketLayer();
 	Log::Teardown();

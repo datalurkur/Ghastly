@@ -8,7 +8,7 @@ TCPSocket::TCPSocket(bool blocking): Socket(blocking) {
 TCPSocket::TCPSocket(int establishedSocketHandle, bool blocking): Socket(blocking) {
 	int error = 0;
 	socklen_t errorLength = sizeof(error);
-	if(getsockopt(establishedSocketHandle, SOL_SOCKET, SO_ERROR, (char*)&error, &errorLength) == 0) {
+	if(getsockopt(establishedSocketHandle, SOL_SOCKET, SO_ERROR, (char*)&error, (socklen_t*)&errorLength) == 0) {
 		_socketHandle = establishedSocketHandle;
 		_state = Connected;
 	} else {
@@ -56,7 +56,7 @@ bool TCPSocket::isConnected() {
 	
 	errorLength = sizeof(error);
 	SDL_LockMutex(_lock);
-	ret = getsockopt(_socketHandle, SOL_SOCKET, SO_ERROR, (char*)&error, &errorLength);
+	ret = getsockopt(_socketHandle, SOL_SOCKET, SO_ERROR, (char*)&error, (socklen_t*)&errorLength);
 	SDL_UnlockMutex(_lock);
 
 	if(ret == 0) {

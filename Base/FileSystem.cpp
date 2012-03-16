@@ -35,7 +35,7 @@ void FileSystem::CleanFilename(const std::string &filename, std::string &cleaned
 	// Replace backslashes with forward slashes
 	i = 0;
 	while(i < (int)cleaned.size()) {
-		j = cleaned.find('\\', i);
+		j = (int)cleaned.find('\\', i);
 		if(j != -1) {
 			cleaned[j] = '/';
 			i = j+1;

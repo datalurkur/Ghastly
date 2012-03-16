@@ -11,6 +11,7 @@
 # define E_IN_PROGRESS WSAEWOULDBLOCK
 # pragma comment(lib, "Ws2_32.lib")
 #else
+# include <errno.h>
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <fcntl.h>

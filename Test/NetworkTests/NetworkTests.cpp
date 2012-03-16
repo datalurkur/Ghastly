@@ -63,7 +63,7 @@ bool testUDP(bool blocking) {
     ASSERT(socketB->isOpen());
 
     // Test socket sending
-    ret = socketA->send(stringA, strlen(stringA), addrB);
+    ret = socketA->send(stringA, (unsigned int)strlen(stringA), addrB);
     ASSERT(ret);
 
     // Test socket receiving
@@ -73,7 +73,7 @@ bool testUDP(bool blocking) {
     ASSERT(strncmp(dataBuffer, stringA, retSize) == 0);
 
     // Test socket sending from the other direction
-    ret = socketB->send(stringB, strlen(stringB), addrA);
+    ret = socketB->send(stringB, (unsigned int)strlen(stringB), addrA);
     ASSERT(ret);
 
     // Test socket receiving from the other direction
@@ -138,12 +138,12 @@ bool testTCP(bool blocking) {
 	ASSERT(connectionListener.activeSockets.size() > 0);
 
 	buffer = (char*)calloc(bufferSize, sizeof(char));
-	clientSocket->send(stringA, strlen(stringA));
+	clientSocket->send(stringA, (unsigned int)strlen(stringA));
 	(*connectionListener.activeSockets.begin())->recv(buffer, size, bufferSize);
 	ASSERT(size == strlen(stringA));
 	ASSERT(strncmp(stringA, buffer, size) == 0);
 
-	(*connectionListener.activeSockets.begin())->send(stringB, strlen(stringB));
+	(*connectionListener.activeSockets.begin())->send(stringB, (unsigned int)strlen(stringB));
 	clientSocket->recv(buffer, size, bufferSize);
 	ASSERT(size == strlen(stringB));
 	ASSERT(strncmp(stringB, buffer, size) == 0);	

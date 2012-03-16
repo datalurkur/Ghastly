@@ -42,7 +42,7 @@ public:
 
     static T* Get(const std::string &name);
 	static T* Load(const std::string &name);
-    static T* Load(const std::string &name, T* t);
+    static T* Load(const std::string &name, T* t = 0);
     static void Unload(T* t);
 	static void Unload(const std::string &name);
 	static void Reload(T* t);
@@ -136,7 +136,7 @@ T* ThreadedResourceManager<T,F>::Load(const std::string &name) {
 }
 
 template <typename T, typename F>
-T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t = 0) {
+T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t) {
 	LOCK_MUTEX;
 	if(!t) { t = new T(); }
 	ResourceThreadParams params(name, (void*)t, F::Lock);

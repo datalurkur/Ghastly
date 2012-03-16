@@ -49,6 +49,9 @@
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>
+#endif
+
+#if SYS_PLATFORM != PLATFORM_WIN32
 # define sprintf_s(buffer, buffer_size, stringbuffer, ...) (sprintf(buffer, stringbuffer, __VA_ARGS__))
 #endif
 

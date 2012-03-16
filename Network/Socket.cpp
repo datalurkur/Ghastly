@@ -117,8 +117,7 @@ bool Socket::setBlockingFlag(bool value) {
 	if(fcntl(_socketHandle, F_SETFL, O_NONBLOCK, nonBlock) == -1) {
 #endif
 		Error("Failed to set socket non-blocking!");
-		closesocket(_socketHandle);
-		_state = Uninitialized;
+		closeSocket();
 		return false;
 	} else {
 		return true;
@@ -171,12 +170,12 @@ unsigned short Socket::getLocalPort() {
 }
 
 bool Socket::send(const char *data, unsigned int size, const sockaddr *addr, int addrSize) {
-	unsigned int bytesSent;
+	int bytesSent;
 
     ASSERT(isOpen());
 
     SDL_LockMutex(_lock);
-	bytesSent = sendto(_socketHandle, data, size, 0, addr, addrSize);
+	bytesSent = (int)sendto(_socketHandle, data, size, 0, addr, addrSize);
     SDL_UnlockMutex(_lock);
 
 	if(bytesSent < 0) {
@@ -196,6 +195,6 @@ void Socket::recv(char *data, int &size, unsigned int maxSize, sockaddr *addr, i
     ASSERT(isOpen());
 
     SDL_LockMutex(_lock);
-	size = recvfrom(_socketHandle, data, maxSize, 0, addr, &addrSize);
+	size = (int)recvfrom(_socketHandle, data, maxSize, 0, addr, (socklen_t*)&addrSize);
     SDL_UnlockMutex(_lock);
 }

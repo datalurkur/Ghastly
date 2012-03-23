@@ -65,4 +65,6 @@ protected:
     unsigned int _outboundPackets;
 };
 
+typedef std::map<NetAddress,ConnectionBuffer*> ConnectionBufferMap;
+
 #endif

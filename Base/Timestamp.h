@@ -4,5 +4,6 @@
 #include <time.h>
 
 extern time_t GetTimestamp();
+extern clock_t GetClock();
 
 #endif

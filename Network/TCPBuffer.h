@@ -27,6 +27,4 @@ private:
 	char *_serializationBuffer;
 };
 
-typedef std::map<NetAddress,TCPBuffer*> TCPBufferMap;
-
 #endif

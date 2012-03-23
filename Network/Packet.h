@@ -7,6 +7,7 @@ struct Packet {
     NetAddress addr;
     unsigned int size;
     char *data;
+    clock_t clockStamp;
 
     Packet();
     Packet(const Packet &other);
@@ -14,6 +15,7 @@ struct Packet {
     ~Packet();
 
     const Packet& operator=(const Packet &rhs);
+    bool operator<(const Packet &rhs) const;
 
 private:
     void duplicate(const Packet &other);

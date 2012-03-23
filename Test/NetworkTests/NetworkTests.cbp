@@ -26,6 +26,8 @@
 		<Unit filename="../../Base/Base.h" />
 		<Unit filename="../../Base/Log.cpp" />
 		<Unit filename="../../Base/Log.h" />
+		<Unit filename="../../Base/Timestamp.cpp" />
+		<Unit filename="../../Base/Timestamp.h" />
 		<Unit filename="../../Network/ClientProvider.cpp" />
 		<Unit filename="../../Network/ClientProvider.h" />
 		<Unit filename="../../Network/ConnectionBuffer.cpp" />
@@ -34,6 +36,8 @@
 		<Unit filename="../../Network/ConnectionProvider.h" />
 		<Unit filename="../../Network/ListenSocket.cpp" />
 		<Unit filename="../../Network/ListenSocket.h" />
+		<Unit filename="../../Network/MultiConnectionProvider.cpp" />
+		<Unit filename="../../Network/MultiConnectionProvider.h" />
 		<Unit filename="../../Network/NetAddress.cpp" />
 		<Unit filename="../../Network/NetAddress.h" />
 		<Unit filename="../../Network/Packet.cpp" />

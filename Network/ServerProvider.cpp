@@ -11,18 +11,14 @@ ServerProvider::~ServerProvider() {
 }
 
 bool ServerProvider::sendPacket(const Packet &packet) {
-	TCPBufferMap::iterator itr = _buffers.find(packet.addr);
+	ConnectionBufferMap::iterator itr = _buffers.find(packet.addr);
 
-	if(itr == _buffers.end()) { return false; }
+	if(itr == _buffers.end()) {
+	    Warn("Unable to send packet: unknown host " << packet.addr);
+	    return false;
+    }
 
 	return itr->second->providePacket(packet);
-}
-
-bool ServerProvider::recvPacket(Packet &packet) {
-    ASSERT(0);
-    // Basically, we need a way to prioritize which buffers get read from
-	TCPBufferMap::iterator itr = _buffers.begin();
-	return itr->second->consumePacket(packet);
 }
 
 unsigned short ServerProvider::getLocalPort() {
@@ -30,7 +26,7 @@ unsigned short ServerProvider::getLocalPort() {
 }
 
 bool ServerProvider::onSocketCreation(const NetAddress &client, TCPSocket *socket) {
-	TCPBufferMap::iterator itr = _buffers.find(client);
+	ConnectionBufferMap::iterator itr = _buffers.find(client);
 
 	if(itr == _buffers.end()) {
 		// This connection already exists, kill the old one and replace it with this one

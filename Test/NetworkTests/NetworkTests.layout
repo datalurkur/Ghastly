@@ -1,44 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../../Network/ClientProvider.h" open="1" top="0" tabpos="2">
-		<Cursor position="181" topLine="0" />
+	<File name="../../Base/Base.h" open="0" top="0" tabpos="0">
+		<Cursor position="478" topLine="12" />
+	</File>
+	<File name="../../Network/ClientProvider.cpp" open="0" top="0" tabpos="9">
+		<Cursor position="279" topLine="0" />
+	</File>
+	<File name="../../Network/ClientProvider.h" open="0" top="0" tabpos="2">
+		<Cursor position="233" topLine="0" />
 	</File>
 	<File name="../../Network/ConnectionBuffer.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="2576" topLine="53" />
+		<Cursor position="2576" topLine="100" />
 	</File>
 	<File name="../../Network/ConnectionBuffer.h" open="0" top="0" tabpos="0">
-		<Cursor position="1172" topLine="38" />
+		<Cursor position="1711" topLine="41" />
 	</File>
 	<File name="../../Network/ConnectionProvider.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="515" topLine="0" />
+		<Cursor position="40" topLine="0" />
 	</File>
 	<File name="../../Network/ConnectionProvider.h" open="0" top="0" tabpos="0">
 		<Cursor position="274" topLine="0" />
+	</File>
+	<File name="../../Network/ListenSocket.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="175" topLine="6" />
+	</File>
+	<File name="../../Network/ListenSocket.h" open="0" top="0" tabpos="8">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="../../Network/MultiConnectionProvider.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="367" topLine="0" />
+	</File>
+	<File name="../../Network/MultiConnectionProvider.h" open="1" top="0" tabpos="2">
+		<Cursor position="249" topLine="0" />
 	</File>
 	<File name="../../Network/NetAddress.h" open="0" top="0" tabpos="0">
 		<Cursor position="553" topLine="7" />
 	</File>
 	<File name="../../Network/Packet.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="137" topLine="9" />
+		<Cursor position="824" topLine="20" />
 	</File>
 	<File name="../../Network/Packet.h" open="0" top="0" tabpos="0">
-		<Cursor position="370" topLine="0" />
+		<Cursor position="348" topLine="0" />
+	</File>
+	<File name="../../Network/ServerProvider.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="561" topLine="12" />
+	</File>
+	<File name="../../Network/ServerProvider.h" open="0" top="0" tabpos="11">
+		<Cursor position="374" topLine="0" />
 	</File>
 	<File name="../../Network/Socket.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="2879" topLine="96" />
+		<Cursor position="4737" topLine="174" />
 	</File>
 	<File name="../../Network/Socket.h" open="0" top="0" tabpos="0">
-		<Cursor position="651" topLine="3" />
+		<Cursor position="651" topLine="18" />
+	</File>
+	<File name="../../Network/SocketedUDPProvider.h" open="0" top="0" tabpos="0">
+		<Cursor position="428" topLine="0" />
 	</File>
 	<File name="../../Network/TCPBuffer.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="283" topLine="0" />
+		<Cursor position="1602" topLine="0" />
 	</File>
 	<File name="../../Network/TCPBuffer.h" open="0" top="0" tabpos="0">
-		<Cursor position="161" topLine="0" />
+		<Cursor position="743" topLine="4" />
 	</File>
 	<File name="../../Network/TCPSocket.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="137" topLine="0" />
+		<Cursor position="2028" topLine="52" />
 	</File>
 	<File name="../../Network/TCPSocket.h" open="0" top="0" tabpos="0">
 		<Cursor position="102" topLine="0" />
@@ -55,7 +82,7 @@
 	<File name="../../Network/UDPSocket.h" open="0" top="0" tabpos="0">
 		<Cursor position="364" topLine="0" />
 	</File>
-	<File name="NetworkTests.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="3885" topLine="143" />
+	<File name="NetworkTests.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="13066" topLine="414" />
 	</File>
 </CodeBlocks_layout_file>

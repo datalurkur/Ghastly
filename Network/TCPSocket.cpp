@@ -53,7 +53,7 @@ bool TCPSocket::connectSocket(const NetAddress &dest, unsigned short localPort) 
 
 bool TCPSocket::isConnected() {
 	int error, errorLength, ret;
-	
+
 	errorLength = sizeof(error);
 	SDL_LockMutex(_lock);
 	ret = getsockopt(_socketHandle, SOL_SOCKET, SO_ERROR, (char*)&error, (socklen_t*)&errorLength);

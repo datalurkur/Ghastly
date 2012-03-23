@@ -1,4 +1,5 @@
 #include <Network/ServerProvider.h>
+#include <Base/Assertion.h>
 
 ServerProvider::ServerProvider(unsigned short localPort) {
 	_listenSocket = new ListenSocket(this);
@@ -11,17 +12,16 @@ ServerProvider::~ServerProvider() {
 
 bool ServerProvider::sendPacket(const Packet &packet) {
 	TCPBufferMap::iterator itr = _buffers.find(packet.addr);
-	
+
 	if(itr == _buffers.end()) { return false; }
 
 	return itr->second->providePacket(packet);
 }
 
 bool ServerProvider::recvPacket(Packet &packet) {
-	TCPBufferMap::iterator itr = _buffers.find(packet.addr);
-
-	if(itr == _buffers.end()) { return false; }
-
+    ASSERT(0);
+    // Basically, we need a way to prioritize which buffers get read from
+	TCPBufferMap::iterator itr = _buffers.begin();
 	return itr->second->consumePacket(packet);
 }
 

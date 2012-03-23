@@ -49,13 +49,13 @@ void ListenSocket::doListening() {
 		sockaddr_in clientAddr;
 		socklen_t clientAddrLength;
 		int newSocketHandle;
-		
+
 		clientAddrLength = sizeof(clientAddr);
 		newSocketHandle = accept(_socketHandle, (sockaddr*)&clientAddr, &clientAddrLength);
 
 		if(newSocketHandle <= 0) {
 			// Fail gracefully and go on to processing the next connection
-			Error("ListenSocket failed to accept incoming connection");
+			//Error("ListenSocket failed to accept incoming connection");
 			continue;
 		}
 

@@ -1,6 +1,8 @@
 #include <Network/ListenSocket.h>
 #include <Network/UDPBuffer.h>
 #include <Network/TCPBuffer.h>
+#include <Network/ClientProvider.h>
+#include <Network/ServerProvider.h>
 #include <Base/Assertion.h>
 #include <Base/Log.h>
 
@@ -140,13 +142,13 @@ bool testTCP(bool blocking) {
 	buffer = (char*)calloc(bufferSize, sizeof(char));
 	clientSocket->send(stringA, (unsigned int)strlen(stringA));
 	(*connectionListener.activeSockets.begin())->recv(buffer, size, bufferSize);
-	ASSERT(size == strlen(stringA));
+	ASSERT(size == (int)strlen(stringA));
 	ASSERT(strncmp(stringA, buffer, size) == 0);
 
 	(*connectionListener.activeSockets.begin())->send(stringB, (unsigned int)strlen(stringB));
 	clientSocket->recv(buffer, size, bufferSize);
-	ASSERT(size == strlen(stringB));
-	ASSERT(strncmp(stringB, buffer, size) == 0);	
+	ASSERT(size == (int)strlen(stringB));
+	ASSERT(strncmp(stringB, buffer, size) == 0);
 	free(buffer);
 
 	delete clientSocket;
@@ -163,8 +165,6 @@ bool testTCPBuffer(unsigned int maxPackets) {
 				   serverPort;
 
 	unsigned int maxCliPacketSize, maxSrvPacketSize, clientCounter, serverCounter, stringLength, c;
-
-	Packet packet;
 
 	Info("Running TCP buffer tests");
 
@@ -198,12 +198,12 @@ bool testTCPBuffer(unsigned int maxPackets) {
     for(c=0; c<maxPackets; c++) {
         if(rand()%2==1) {
             stringLength = sprintf_s(data, maxSrvPacketSize, "%u", clientCounter);
-            clientBuffer->providePacket(Packet(serverAddr, data, stringLength));
+            ASSERT(clientBuffer->providePacket(Packet(serverAddr, data, stringLength)));
             clientCounter++;
         }
         if(rand()%2==1) {
             stringLength = sprintf_s(data, maxSrvPacketSize, "%u", serverCounter);
-            serverBuffer->providePacket(Packet(clientAddr, data, stringLength));
+            ASSERT(serverBuffer->providePacket(Packet(clientAddr, data, stringLength)));
             serverCounter++;
         }
     }
@@ -229,7 +229,54 @@ bool testTCPBuffer(unsigned int maxPackets) {
         ASSERT(stringLength == packet.size);
         ASSERT(strncmp(data, packet.data, stringLength) == 0);
     }
-    free(data);	
+    free(data);
+
+    unsigned int cliSentCounter = 0, srvSentCounter = 0, cliRecvCounter = 0, srvRecvCounter = 0;
+    data = (char*)calloc(maxSrvPacketSize, sizeof(char));
+    while(cliSentCounter < maxPackets && srvSentCounter < maxPackets && cliRecvCounter < maxPackets && srvRecvCounter < maxPackets) {
+        if(rand()%2 == 0 && cliSentCounter < maxPackets) {
+            stringLength = sprintf_s(data, maxSrvPacketSize, "%u", cliSentCounter);
+            ASSERT(clientBuffer->providePacket(Packet(serverAddr, data, stringLength)));
+            cliSentCounter++;
+        }
+        if(rand()%2 == 0 && srvSentCounter < maxPackets) {
+            stringLength = sprintf_s(data, maxSrvPacketSize, "%u", srvSentCounter);
+            ASSERT(serverBuffer->providePacket(Packet(serverAddr, data, stringLength)));
+            srvSentCounter++;
+        }
+
+        if(rand()%2 == 0 && cliRecvCounter < maxPackets) {
+            Packet packet;
+            bool ret = clientBuffer->consumePacket(packet);
+
+            if(cliRecvCounter < srvSentCounter) {
+                if(ret) {
+                    stringLength = sprintf_s(data, maxSrvPacketSize, "%u", cliRecvCounter);
+                    ASSERT(stringLength == packet.size);
+                    ASSERT(strncmp(data, packet.data, stringLength) == 0);
+                    cliRecvCounter++;
+                }
+            } else {
+                ASSERT(!ret);
+            }
+        }
+        if(rand()%2 == 0 && srvRecvCounter < maxPackets) {
+            Packet packet;
+            bool ret = serverBuffer->consumePacket(packet);
+
+            if(srvRecvCounter < cliSentCounter) {
+                if(ret) {
+                    stringLength = sprintf_s(data, maxSrvPacketSize, "%u", srvRecvCounter);
+                    ASSERT(stringLength == packet.size);
+                    ASSERT(strncmp(data, packet.data, stringLength) == 0);
+                    srvRecvCounter++;
+                }
+            } else {
+                ASSERT(!ret);
+            }
+        }
+    }
+    free(data);
 
 	serverBuffer->stopBuffering();
 	clientBuffer->stopBuffering();
@@ -345,6 +392,34 @@ bool testUDPBuffer(unsigned int maxPackets) {
     return true;
 }
 
+bool testTCPConnectionProviders() {
+    Info("Running TCPConnectionProvider tests");
+
+    ClientProvider client;
+    ServerProvider server;
+
+    NetAddress serverAddr("127.0.0.1", server.getLocalPort());
+
+    const char *messageA = "Hiya server",
+               *messageB = "Why hello, client";
+    Packet packetA(serverAddr, messageA, strlen(messageA)),
+           bufferPacket;
+
+    ASSERT(client.sendPacket(packetA));
+    sleep(1);
+    ASSERT(server.recvPacket(bufferPacket));
+    ASSERT(strncmp(bufferPacket.data, messageA, bufferPacket.size) == 0);
+
+    NetAddress clientAddr = bufferPacket.addr;
+    Packet packetB(clientAddr, messageB, strlen(messageB));
+    ASSERT(server.sendPacket(packetB));
+    sleep(1);
+    ASSERT(client.recvPacket(bufferPacket));
+    ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
+
+    return true;
+}
+
 int main(int argc, char *argv[]) {
     Log::Setup();
     Socket::InitializeSocketLayer();
@@ -353,9 +428,10 @@ int main(int argc, char *argv[]) {
     ASSERT(testUDP(false));
 	ASSERT(testTCP(true));
 	ASSERT(testTCP(false));
-    ASSERT(testPacketBuffering(2056));
-    ASSERT(testUDPBuffer(2056));
-	ASSERT(testTCPBuffer(2056));
+    ASSERT(testPacketBuffering(2^16));
+    ASSERT(testUDPBuffer(2^16));
+	ASSERT(testTCPBuffer(2^16));
+	//ASSERT(testTCPConnectionProviders());
 
     Socket::ShutdownSocketLayer();
 	Log::Teardown();

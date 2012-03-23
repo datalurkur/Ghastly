@@ -71,18 +71,16 @@ void TCPBuffer::doInboundBuffering() {
 }
 
 void TCPBuffer::doOutboundBuffering() {
-    bool ret = false;
     Packet packet;
 	int serializedSize;
-	
+
 	Debug("Waiting for TCPSocket to connect before starting outbound buffering");
 	while(!getSocket()->isConnected()) { sleep(1); }
 
 	Debug("Entering TCPBuffer outbound packet buffering loop");
     while(true) {
         SDL_LockMutex(_outboundQueueLock);
-        ret = _outbound.empty();
-        if(!ret) {
+        if(!_outbound.empty()) {
             // Pop the next outgoing packet off the queue
             packet = _outbound.front();
             _outbound.pop();

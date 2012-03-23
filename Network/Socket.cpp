@@ -181,7 +181,7 @@ bool Socket::send(const char *data, unsigned int size, const sockaddr *addr, int
 	if(bytesSent < 0) {
 		Error("Failed to write to socket");
 		return false;
-	} else if(bytesSent != size) {
+	} else if(bytesSent != (int)size) {
 		Error("Bytes sent does not match bytes given: " << bytesSent << "/" << size);
 		return false;
 	} else {

@@ -15,7 +15,7 @@ public:
     virtual bool sendPacket(const Packet &packet) = 0;
 	virtual bool recvPacket(Packet &packet) = 0;
 
-	unsigned int dispatchIncomingPackets(unsigned int maxPackets);
+	unsigned int dispatchIncomingPackets(unsigned int maxPackets = 0);
 	void registerIncomingPacketListener(PacketListener *listener);
 
 private:

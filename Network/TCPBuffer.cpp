@@ -30,7 +30,8 @@ void TCPBuffer::stopBuffering() {
 
 void TCPBuffer::doInboundBuffering() {
     int totalBufferSize, currentOffset,
-		packetSize, dataSize;
+		packetSize;
+	unsigned int dataSize;
 	char *dataBuffer;
 	char *currentPacket;
 
@@ -88,7 +89,7 @@ void TCPBuffer::doOutboundBuffering() {
             // TODO - This is where we'd sleep the thread when throttling bandwidth
 
             // Send the next outgoing packet to the socket
-			serializedSize = tcpSerialize(_serializationBuffer, packet.data, packet.size, _maxPacketSize);
+			serializedSize = tcpSerialize(_serializationBuffer, packet.data, (unsigned int)packet.size, _maxPacketSize);
             getSocket()->send(_serializationBuffer, serializedSize);
             _sentPackets++;
         }
@@ -96,20 +97,20 @@ void TCPBuffer::doOutboundBuffering() {
     }
 }
 
-int TCPBuffer::tcpSerialize(char *dest, const char *src, int size, int maxSize) {
-	int totalSize = sizeof(int) + size;
+int TCPBuffer::tcpSerialize(char *dest, const char *src, unsigned int size, unsigned int maxSize) {
+	uint32_t totalSize = sizeof(uint32_t) + size;
 
 	ASSERT(totalSize <= maxSize);
-	((int*)dest)[0] = totalSize;
+	((uint32_t*)dest)[0] = totalSize;
 
-	memcpy((void*)(dest + sizeof(int)), (void*)src, size);
+	memcpy((void*)(dest + sizeof(uint32_t)), (void*)src, size);
 
 	return totalSize;
 }
 
-int TCPBuffer::tcpDeserialize(const char *srcData, char **data, int &size) {
-	size = ((int*)srcData)[0] - sizeof(int);
-	*data = (char*)(srcData + sizeof(int));
+int TCPBuffer::tcpDeserialize(const char *srcData, char **data, unsigned int &size) {
+	size = ((uint32_t*)srcData)[0] - sizeof(uint32_t);
+	*data = (char*)(srcData + sizeof(uint32_t));
 
 	return sizeof(int) + size;
 }

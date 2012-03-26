@@ -16,8 +16,8 @@ public:
     void doInboundBuffering();
 	void doOutboundBuffering();
 
-	int tcpSerialize(char *dest, const char *src, int size, int maxSize);
-	int tcpDeserialize(const char *srcData, char **data, int &size);
+	int tcpSerialize(char *dest, const char *src, unsigned int size, unsigned int maxSize);
+	int tcpDeserialize(const char *srcData, char **data, unsigned int &size);
 
 private:
 	// Make sure the Socket* is properly cast so the correct functions get called

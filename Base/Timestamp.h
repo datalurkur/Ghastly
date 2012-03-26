@@ -5,5 +5,6 @@
 
 extern time_t GetTimestamp();
 extern clock_t GetClock();
+extern double ClocksToSeconds(clock_t clocks);
 
 #endif

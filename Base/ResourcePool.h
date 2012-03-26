@@ -3,6 +3,7 @@
 
 #include <Base/Base.h>
 #include <Base/Log.h>
+#include <Base/Assertion.h>
 
 template <typename T>
 class ResourcePool {
@@ -35,7 +36,6 @@ template <typename T>
 ResourcePool<T>::ResourcePool(const unsigned int capacity):
     _capacity(0), _nodes(0)
 {
-    Info("Capacity is " << _capacity);
     reallocate(capacity);
 }
 
@@ -58,7 +58,6 @@ T* ResourcePool<T>::allocate() {
 
 template <typename T>
 void ResourcePool<T>::free(T* t) {
-    //memset(t, 0, sizeof(T));
     _freeNodes.push(t);
 }
 
@@ -67,7 +66,6 @@ void ResourcePool<T>::reallocate(const unsigned int capacity) {
     ASSERT(capacity > _capacity);
 
     _nodes = (T*)realloc((void*)_nodes, sizeof(T) * capacity);
-    //memset(&_nodes[capacity], 0, sizeof(T) * (capacity - _capacity));
     for(unsigned int i=_capacity; i<capacity; i++) {
         _freeNodes.push(&_nodes[i]);
     }

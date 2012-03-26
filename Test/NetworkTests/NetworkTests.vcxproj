@@ -74,6 +74,10 @@
     <ClCompile Include="..\..\Network\ClientProvider.cpp" />
     <ClCompile Include="..\..\Network\ConnectionBuffer.cpp" />
     <ClCompile Include="..\..\Network\ConnectionProvider.cpp" />
+    <ClCompile Include="..\..\Network\GhastlyClient.cpp" />
+    <ClCompile Include="..\..\Network\GhastlyHost.cpp" />
+    <ClCompile Include="..\..\Network\GhastlyProtocol.cpp" />
+    <ClCompile Include="..\..\Network\GhastlyServer.cpp" />
     <ClCompile Include="..\..\Network\ListenSocket.cpp" />
     <ClCompile Include="..\..\Network\MultiConnectionProvider.cpp" />
     <ClCompile Include="..\..\Network\NetAddress.cpp" />
@@ -96,6 +100,10 @@
     <ClInclude Include="..\..\Network\ClientProvider.h" />
     <ClInclude Include="..\..\Network\ConnectionBuffer.h" />
     <ClInclude Include="..\..\Network\ConnectionProvider.h" />
+    <ClInclude Include="..\..\Network\GhastlyClient.h" />
+    <ClInclude Include="..\..\Network\GhastlyHost.h" />
+    <ClInclude Include="..\..\Network\GhastlyProtocol.h" />
+    <ClInclude Include="..\..\Network\GhastlyServer.h" />
     <ClInclude Include="..\..\Network\ListenSocket.h" />
     <ClInclude Include="..\..\Network\MultiConnectionProvider.h" />
     <ClInclude Include="..\..\Network\NetAddress.h" />

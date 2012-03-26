@@ -1,12 +1,12 @@
 #include <Network/TCPBuffer.h>
 #include <Base/Assertion.h>
 
-TCPBuffer::TCPBuffer(const NetAddress &dest, unsigned short localPort): _serializationBuffer(0) {
+TCPBuffer::TCPBuffer(const NetAddress &dest, unsigned short localPort): _serializationBuffer(0), _dest(dest) {
     _socket = new TCPSocket();
     getSocket()->connectSocket(dest, localPort);
 }
 
-TCPBuffer::TCPBuffer(TCPSocket *establishedSocket): _serializationBuffer(0) {
+TCPBuffer::TCPBuffer(const NetAddress &dest, TCPSocket *establishedSocket): _serializationBuffer(0), _dest(dest) {
 	_socket = establishedSocket;
 }
 
@@ -33,7 +33,6 @@ void TCPBuffer::doInboundBuffering() {
 		packetSize, dataSize;
 	char *dataBuffer;
 	char *currentPacket;
-    NetAddress addr;
 
 	Debug("Waiting for TCPSocket to connect before starting inbound buffering");
 	while(!getSocket()->isConnected()) { sleep(1); }
@@ -54,7 +53,7 @@ void TCPBuffer::doInboundBuffering() {
             _receivedPackets++;
 
             // Push the incoming packet onto the queue
-            _inbound.push(Packet(addr, dataBuffer, dataSize));
+            _inbound.push(Packet(_dest, dataBuffer, dataSize));
             if(_inbound.size() > _maxBufferSize) {
                 _inbound.pop();
                 SDL_LockMutex(_outboundQueueLock);

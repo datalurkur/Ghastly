@@ -31,7 +31,8 @@ const Packet& Packet::operator=(const Packet &rhs) {
 }
 
 bool Packet::operator<(const Packet &rhs) const {
-    return (clockStamp < rhs.clockStamp);
+	// We want the packet with the oldest (lowest) timestamp to have the greatest (highest) priority
+    return (clockStamp > rhs.clockStamp);
 }
 
 void Packet::duplicate(const Packet &other) {

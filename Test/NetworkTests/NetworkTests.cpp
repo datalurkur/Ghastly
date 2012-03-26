@@ -8,24 +8,26 @@
 
 class SimpleConnectionListener: public SocketCreationListener {
 public:
-	SimpleConnectionListener(bool cleanup = true): _cleanup(cleanup) {}
+	SimpleConnectionListener(bool cleanup = true): _cleanup(cleanup), socket(0) {}
 
 	~SimpleConnectionListener() {
-		if(_cleanup) {
-			std::list<TCPSocket *>::iterator itr;
-			for(itr = activeSockets.begin(); itr != activeSockets.end(); itr++) {
-				delete *itr;
-			}
+		if(_cleanup && socket) {
+			delete socket;
 		}
-		activeSockets.clear();
 	}
 
-	bool onSocketCreation(const NetAddress &client, TCPSocket *socket) {
-		activeSockets.push_back(socket);
-		return true;
+	bool onSocketCreation(const NetAddress &client, TCPSocket *newSocket) {
+		if(socket) {
+			return false;
+		} else {
+			addr = client;
+			socket = newSocket;
+			return true;
+		}
 	}
 
-	std::list<TCPSocket *> activeSockets;
+	NetAddress addr;
+	TCPSocket *socket;
 
 private:
 	bool _cleanup;
@@ -137,15 +139,15 @@ bool testTCP(bool blocking) {
 	}
 
 	sleep(1);
-	ASSERT(connectionListener.activeSockets.size() > 0);
+	ASSERT(connectionListener.socket);
 
 	buffer = (char*)calloc(bufferSize, sizeof(char));
 	clientSocket->send(stringA, (unsigned int)strlen(stringA));
-	(*connectionListener.activeSockets.begin())->recv(buffer, size, bufferSize);
+	(connectionListener.socket)->recv(buffer, size, bufferSize);
 	ASSERT(size == (int)strlen(stringA));
 	ASSERT(strncmp(stringA, buffer, size) == 0);
 
-	(*connectionListener.activeSockets.begin())->send(stringB, (unsigned int)strlen(stringB));
+	(connectionListener.socket)->send(stringB, (unsigned int)strlen(stringB));
 	clientSocket->recv(buffer, size, bufferSize);
 	ASSERT(size == (int)strlen(stringB));
 	ASSERT(strncmp(stringB, buffer, size) == 0);
@@ -179,9 +181,9 @@ bool testTCPBuffer(unsigned int maxPackets) {
 	clientPort = clientBuffer->getLocalPort();
 	NetAddress clientAddr("127.0.0.1", clientPort);
 	sleep(1);
-	ASSERT(connectionListener.activeSockets.size() > 0);
+	ASSERT(connectionListener.socket);
 
-	serverBuffer = new TCPBuffer(*connectionListener.activeSockets.begin());
+	serverBuffer = new TCPBuffer(connectionListener.addr, connectionListener.socket);
 
 	serverBuffer->stopBuffering();
 	clientBuffer->stopBuffering();
@@ -431,7 +433,7 @@ int main(int argc, char *argv[]) {
     ASSERT(testPacketBuffering(2^16));
     ASSERT(testUDPBuffer(2^16));
 	ASSERT(testTCPBuffer(2^16));
-	//ASSERT(testTCPConnectionProviders());
+	ASSERT(testTCPConnectionProviders());
 
     Socket::ShutdownSocketLayer();
 	Log::Teardown();

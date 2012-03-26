@@ -63,6 +63,9 @@
     <ClCompile Include="..\..\Network\SocketedUDPProvider.cpp">
       <Filter>Ghastly\Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Network\MultiConnectionProvider.cpp">
+      <Filter>Ghastly\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Network\ConnectionBuffer.h">
@@ -117,6 +120,9 @@
       <Filter>Ghastly\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Network\SocketedUDPProvider.h">
+      <Filter>Ghastly\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Network\MultiConnectionProvider.h">
       <Filter>Ghastly\Network</Filter>
     </ClInclude>
   </ItemGroup>

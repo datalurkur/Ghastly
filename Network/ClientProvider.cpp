@@ -1,9 +1,14 @@
 #include <Network/ClientProvider.h>
 
 bool ClientProvider::sendPacket(const Packet &packet) {
+	TCPBuffer *buffer;
 	ConnectionBufferMap::iterator itr = _buffers.find(packet.addr);
 	if(itr == _buffers.end()) {
-		itr->second = new TCPBuffer(packet.addr);
+		buffer = new TCPBuffer(packet.addr);
+		buffer->startBuffering();
+		_buffers[packet.addr] = buffer;
+	} else {
+		buffer = (TCPBuffer*)itr->second;
 	}
-	return itr->second->providePacket(packet);
+	return buffer->providePacket(packet);
 }

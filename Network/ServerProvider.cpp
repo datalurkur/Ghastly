@@ -28,12 +28,13 @@ unsigned short ServerProvider::getLocalPort() {
 bool ServerProvider::onSocketCreation(const NetAddress &client, TCPSocket *socket) {
 	ConnectionBufferMap::iterator itr = _buffers.find(client);
 
-	if(itr == _buffers.end()) {
+	if(itr != _buffers.end()) {
 		// This connection already exists, kill the old one and replace it with this one
 		delete itr->second;
 		_buffers.erase(itr);
 	}
 
-	_buffers[client] = new TCPBuffer(socket);
+	_buffers[client] = new TCPBuffer(client, socket);
+	((TCPBuffer*)_buffers[client])->startBuffering();
 	return true;
 }

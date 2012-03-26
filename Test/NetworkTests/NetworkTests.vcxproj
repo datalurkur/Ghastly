@@ -75,6 +75,7 @@
     <ClCompile Include="..\..\Network\ConnectionBuffer.cpp" />
     <ClCompile Include="..\..\Network\ConnectionProvider.cpp" />
     <ClCompile Include="..\..\Network\ListenSocket.cpp" />
+    <ClCompile Include="..\..\Network\MultiConnectionProvider.cpp" />
     <ClCompile Include="..\..\Network\NetAddress.cpp" />
     <ClCompile Include="..\..\Network\Packet.cpp" />
     <ClCompile Include="..\..\Network\ServerProvider.cpp" />
@@ -96,6 +97,7 @@
     <ClInclude Include="..\..\Network\ConnectionBuffer.h" />
     <ClInclude Include="..\..\Network\ConnectionProvider.h" />
     <ClInclude Include="..\..\Network\ListenSocket.h" />
+    <ClInclude Include="..\..\Network\MultiConnectionProvider.h" />
     <ClInclude Include="..\..\Network\NetAddress.h" />
     <ClInclude Include="..\..\Network\Packet.h" />
     <ClInclude Include="..\..\Network\ServerProvider.h" />

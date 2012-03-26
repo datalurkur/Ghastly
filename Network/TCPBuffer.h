@@ -7,7 +7,7 @@
 class TCPBuffer: public ConnectionBuffer {
 public:
     TCPBuffer(const NetAddress &dest, unsigned short localPort = 0);
-	TCPBuffer(TCPSocket *establishedSocket);
+	TCPBuffer(const NetAddress &dest, TCPSocket *establishedSocket);
     virtual ~TCPBuffer();
 
 	void startBuffering();
@@ -25,6 +25,7 @@ private:
 
 private:
 	char *_serializationBuffer;
+	NetAddress _dest;
 };
 
 #endif

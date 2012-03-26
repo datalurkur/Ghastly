@@ -1,6 +1,7 @@
 #ifndef PACKET_H
 #define PACKET_H
 
+#include <Base/Timestamp.h>
 #include <Network/NetAddress.h>
 
 struct Packet {

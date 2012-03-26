@@ -6,6 +6,8 @@
 
 class ClientProvider: public MultiConnectionProvider {
 public:
+	~ClientProvider();
+
     bool sendPacket(const Packet &packet);
 };
 

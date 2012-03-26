@@ -2,9 +2,11 @@
 
 SimpleUDPProvider::SimpleUDPProvider(unsigned short localPort) {
 	_buffer = new UDPBuffer(localPort);
+	_buffer->startBuffering();
 }
 
 SimpleUDPProvider::~SimpleUDPProvider() {
+	_buffer->stopBuffering();
 	delete _buffer;
 }
 

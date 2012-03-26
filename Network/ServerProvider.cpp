@@ -8,6 +8,14 @@ ServerProvider::ServerProvider(unsigned short localPort) {
 
 ServerProvider::~ServerProvider() {
 	delete _listenSocket;
+
+	ConnectionBufferMap::iterator itr;
+	TCPBuffer *buffer;
+	for(itr = _buffers.begin(); itr != _buffers.end(); itr++) {
+		buffer = (TCPBuffer*)itr->second;
+		buffer->stopBuffering();
+		delete buffer;
+	}
 }
 
 bool ServerProvider::sendPacket(const Packet &packet) {

@@ -3,6 +3,7 @@
 #include <Network/TCPBuffer.h>
 #include <Network/ClientProvider.h>
 #include <Network/ServerProvider.h>
+#include <Network/SimpleUDPProvider.h>
 #include <Base/Assertion.h>
 #include <Base/Log.h>
 
@@ -33,7 +34,7 @@ private:
 	bool _cleanup;
 };
 
-bool testUDP(bool blocking) {
+void testUDP(bool blocking) {
     unsigned short portA, portB;
     UDPSocket *socketA, *socketB;
     bool ret;
@@ -91,11 +92,9 @@ bool testUDP(bool blocking) {
 
     delete socketA;
     delete socketB;
-
-    return true;
 }
 
-bool testTCP(bool blocking) {
+void testTCP(bool blocking) {
 	TCPSocket *clientSocket;
 	ListenSocket *listenSocket;
 
@@ -155,11 +154,9 @@ bool testTCP(bool blocking) {
 
 	delete clientSocket;
 	delete listenSocket;
-
-	return true;
 }
 
-bool testTCPBuffer(unsigned int maxPackets) {
+void testTCPBuffer(unsigned int maxPackets) {
 	ListenSocket *listenSocket;
 	TCPBuffer *clientBuffer, *serverBuffer;
 
@@ -286,11 +283,9 @@ bool testTCPBuffer(unsigned int maxPackets) {
 	delete clientBuffer;
 	delete serverBuffer;
 	delete listenSocket;
-
-	return true;
 }
 
-bool testPacketBuffering(unsigned int maxPackets) {
+void testPacketBuffering(unsigned int maxPackets) {
     std::queue<Packet> buffer;
     unsigned int c, size, bufferSize;
     Packet packet;
@@ -317,11 +312,9 @@ bool testPacketBuffering(unsigned int maxPackets) {
     }
 
 	free(dataBuffer);
-
-    return true;
 }
 
-bool testUDPBuffer(unsigned int maxPackets) {
+void testUDPBuffer(unsigned int maxPackets) {
     UDPBuffer *server, *client;
     unsigned short serverPort;
     unsigned int clientCounter, serverCounter, maxCliPacketSize, maxSrvPacketSize, c, stringLength;
@@ -390,11 +383,9 @@ bool testUDPBuffer(unsigned int maxPackets) {
 
     delete client;
     delete server;
-
-    return true;
 }
 
-bool testTCPConnectionProviders() {
+void testTCPConnectionProviders() {
     Info("Running TCPConnectionProvider tests");
 
     ClientProvider client;
@@ -404,36 +395,56 @@ bool testTCPConnectionProviders() {
 
     const char *messageA = "Hiya server",
                *messageB = "Why hello, client";
-    Packet packetA(serverAddr, messageA, strlen(messageA)),
-           bufferPacket;
+    Packet bufferPacket;
 
-    ASSERT(client.sendPacket(packetA));
+    ASSERT(client.sendPacket(Packet(serverAddr, messageA, strlen(messageA))));
     sleep(1);
     ASSERT(server.recvPacket(bufferPacket));
     ASSERT(strncmp(bufferPacket.data, messageA, bufferPacket.size) == 0);
 
     NetAddress clientAddr = bufferPacket.addr;
-    Packet packetB(clientAddr, messageB, strlen(messageB));
-    ASSERT(server.sendPacket(packetB));
+    ASSERT(server.sendPacket(Packet(clientAddr, messageB, strlen(messageB))));
     sleep(1);
     ASSERT(client.recvPacket(bufferPacket));
     ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
+}
 
-    return true;
+void testUDPConnectionProviders() {
+	Info("Running UDPConnectionProvider tests");
+
+	SimpleUDPProvider client, server;
+
+	NetAddress clientAddr("127.0.0.1", client.getLocalPort()),
+			   serverAddr("127.0.0.1", server.getLocalPort());
+
+	const char *messageA = "Hiya server",
+			   *messageB = "Why hello, client";
+	Packet bufferPacket;
+
+	ASSERT(client.sendPacket(Packet(serverAddr, messageA, strlen(messageA))));
+	sleep(1);
+	ASSERT(server.recvPacket(bufferPacket));
+	ASSERT(strncmp(bufferPacket.data, messageA, bufferPacket.size) == 0);
+
+	ASSERT(server.sendPacket(Packet(clientAddr, messageB, strlen(messageB))));
+	sleep(1);
+	ASSERT(client.recvPacket(bufferPacket));
+	ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
 }
 
 int main(int argc, char *argv[]) {
     Log::Setup();
     Socket::InitializeSocketLayer();
 
-    ASSERT(testUDP(true));
-    ASSERT(testUDP(false));
-	ASSERT(testTCP(true));
-	ASSERT(testTCP(false));
-    ASSERT(testPacketBuffering(2^16));
-    ASSERT(testUDPBuffer(2^16));
-	ASSERT(testTCPBuffer(2^16));
-	ASSERT(testTCPConnectionProviders());
+    testUDP(true);
+    testUDP(false);
+	testTCP(true);
+	testTCP(false);
+    testPacketBuffering(2^16);
+    testUDPBuffer(2^16);
+	testTCPBuffer(2^16);
+	testTCPConnectionProviders();
+	testUDPConnectionProviders();
 
     Socket::ShutdownSocketLayer();
 	Log::Teardown();

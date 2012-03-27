@@ -11,7 +11,7 @@
 
 class SimpleConnectionListener: public SocketCreationListener {
 public:
-	SimpleConnectionListener(bool cleanup = true): _cleanup(cleanup), socket(0) {}
+	SimpleConnectionListener(bool cleanup = true): socket(0), _cleanup(cleanup) {}
 
 	~SimpleConnectionListener() {
 		if(_cleanup && socket) {

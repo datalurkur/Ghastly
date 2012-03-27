@@ -10,13 +10,11 @@
 */
 namespace GhastlyProtocol {
 	typedef uint8_t PayloadType;
-	typedef uint16_t PayloadSize;
 	
 	struct Payload {
 		PayloadType type;
-		PayloadSize size;
 
-		Payload(PayloadType t, PayloadSize s = sizeof(Payload)): type(t), size(s) {}
+		Payload(PayloadType t): type(t) {}
 	};
 
 	/*
@@ -24,6 +22,10 @@ namespace GhastlyProtocol {
 		Every host in the Ghastly Network model has a HostID which must be assigned it by the server.  This ID is acquired with the following exchange:
 		-> Host ID Request (no payload)
 		<- Host ID Assign  (Host ID)
+
+		In the event that the server is full, the server responds instead with a Host Reject packet
+		-> Host ID Request (no payload)
+		<- Host Reject (no payload)
 	*/
 	const PayloadType IDRequestType = 1;
 	struct IDRequest: public Payload {
@@ -31,11 +33,16 @@ namespace GhastlyProtocol {
 	};
 
 	const PayloadType IDAssignType = 2;
-	typedef uint16_t HostID;
+	typedef int16_t HostID;
 	struct IDAssign: public Payload {
 		HostID id;
 
-		IDAssign(HostID i): Payload(IDAssignType, sizeof(IDAssign)), id(i) {}
+		IDAssign(HostID i): Payload(IDAssignType), id(i) {}
+	};
+
+	const PayloadType HostRejectType = 3;
+	struct HostReject: public Payload {
+		HostReject(): Payload(HostRejectType) {}
 	};
 
 	/*
@@ -44,7 +51,7 @@ namespace GhastlyProtocol {
 		-> Disconnect (no payload)
 		The server need not respond to this, and can now reclaim that host's ID
 	*/
-	const PayloadType DisconnectType = 3;
+	const PayloadType DisconnectType = 4;
 	struct Disconnect: public Payload {
 		Disconnect(): Payload(DisconnectType) {}
 	};
@@ -56,10 +63,6 @@ namespace GhastlyProtocol {
 		<- Ping Response (client timestamp, server timestamp)
 		-> Ping Done     (server timestamp)
 	*/
-
-	struct GhastlyPacket: public Packet {
-		inline GhastlyPacket(const NetAddress &addr, const Payload &payload): Packet(addr, (char*)&payload, payload.size) {}
-	};
 }
 
 #endif

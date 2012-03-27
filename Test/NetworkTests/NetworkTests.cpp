@@ -4,6 +4,8 @@
 #include <Network/ClientProvider.h>
 #include <Network/ServerProvider.h>
 #include <Network/SimpleUDPProvider.h>
+#include <Network/GhastlyClient.h>
+#include <Network/GhastlyServer.h>
 #include <Base/Assertion.h>
 #include <Base/Log.h>
 
@@ -432,6 +434,53 @@ void testUDPConnectionProviders() {
 	ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
 }
 
+void testGhastlyProtocolSetup() {
+	Info("Running Ghastly protocol setup tests");
+
+	GhastlyClient *client_1, *client_2;
+	GhastlyServer *server;
+
+	server = new GhastlyServer(1);
+	client_1 = new GhastlyClient();
+	client_2 = new GhastlyClient();
+
+	NetAddress serverAddr("127.0.0.1", server->getLocalPort());
+
+ 	client_1->connect(serverAddr);
+	sleep(1);
+	server->update(1);
+	sleep(1);
+	client_1->update(1);
+	ASSERT(client_1->getState() == GhastlyClient::READY);
+
+	client_2->connect(serverAddr);
+	sleep(1);
+	server->update(1);
+	sleep(1);
+	client_2->update(1);
+	ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
+
+	client_1->disconnect();
+	sleep(1);
+	server->update(1);
+	ASSERT(client_1->getState() == GhastlyClient::NOT_CONNECTED);
+	delete client_1;
+
+	client_2->connect(serverAddr);
+	sleep(1);
+	server->update(1);
+	sleep(1);
+	client_2->update(1);
+	ASSERT(client_2->getState() == GhastlyClient::READY);
+
+	delete server;
+	sleep(1);
+	client_2->update(1);
+	ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
+
+	delete client_2;
+}
+
 int main(int argc, char *argv[]) {
     Log::Setup();
     Socket::InitializeSocketLayer();
@@ -445,6 +494,7 @@ int main(int argc, char *argv[]) {
 	testTCPBuffer(2^16);
 	testTCPConnectionProviders();
 	testUDPConnectionProviders();
+	testGhastlyProtocolSetup();
 
     Socket::ShutdownSocketLayer();
 	Log::Teardown();

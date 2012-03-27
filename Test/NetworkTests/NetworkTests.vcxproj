@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Base\IndexPool.cpp" />
     <ClCompile Include="..\..\Base\Log.cpp" />
     <ClCompile Include="..\..\Base\Timestamp.cpp" />
     <ClCompile Include="..\..\Network\ClientProvider.cpp" />
@@ -95,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Base\Assertion.h" />
     <ClInclude Include="..\..\Base\Base.h" />
+    <ClInclude Include="..\..\Base\IndexPool.h" />
     <ClInclude Include="..\..\Base\Log.h" />
     <ClInclude Include="..\..\Base\Timestamp.h" />
     <ClInclude Include="..\..\Network\ClientProvider.h" />

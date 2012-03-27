@@ -90,6 +90,9 @@
     <ClCompile Include="..\..\Network\GhastlyHost.cpp">
       <Filter>Ghastly\Network\Ghastly</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Base\IndexPool.cpp">
+      <Filter>Ghastly\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Network\NetAddress.h">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Network\GhastlyHost.h">
       <Filter>Ghastly\Network\Ghastly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\IndexPool.h">
+      <Filter>Ghastly\Base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

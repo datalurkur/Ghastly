@@ -8,6 +8,9 @@ unsigned int ConnectionProvider::dispatchIncomingPackets(unsigned int maxPackets
 	unsigned int c;
 	Packet packet;
 
+	if(!_listener) { return 0; }
+
+	c = 0;
 	while(recvPacket(packet) && (maxPackets == 0 || maxPackets > c++)) {
 		_listener->onPacketReceive(packet);
 	}

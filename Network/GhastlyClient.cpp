@@ -1,7 +1,9 @@
 #include <Network/GhastlyClient.h>
 #include <Base/Assertion.h>
 
-GhastlyClient::GhastlyClient(): GhastlyHost(ID_UNASSIGNED), _state(NOT_CONNECTED) {}
+GhastlyClient::GhastlyClient(): GhastlyHost(ID_UNASSIGNED), _state(NOT_CONNECTED) {
+	registerIncomingPacketListener(this);
+}
 
 GhastlyClient::~GhastlyClient() {
 	disconnect();
@@ -18,9 +20,10 @@ void GhastlyClient::update(int elapsed) {
 	//case NOT_CONNECTED:
 	//	break;
 	case AWAITING_ID:
-		sendPacket(GhastlyPacket(_server, IDRequest()));
+		sendPacket(Packet(_server, (char*)&IDRequest(), sizeof(IDRequest)));
 		break;
 	case AWAITING_DATA:
+		_state = READY;
 		break;
 	//case READY:
 	//	break;
@@ -35,11 +38,20 @@ void GhastlyClient::onPacketReceive(const Packet &packet) {
 	switch(payload->type) {
 	case IDAssignType:
 		if(_state == AWAITING_ID) {
-			_id = ((IDAssign*)payload)->type;
-			_state = AWAITING_DATA;
+			_id = ((IDAssign*)payload)->id;
+			//_state = AWAITING_DATA;
+			_state = READY;
 			Info("Got ID " << _id << " from server");
 		} else {
 			Warn("Already had ID " << _id << " but got id " << ((IDAssign*)payload)->type << " from server");
+		}
+		break;
+	case HostRejectType:
+		if(_state == AWAITING_ID) {
+			_state = NOT_CONNECTED;
+			Info("Server is full");
+		} else {
+			Warn("Received an unexpected HostReject message");
 		}
 		break;
 	case DisconnectType:
@@ -59,13 +71,13 @@ void GhastlyClient::connect(const NetAddress &addr) {
 	if(_state == NOT_CONNECTED) {
 		_server = addr;
 		_state  = AWAITING_ID;
-		sendPacket(GhastlyPacket(_server, IDRequest()));
+		sendPacket(Packet(_server, (char*)&IDRequest(), sizeof(IDRequest)));
 	}
 }
 
 void GhastlyClient::disconnect() {
 	if(_state != NOT_CONNECTED) {
-		sendPacket(GhastlyPacket(_server, Disconnect()));
+		sendPacket(Packet(_server, (char*)&Disconnect(), sizeof(Disconnect)));
 		_state = NOT_CONNECTED;
 	}
 }

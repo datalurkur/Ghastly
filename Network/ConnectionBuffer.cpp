@@ -35,19 +35,16 @@ ConnectionBuffer::~ConnectionBuffer() {
 
 void ConnectionBuffer::startBuffering() {
     if(!_inboundThread) {
-        Debug("Inbound packet buffering begins");
         _packetBuffer = (char*)calloc(_maxPacketSize, sizeof(char));
         _inboundThread = SDL_CreateThread(InvokeInboundConnectionBufferThreadFunction, (void*)this);
     }
     if(!_outboundThread) {
-        Debug("Outbound packet buffering begins");
         _outboundThread = SDL_CreateThread(InvokeOutboundConnectionBufferThreadFunction, (void*)this);
     }
 }
 
 void ConnectionBuffer::stopBuffering() {
     if(_inboundThread) {
-        Debug("Inbound packet buffering ends");
         SDL_LockMutex(_inboundQueueLock);
         SDL_KillThread(_inboundThread);
         SDL_UnlockMutex(_inboundQueueLock);
@@ -57,7 +54,6 @@ void ConnectionBuffer::stopBuffering() {
         _packetBuffer = 0;
     }
     if(_outboundThread) {
-        Debug("Outbound packet buffering ends");
         SDL_LockMutex(_outboundQueueLock);
         SDL_KillThread(_outboundThread);
         SDL_UnlockMutex(_outboundQueueLock);

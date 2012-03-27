@@ -2,7 +2,6 @@
 #include <Base/Assertion.h>
 
 GhastlyClient::GhastlyClient(): GhastlyHost(ID_UNASSIGNED), _state(NOT_CONNECTED) {
-	registerIncomingPacketListener(this);
 }
 
 GhastlyClient::~GhastlyClient() {
@@ -14,14 +13,19 @@ ClientState GhastlyClient::getState() const {
 }
 
 void GhastlyClient::update(int elapsed) {
-	dispatchIncomingPackets();
+	Packet packet;
+	while(recvPacket(packet)) {
+        onPacketReceive(packet);
+	}
 
 	switch(_state) {
 	//case NOT_CONNECTED:
 	//	break;
-	case AWAITING_ID:
-		sendPacket(Packet(_server, (char*)&IDRequest(), sizeof(IDRequest)));
+	case AWAITING_ID: {
+        IDRequest idreq;
+		sendPacket(Packet(_server, (char*)&idreq, sizeof(idreq)));
 		break;
+	}
 	case AWAITING_DATA:
 		_state = READY;
 		break;
@@ -71,13 +75,15 @@ void GhastlyClient::connect(const NetAddress &addr) {
 	if(_state == NOT_CONNECTED) {
 		_server = addr;
 		_state  = AWAITING_ID;
-		sendPacket(Packet(_server, (char*)&IDRequest(), sizeof(IDRequest)));
+		IDRequest idReq;
+		sendPacket(Packet(_server, (char*)&idReq, sizeof(idReq)));
 	}
 }
 
 void GhastlyClient::disconnect() {
 	if(_state != NOT_CONNECTED) {
-		sendPacket(Packet(_server, (char*)&Disconnect(), sizeof(Disconnect)));
+	    Disconnect dc;
+		sendPacket(Packet(_server, (char*)&dc, sizeof(dc)));
 		_state = NOT_CONNECTED;
 	}
 }

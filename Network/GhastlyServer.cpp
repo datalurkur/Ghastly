@@ -18,21 +18,24 @@ void GhastlyHostInfo::copy(const GhastlyHostInfo &other) {
 
 GhastlyServer::GhastlyServer(unsigned int maxClients): GhastlyHost(ID_SERVER), _maxClients(maxClients) {
 	_idPool = new IndexPool(maxClients);
-	registerIncomingPacketListener(this);
 }
 
 GhastlyServer::~GhastlyServer() {
 	// Send disconnect messages to all the clients before tearing down
 	HostMap::iterator itr;
 	for(itr = _hostMap.begin(); itr != _hostMap.end(); itr++) {
-		sendPacket(Packet(itr->second.addr, (char*)&Disconnect(), sizeof(Disconnect)));
+	    Disconnect dc;
+		sendPacket(Packet(itr->second.addr, (char*)&dc, sizeof(dc)));
 	}
 
 	delete _idPool;
 }
 
 void GhastlyServer::update(int elapsed) {
-	dispatchIncomingPackets();
+	Packet packet;
+	while(recvPacket(packet)) {
+        onPacketReceive(packet);
+	}
 }
 
 void GhastlyServer::onPacketReceive(const Packet &packet) {
@@ -41,11 +44,15 @@ void GhastlyServer::onPacketReceive(const Packet &packet) {
 	case IDRequestType: {
 		HostID assignID = (HostID)_idPool->allocate();
 		if(assignID == -1) {
+		    HostReject reject;
+
 			Warn("All IDs allocated, client " << packet.addr << " will be rejected");
-			sendPacket(Packet(packet.addr, (char*)&HostReject(), sizeof(HostReject)));
+			sendPacket(Packet(packet.addr, (char*)&reject, sizeof(reject)));
 		} else {
+		    IDAssign assign(assignID);
+
 			Info("Client connecting, associated ID " << assignID << " with address " << packet.addr);
-			sendPacket(Packet(packet.addr, (char*)&IDAssign(assignID), sizeof(IDAssign)));
+			sendPacket(Packet(packet.addr, (char*)&assign, sizeof(assign)));
 
 			_idMap[packet.addr] = assignID;
 			_hostMap[assignID] = GhastlyHostInfo(packet.addr, assignID);

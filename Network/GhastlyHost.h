@@ -6,7 +6,7 @@
 
 using namespace GhastlyProtocol;
 
-class GhastlyHost: public PacketListener {
+class GhastlyHost {
 public:
 	enum {
 		ID_UNASSIGNED = 0,

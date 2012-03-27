@@ -12,3 +12,7 @@ UIManager::~UIManager() {
 void UIManager::render(RenderContext *context) {
     SceneManager::render(_camera, context);
 }
+
+void UIManager::setAspectRatio(float ratio) {
+	_camera->setAspectRatio(ratio);
+}

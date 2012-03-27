@@ -10,22 +10,24 @@ void Viewport::resize(int x, int y, int w, int h) {
     _w = w;
     _h = h;
 
-    CameraMap::iterator itr = _cameras.begin();
-    for(; itr != _cameras.end(); itr++) {
-        itr->second->setAspectRatio((float)w/h);
+    ResizeListenerList::iterator itr = _resizeListeners.begin();
+    for(; itr != _resizeListeners.end(); itr++) {
+        (*itr)->setAspectRatio((float)w/h);
     }
 
 	TextureManager::ReloadAll();
 }
 
-void Viewport::registerCamera(Camera *camera) {
-    CameraMap::iterator itr = _cameras.find(camera->getName());
-    if(itr == _cameras.end()) {
-        camera->setAspectRatio((float)_w/_h);
-        _cameras[camera->getName()] = camera;
-    } else {
-        Error("Camera " << camera->getName() << " already registered with viewport.");
-    }
+void Viewport::registerResizeListener(ResizeListener *listener) {
+    ResizeListenerList::iterator itr;
+	for(itr = _resizeListeners.begin(); itr != _resizeListeners.end(); itr++) {
+		if(*itr == listener) {
+			Warn("ResizeListener already registered with viewport");
+			return;
+		}
+	}
+    listener->setAspectRatio((float)_w/_h);
+    _resizeListeners.push_back(listener);
 }
 
 const int Viewport::x() const { return _x; }

@@ -11,7 +11,7 @@ void IsoCamera::setup() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void IsoCamera::setAspectRatio(const float ratio) {
+void IsoCamera::setAspectRatio(float ratio) {
 	setProjection(Matrix4::MakePerspective(ratio, _fov, _near, _far));
 }
 

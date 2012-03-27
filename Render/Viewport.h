@@ -2,7 +2,7 @@
 #define VIEWPORT_H
 
 #include <Base/Base.h>
-#include <Engine/Camera.h>
+#include <Engine/ResizeListener.h>
 
 class Viewport {
 public:
@@ -10,7 +10,7 @@ public:
     Viewport(int nX, int nY, int nW, int nH);
 
     void resize(int nX, int nY, int nW, int nH);
-    void registerCamera(Camera *camera);
+    void registerResizeListener(ResizeListener *listener);
 
     const int x() const;
     const int y() const;
@@ -18,10 +18,10 @@ public:
     const int h() const;
 
 private:
-    typedef std::map<std::string, Camera*> CameraMap;
+	typedef std::list<ResizeListener*> ResizeListenerList;
 
     int _x, _y, _w, _h;
-    CameraMap _cameras;
+    ResizeListenerList _resizeListeners;
 };
 
 std::ostream& operator<<(std::ostream& lhs, const Viewport &rhs);

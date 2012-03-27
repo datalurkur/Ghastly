@@ -6,6 +6,6 @@ void OrthoCamera::setup() {
 	glDisable(GL_DEPTH_TEST);
 }
 
-void OrthoCamera::setAspectRatio(const float ratio) {
+void OrthoCamera::setAspectRatio(float ratio) {
 	setProjection(Matrix4::MakeOrtho(-(ratio/_zoom), (ratio/_zoom), -(float)1.0f / _zoom, (float)1.0f / _zoom, _near, _far));
 }

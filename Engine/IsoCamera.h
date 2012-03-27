@@ -12,7 +12,7 @@ public:
 
 	void setup();
 
-	void setAspectRatio(const float ratio);
+	void setAspectRatio(float ratio);
 
 	// Normal Isometric Camera controls
 	void moveRelative(const Vector3 &dir);

@@ -9,7 +9,7 @@ public:
 
 	void setup();
 
-	void setAspectRatio(const float ratio);
+	void setAspectRatio(float ratio);
 
 private:
 	float _zoom;

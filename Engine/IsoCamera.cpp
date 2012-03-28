@@ -11,8 +11,14 @@ void IsoCamera::setup() {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void IsoCamera::setAspectRatio(float ratio) {
-	setProjection(Matrix4::MakePerspective(ratio, _fov, _near, _far));
+void IsoCamera::recomputeMatrices() {
+	setProjection(Matrix4::MakePerspective(_aspectRatio, _fov, _near, _far));
+}
+
+void IsoCamera::setZoom(float zoom) {
+	Vector3 position = SceneNode::getLocalPosition();
+	position.z = zoom;
+	SceneNode::setPosition(position);
 }
 
 void IsoCamera::moveRelative(const Vector3 &dir) {
@@ -22,7 +28,7 @@ void IsoCamera::moveRelative(const Vector3 &dir) {
 	// TODO
 }
 
-void IsoCamera::zoom(const float amount) {
+void IsoCamera::zoom(float amount) {
 	moveRelative(Vector3(0.0f, 0.0f, amount));
 }
 
@@ -30,8 +36,8 @@ void IsoCamera::scroll(const Vector3 &dir) {
 	moveRelative(dir);
 }
 
-void IsoCamera::pitch(const float amount) {
+void IsoCamera::pitch(float amount) {
 }
 
-void IsoCamera::roll(const float amount) {
+void IsoCamera::roll(float amount) {
 }

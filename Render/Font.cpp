@@ -1,8 +1,7 @@
 #include <Render/Font.h>
 
-Font::Font():
-	_texture(0)
-{
+Font::Font(): _texture(0) {
+	
 }
 
 Font::~Font() {

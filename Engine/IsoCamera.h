@@ -11,17 +11,18 @@ public:
 	virtual ~IsoCamera();
 
 	void setup();
+	void recomputeMatrices();
 
-	void setAspectRatio(float ratio);
+	void setZoom(float zoom);
 
 	// Normal Isometric Camera controls
 	void moveRelative(const Vector3 &dir);
 
-	void zoom(const float amount);
+	void zoom(float amount);
 	void scroll(const Vector3 &dir);
 
-	void pitch(const float amount);
-	void roll(const float amount);
+	void pitch(float amount);
+	void roll(float amount);
 
 private:
 	float _fov, _near, _far;

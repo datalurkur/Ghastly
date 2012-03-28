@@ -8,8 +8,9 @@ public:
 	OrthoCamera(const std::string &name);
 
 	void setup();
+	void recomputeMatrices();
 
-	void setAspectRatio(float ratio);
+	void setZoom(float zoom);
 
 private:
 	float _zoom;

@@ -1,11 +1,16 @@
 #include <Engine/OrthoCamera.h>
 
-OrthoCamera::OrthoCamera(const std::string &name): Camera(name), _zoom(0.1f), _near(-10.0f), _far(10.0f) {}
+OrthoCamera::OrthoCamera(const std::string &name): Camera(name), _zoom(1.0f), _near(-10.0f), _far(10.0f) {}
 
 void OrthoCamera::setup() {
 	glDisable(GL_DEPTH_TEST);
 }
 
-void OrthoCamera::setAspectRatio(float ratio) {
-	setProjection(Matrix4::MakeOrtho(-(ratio/_zoom), (ratio/_zoom), -(float)1.0f / _zoom, (float)1.0f / _zoom, _near, _far));
+void OrthoCamera::recomputeMatrices() {
+	setProjection(Matrix4::MakeOrtho(-(_aspectRatio/_zoom), (_aspectRatio/_zoom), -(float)1.0f / _zoom, (float)1.0f / _zoom, _near, _far));
+}
+
+void OrthoCamera::setZoom(float zoom) {
+	_zoom = zoom;
+	recomputeMatrices();
 }

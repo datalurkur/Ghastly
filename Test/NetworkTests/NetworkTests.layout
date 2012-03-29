@@ -11,16 +11,19 @@
 		<Cursor position="233" topLine="0" />
 	</File>
 	<File name="../../Network/ConnectionBuffer.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="2576" topLine="100" />
+		<Cursor position="1188" topLine="111" />
 	</File>
 	<File name="../../Network/ConnectionBuffer.h" open="0" top="0" tabpos="0">
 		<Cursor position="1711" topLine="41" />
 	</File>
-	<File name="../../Network/ConnectionProvider.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="40" topLine="0" />
-	</File>
 	<File name="../../Network/ConnectionProvider.h" open="0" top="0" tabpos="0">
-		<Cursor position="274" topLine="0" />
+		<Cursor position="123" topLine="0" />
+	</File>
+	<File name="../../Network/GhastlyClient.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="546" topLine="8" />
+	</File>
+	<File name="../../Network/GhastlyServer.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="62" topLine="0" />
 	</File>
 	<File name="../../Network/ListenSocket.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="175" topLine="6" />
@@ -28,10 +31,10 @@
 	<File name="../../Network/ListenSocket.h" open="0" top="0" tabpos="8">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../../Network/MultiConnectionProvider.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="367" topLine="0" />
+	<File name="../../Network/MultiConnectionProvider.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="546" topLine="0" />
 	</File>
-	<File name="../../Network/MultiConnectionProvider.h" open="1" top="0" tabpos="2">
+	<File name="../../Network/MultiConnectionProvider.h" open="0" top="0" tabpos="2">
 		<Cursor position="249" topLine="0" />
 	</File>
 	<File name="../../Network/NetAddress.h" open="0" top="0" tabpos="0">
@@ -59,7 +62,7 @@
 		<Cursor position="428" topLine="0" />
 	</File>
 	<File name="../../Network/TCPBuffer.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1602" topLine="0" />
+		<Cursor position="1602" topLine="87" />
 	</File>
 	<File name="../../Network/TCPBuffer.h" open="0" top="0" tabpos="0">
 		<Cursor position="743" topLine="4" />
@@ -82,7 +85,7 @@
 	<File name="../../Network/UDPSocket.h" open="0" top="0" tabpos="0">
 		<Cursor position="364" topLine="0" />
 	</File>
-	<File name="NetworkTests.cpp" open="0" top="0" tabpos="1">
+	<File name="NetworkTests.cpp" open="1" top="1" tabpos="0">
 		<Cursor position="13066" topLine="414" />
 	</File>
 </CodeBlocks_layout_file>

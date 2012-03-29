@@ -2,7 +2,8 @@
 #define FONT_H
 
 #include <Base/Vector2.h>
-#include <Render/Texture.h>
+#include <Render/Material.h>
+#include <Render/Renderable.h>
 
 class TTFManager;
 
@@ -10,6 +11,8 @@ class Font {
 public:
 	Font();
 	virtual ~Font();
+
+    Renderable* createRenderable(const std::string &text);
 
 protected:
 	int _fontWidth;
@@ -25,7 +28,7 @@ protected:
 	int _fontDescent;
 	int _fontLineSkip;
 
-	Texture *_texture;
+	Material *_material;
 
     friend class TTFManager;
 };

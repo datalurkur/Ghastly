@@ -1,7 +1,7 @@
 #ifndef TTFMANAGER_H
 #define TTFMANAGER_H
 
-#include <sdl/SDL_ttf.h>
+#include <SDL/SDL_ttf.h>
 #include <Render/Font.h>
 #include <Resource/ResourceManager.h>
 

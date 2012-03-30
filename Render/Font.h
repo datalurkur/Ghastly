@@ -13,6 +13,8 @@ public:
 	virtual ~Font();
 
     Renderable* createRenderable(const std::string &text);
+	float textWidth(const std::string &text);
+	float textHeight(const std::string &text);
 
 protected:
 	int _fontWidth;

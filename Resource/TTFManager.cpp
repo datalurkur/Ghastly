@@ -117,6 +117,8 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 
     font->_material = new Material();
     font->_material->setTexture(texture);
+	// TODO - Figure out how to make this color mutable
+	font->_material->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     free(texels);
 }

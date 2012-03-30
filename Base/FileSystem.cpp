@@ -27,6 +27,21 @@ unsigned int FileSystem::GetFileData(const std::string &filename, char **data) {
 	return size;
 }
 
+bool FileSystem::SaveFileData(const std::string &filename, char *data, unsigned int size) {
+    FILE *file;
+
+#if SYS_PLATFORM == PLATFORM_WIN32
+    fopen_s(&file, filename.c_str(), "w");
+#else
+    file = fopen(filename.c_str(), "w");
+#endif
+    if(!file) { return false; }
+    
+    fwrite(data, sizeof(char), size, file);
+    
+    return true;
+}
+
 void FileSystem::CleanFilename(const std::string &filename, std::string &cleaned) {
 	int i, j;
 

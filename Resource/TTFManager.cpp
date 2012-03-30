@@ -100,7 +100,8 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
             yPos = i * font->_fontHeight;
             for (int w = 0; w < renderedLetter->w; w++) {
                 for (int h = 0; h < renderedLetter->h; h++) {
-					texels[((yPos + h) * font->_textureWidth) + (xPos + w)] = getAlphaForPixel(renderedLetter, w, renderedLetter->h - 1 - h);
+                    int alpha = getAlphaForPixel(renderedLetter, w, renderedLetter->h - 1 - h);
+					texels[((yPos + h) * font->_textureWidth) + (xPos + w)] = (unsigned char)alpha; 
                 }
             }
 

@@ -17,6 +17,7 @@ public:
 	static void GetDirectoryContents(const std::string &dir, T &files);
 
 	static unsigned int GetFileData(const std::string &filename, char **data);
+    static bool SaveFileData(const std::string &filename, char *data, unsigned int size);
 
 	static void CleanFilename(const std::string &filename, std::string &cleaned);
 };

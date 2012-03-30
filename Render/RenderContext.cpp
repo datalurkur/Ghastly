@@ -2,6 +2,11 @@
 #include <SDL/SDL_opengl.h>
 
 RenderContext::RenderContext() {
+    //glShadeModel(GL_SMOOTH);
+    //glDepthFunc(GL_LEQUAL);
+    
+    glBlendFunc(GL_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 }
 
 void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables) {
@@ -17,6 +22,8 @@ void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, 
         (*itr)->render();
 	}
 	// FIXME - Add the render queue and group rendering by material
+    
+    // Check for GL Errors
 }
 
 void RenderContext::clear() { 

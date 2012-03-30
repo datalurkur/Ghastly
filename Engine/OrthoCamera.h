@@ -11,6 +11,7 @@ public:
 	void recomputeMatrices();
 
 	void setZoom(float zoom);
+	void clampEdges(const Vector2 &lowerLeft, const Vector2 &upperRight);
 
 private:
 	float _zoom;

@@ -28,7 +28,7 @@ void TTFManager::DoLoad(const std::string &name, Font *font) {
 	collectFontInformation(ttfFont, font);
 	computeCharacterWidths(ttfFont, font);
 	createFontTexture(ttfFont, font, fullName + "glyph");
-    
+
     TTF_CloseFont(ttfFont);
 }
 
@@ -58,7 +58,7 @@ void TTFManager::computeCharacterWidths(TTF_Font *ttfFont, Font *font) {
             font->_fontWidth = advance;
         }
     }
-	
+
     // Set tab width
     font->_characterWidth[9] = font->_characterWidth[32] * 4;
 }
@@ -66,7 +66,7 @@ void TTFManager::computeCharacterWidths(TTF_Font *ttfFont, Font *font) {
 void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::string &name) {
 	int texelCount;
 	unsigned char *texels;
-	
+
     int xPos, yPos;
     int currentASCII;
 
@@ -81,9 +81,10 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 
     texelCount = font->_textureWidth * font->_textureHeight;
 	texels = (unsigned char *)calloc(texelCount, sizeof(unsigned char));
-    
+
 	// Go character by character
 	currentASCII = -1;
+	renderedLetter = 0;
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 16; j++) {
             currentASCII++;
@@ -92,6 +93,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 			// Print the character to an SDL surface
             char letter[2] = {currentASCII, 0};
             renderedLetter = TTF_RenderText_Blended(ttfFont, letter, white);
+            ASSERT(renderedLetter);
 
 			// Iterate over each pixel in the SDL surface, copying the data by hand to the texels
 			xPos = j * font->_fontWidth;
@@ -101,9 +103,10 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 					texels[((yPos + h) * font->_textureWidth) + (xPos + w)] = getAlphaForPixel(renderedLetter, w, renderedLetter->h - 1 - h);
                 }
             }
-            
+
 			// Get ready to print a new character
             SDL_FreeSurface(renderedLetter);
+            renderedLetter = 0;
         }
     }
 
@@ -113,7 +116,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 	// Create the texture and populate it with texture data
 	texture = new Texture();
     texture->setup();
-	texture->setPixelData(GL_RGBA, GL_UNSIGNED_BYTE, font->_textureWidth, font->_textureHeight, texels);
+	texture->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels);
 
     font->_material = new Material();
     font->_material->setTexture(texture);
@@ -127,7 +130,7 @@ int TTFManager::getAlphaForPixel(SDL_Surface *surface, int x, int y) {
 	SDL_PixelFormat *pixelFormat;
 	Uint8 *pixelPointer;
 	Uint32 pixel;
-	Uint8 alpha;
+	Uint32 alpha;
 
 	pixelFormat  = surface->format;
 	pixelPointer = (Uint8*)surface->pixels + (pixelFormat->BytesPerPixel * x) + (surface->pitch * y);
@@ -137,7 +140,9 @@ int TTFManager::getAlphaForPixel(SDL_Surface *surface, int x, int y) {
 	pixel = *(Uint32*)pixelPointer;
 	alpha = (pixel &  pixelFormat->Amask);
 	alpha = (alpha >> pixelFormat->Ashift);
-	alpha = (alpha >> pixelFormat->Aloss);
+	alpha = (alpha << pixelFormat->Aloss);
+
+	ASSERT(alpha <= 255);
 
 	return (int)alpha;
 }

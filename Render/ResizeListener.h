@@ -3,7 +3,7 @@
 
 class ResizeListener {
 public:
-	virtual void setAspectRatio(float ratio) = 0;
+	virtual void onResize(int w, int h) = 0;
 };
 
 #endif

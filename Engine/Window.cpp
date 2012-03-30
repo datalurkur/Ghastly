@@ -18,10 +18,11 @@ void Window::setup() {
         ASSERT(0);
 	}
 
+    _videoFlags  = 0;
 	_videoFlags |= SDL_GL_DOUBLEBUFFER;
 	_videoFlags |= SDL_HWSURFACE;
 	_videoFlags |= SDL_OPENGL;
-	_videoFlags |= SDL_RESIZABLE;
+	//_videoFlags |= SDL_RESIZABLE;
     _videoFlags |= SDL_HWACCEL;
     _videoFlags |= SDL_HWPALETTE;
 

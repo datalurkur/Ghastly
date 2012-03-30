@@ -2,7 +2,7 @@
 
 Camera::Camera(const std::string &name): SceneNode(name) {}
 
-void Camera::setAspectRatio(float ratio) {
-	_aspectRatio = ratio;
+void Camera::onResize(int w, int h) {
+	_aspectRatio = (float)w/h;
 	recomputeMatrices();
 }

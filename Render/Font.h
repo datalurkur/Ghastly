@@ -16,6 +16,8 @@ public:
 	float textWidth(const std::string &text);
 	float textHeight(const std::string &text);
 
+	Material *getMaterial() const;
+
 protected:
 	int _fontWidth;
 	int _fontHeight;

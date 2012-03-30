@@ -1,6 +1,7 @@
 #include <Base/Base.h>
 #include <Base/Log.h>
 #include <Render/Texture.h>
+#include <Base/Assertion.h>
 
 Texture::Texture():
 	_ids(0), _frames(1)
@@ -37,6 +38,17 @@ void Texture::teardown() {
 
 void Texture::setPixelData(GLenum internalFormat, GLenum format, const unsigned int w, const unsigned int h, unsigned char *pixelData, const unsigned int frame) {
     enable(frame);
+
+    // DEBUG
+    int average = 0;
+    for(int i = 0; i < w; i++) {
+        for(int j = 0; j < h; j++) {
+            ASSERT(pixelData[(i*h)+j] >= 0 && pixelData[(i*h)+j] <= 255);
+            average += pixelData[(i*h)+j];
+        }
+    }
+    Info("Pixel average: " << (float)average / (w*h));
+
     gluBuild2DMipmaps(GL_TEXTURE_2D, internalFormat, w, h, format, GL_UNSIGNED_BYTE, pixelData);
     //glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, pixelData);
     disable();
@@ -44,6 +56,7 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, const unsigned 
 
 void Texture::enable(const unsigned int frame) {
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, _ids[frame]);
 }
 

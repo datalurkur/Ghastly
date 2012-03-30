@@ -2,7 +2,8 @@
 #define UIMANAGER_H
 
 #include <Engine/SceneManager.h>
-#include <Engine/ResizeListener.h>
+#include <Render/ResizeListener.h>
+#include <Engine/OrthoCamera.h>
 
 class UIManager: public ResizeListener, public SceneManager {
 public:
@@ -10,10 +11,10 @@ public:
     virtual ~UIManager();
 
     void render(RenderContext *context);
-	void setAspectRatio(float ratio);
+	void onResize(int w, int h);
 
 private:
-    Camera *_camera;
+    OrthoCamera *_camera;
 };
 
 #endif

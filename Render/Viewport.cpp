@@ -5,6 +5,7 @@ Viewport::Viewport(): _x(0), _y(0), _w(0), _h(0) {}
 Viewport::Viewport(int x, int y, int w, int h): _x(x), _y(y), _w(w), _h(h) {}
 
 void Viewport::resize(int x, int y, int w, int h) {
+    Info("Viewport resizing to " << x << "," << y << "," << w << "," << h);
     _x = x;
     _y = y;
     _w = w;
@@ -12,7 +13,7 @@ void Viewport::resize(int x, int y, int w, int h) {
 
     ResizeListenerList::iterator itr = _resizeListeners.begin();
     for(; itr != _resizeListeners.end(); itr++) {
-        (*itr)->setAspectRatio((float)w/h);
+        (*itr)->onResize(w, h);
     }
 
 	TextureManager::ReloadAll();
@@ -26,7 +27,7 @@ void Viewport::registerResizeListener(ResizeListener *listener) {
 			return;
 		}
 	}
-    listener->setAspectRatio((float)_w/_h);
+    listener->onResize(_w, _h);
     _resizeListeners.push_back(listener);
 }
 

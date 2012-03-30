@@ -4,6 +4,12 @@ Font::Font(): _material(0) {
 
 }
 
+Font::~Font() {
+	if(_material) {
+		delete _material;
+	}
+}
+
 Renderable* Font::createRenderable(const std::string &text) {
     float *vertexPointer, *texCoordPointer;
 	unsigned int *indexPointer;
@@ -126,8 +132,6 @@ float Font::textHeight(const std::string &text) {
 	return (float)_characterHeight;
 }
 
-Font::~Font() {
-	if(_material) {
-		delete _material;
-	}
+Material* Font::getMaterial() const {
+    return _material;
 }

@@ -101,8 +101,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
             for (int w = 0; w < renderedLetter->w; w++) {
                 for (int h = 0; h < renderedLetter->h; h++) {
                     int alpha = getAlphaForPixel(renderedLetter, w, renderedLetter->h - 1 - h);
-					//texels[((font->_textureHeight - 1 - (yPos + h)) * font->_textureWidth) + (xPos + w)] = (unsigned char)alpha; 
-                    texels[((yPos + h) * font->_textureWidth) + (xPos + w)] = (unsigned char)alpha;
+					texels[((yPos + h) * font->_textureWidth) + (xPos + w)] = (unsigned char)alpha;
                 }
             }
 
@@ -118,12 +117,12 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 	// Create the texture and populate it with texture data
 	texture = new Texture();
     texture->setup();
-	texture->setPixelData(GL_LUMINANCE, GL_LUMINANCE, font->_textureWidth, font->_textureHeight, texels, false);
+	texture->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
 
     font->_material = new Material();
     font->_material->setTexture(texture);
 	// TODO - Figure out how to make this color mutable
-	font->_material->setColor(1.0f, 1.0f, 1.0f, 0.0f);
+	font->_material->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     free(texels);
 }

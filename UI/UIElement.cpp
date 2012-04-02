@@ -6,7 +6,7 @@
 UIElement::UIElement(const std::string &name, const Vector2 &pos): SceneNode(name), _uiPosition(pos) {}
 
 void UIElement::resize(int width, int height) {
-    setPosition((_uiPosition.x - 0.5f) * height, (_uiPosition.y - 0.5f) * height, 0.0f);
+    setPosition((_uiPosition.x - 0.5f) * width, (_uiPosition.y - 0.5f) * height, 0.0f);
     
     NodeMap::iterator itr;
     for(itr = _children.begin(); itr != _children.end(); itr++) {

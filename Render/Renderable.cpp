@@ -68,6 +68,7 @@ void Renderable::render() {
 	if(_material) {
 		_material->enable();
 	}
+
     CheckGLErrors();
 	if(_indexPointer) {
 		if(_vertexPointer) {
@@ -84,9 +85,11 @@ void Renderable::render() {
 			glEnableClientState(GL_NORMAL_ARRAY);
 			glNormalPointer(GL_FLOAT, 0, _normalPointer);
 		}
+
 		glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, _indexPointer);
+        CheckGLErrors();
 	}
-    CheckGLErrors();
+
 	if(_material) {
 		_material->disable();
 	}

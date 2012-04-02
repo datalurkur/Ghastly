@@ -1,7 +1,7 @@
 #include <Engine/Core.h>
 #include <Base/Log.h>
 
-Core::Core(): _running(false) {
+Core::Core(): _running(false), _renderContext(0) {
     setup();
 }
 
@@ -17,7 +17,6 @@ void Core::setup() {
     // FIXME - Set this with an options class
 	_window = new Window();
     _viewport = new Viewport();
-	_renderContext = new RenderContext();
     
 	_eventHandler = new EventHandler();
 	_eventHandler->addWindowListener(this);
@@ -77,8 +76,12 @@ void Core::stop() {
 }
 
 void Core::resizeWindow(const int w, const int h) {
+    if(_renderContext) { delete _renderContext; }
+
     _window->resize(w, h);
     _viewport->resize(0, 0, w, h);
+    
+    _renderContext = new RenderContext();
     _renderContext->setViewport(_viewport);
 }
 

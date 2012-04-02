@@ -73,8 +73,6 @@ void Texture::setup(const unsigned int frames) {
 	_ids = new GLuint[_frames];
 	glGenTextures(_frames, _ids);
 
-    Info("Setting up " << this << " id " << _ids[0] << " frame " << frames);
-
 	for(unsigned int i=0; i<_frames; i++) {
 		enable(i);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

@@ -97,22 +97,22 @@ void Renderable::render() {
     glPopMatrix();
 }
 
-Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, const float z, bool texCoords, bool normals) {
-    return OrthoBox(Vector3(pos.x, pos.y, z), Vector3(dims.x, dims.y, z), texCoords, normals);
+Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z) {
+    return OrthoBox(Vector3(pos.x, pos.y, z), Vector2(dims.x, dims.y), texCoords, normals);
 }
 
-Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector3 &dims, bool texCoords, bool normals) {
+Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals) {
 	Renderable *renderable = new Renderable();
 	renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
-    
+
 	float verts[4 * 3] = {
-		0.0f,   0.0f,   0.0f,
-        dims.x, 0.0f,   0.0f,
-        dims.x, dims.y, 0.0f,
-		0.0f,   dims.y, 0.0f
+		pos.x,          pos.y,          pos.z,
+        pos.x + dims.x, pos.y,          pos.z,
+        pos.x + dims.x, pos.y + dims.y, pos.z,
+		pos.x,          pos.y + dims.y, pos.z
 	};
 	renderable->setVertexPointer(&verts[0], 4, 3);
-    
+
 	if(texCoords) {
 		float texCoords[4 * 2] = {
 			0, 0,
@@ -122,7 +122,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector3 &dims, bool t
 		};
 		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
 	}
-    
+
 	if(normals) {
 		float normals[4 * 3] = {
 			0, 0, 1,
@@ -132,10 +132,10 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector3 &dims, bool t
 		};
 		renderable->setNormalPointer(&normals[0], 4);
 	}
-    
+
 	unsigned int indices[4] = { 0, 1, 2, 3 };
 	renderable->setIndexPointer(&indices[0], 4);
-    
+
 	return renderable;
 }
 
@@ -151,14 +151,14 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
     unsigned int *indexBuffer;
     unsigned int size;
     unsigned int i;
-    
+
     size = (unsigned int)verts.size();
 
     renderable = new Renderable();
 
     vertexBuffer = new float[size * 3];
     indexBuffer = new unsigned int[size];
-    
+
     for(i=0; i < size; i++) {
         vertexBuffer[3*i  ] = verts[i].x;
         vertexBuffer[3*i+1] = verts[i].y;
@@ -166,7 +166,7 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
 
         indexBuffer[i] = i;
     }
-    
+
     renderable->setVertexPointer(&vertexBuffer[0], size, 3);
     renderable->setIndexPointer(&indexBuffer[0], size);
     renderable->setDrawMode(GL_LINE_STRIP);

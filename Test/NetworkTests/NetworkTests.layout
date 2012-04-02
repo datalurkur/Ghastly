@@ -85,7 +85,7 @@
 	<File name="../../Network/UDPSocket.h" open="0" top="0" tabpos="0">
 		<Cursor position="364" topLine="0" />
 	</File>
-	<File name="NetworkTests.cpp" open="1" top="1" tabpos="0">
+	<File name="NetworkTests.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="13066" topLine="414" />
 	</File>
 </CodeBlocks_layout_file>

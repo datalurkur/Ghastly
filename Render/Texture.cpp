@@ -17,10 +17,10 @@ void Texture::SavePixelDataToDisk(GLenum format, unsigned int w, unsigned int h,
     fileData[15] = (h & 0xff00) / 256;
     fileData[16] = 24; // 24-bit bitmap
     // Pixel data begins at offset 18
-    for(int i=0; i<w; i++) {
-        for(int j=0; j<h; j++) {
+    for(unsigned int i=0; i<w; i++) {
+        for(unsigned int j=0; j<h; j++) {
             int offset = (i*h) + j;
-            
+
             switch(format) {
             case GL_ALPHA:
             case GL_LUMINANCE:

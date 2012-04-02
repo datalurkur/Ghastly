@@ -7,7 +7,10 @@
 
 class Vector2 {
 public:
-	float x, y;
+    union {
+        struct { float x, y; };
+        struct { float w, h; };
+    };
 
 public:
     inline Vector2(): x(0), y(0) {}

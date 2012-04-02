@@ -9,6 +9,7 @@ class Vector3 {
 public:
     union {
         struct { float x, y, z; };
+        struct { float w, h, d; };
         struct { float r, g, b; };
     };
 

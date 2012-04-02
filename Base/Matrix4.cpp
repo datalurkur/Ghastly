@@ -46,6 +46,16 @@ Matrix4 Matrix4::MakeTranslation(float x, float y, float z) {
 	return ret;
 }
 
+Matrix4 Matrix4::MakeTranslation(const Vector3 &pos) {
+    Matrix4 ret = Matrix4::Identity;
+    
+    ret[3][0] = pos.x;
+    ret[3][1] = pos.y;
+    ret[3][2] = pos.z;
+    
+    return ret;
+}
+
 std::ostream& operator<<(std::ostream& lhs, const Matrix4 &rhs) {
 	lhs << "Matrix4";
 	for(int i=0; i<4; i++) {

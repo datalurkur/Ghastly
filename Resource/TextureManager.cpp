@@ -1,6 +1,7 @@
 #include <Resource/TextureManager.h>
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL_image.h>
+#include <Base/Log.h>
 #include <Base/Assertion.h>
 
 const std::string TextureManager::LoadDirectory = "Texture";
@@ -9,6 +10,8 @@ void TextureManager::DoLoad(const std::string &name, Texture *texture) {
 	std::string fullName;
 	SDL_Surface *tSurf;
     GLenum internalFormat, format;
+
+    Info("Loading: " << name);
 
 	// Create an SDL surface with the image data
     fullName = LoadPath() + name;
@@ -31,7 +34,7 @@ void TextureManager::DoLoad(const std::string &name, Texture *texture) {
 
     // Setup the texture
     texture->setup();
-    texture->setPixelData(internalFormat, format, tSurf->w, tSurf->h, (unsigned char*)tSurf->pixels, 0);
+    texture->setPixelData(internalFormat, format, tSurf->w, tSurf->h, (unsigned char*)tSurf->pixels, true, 0);
 
 	// Destroy the SDL surface    
     SDL_UnlockSurface(tSurf);

@@ -17,7 +17,7 @@ public:
 
 	void setup(const unsigned int frames = 1);
 	void teardown();
-    void setPixelData(GLenum internalFormat, GLenum format, unsigned int w, unsigned int h, unsigned char *pixelData, unsigned int frame = 0);
+    void setPixelData(GLenum internalFormat, GLenum format, unsigned int w, unsigned int h, unsigned char *pixelData, bool genMipMaps = true, unsigned int frame = 0);
 
 	void enable(const unsigned int frame = 0);
 	void disable();

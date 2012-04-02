@@ -3,7 +3,8 @@
 
 UIManager::UIManager(): _camera(0) {
     _camera = new OrthoCamera("UIManagerCamera");
-    //_camera->setZoom(0.01f);
+    _rootContainer = new UIElement("root", Vector2(0.5f, 0.5f));
+    addNode(_rootContainer);
 }
 
 UIManager::~UIManager() {
@@ -15,6 +16,18 @@ void UIManager::render(RenderContext *context) {
 }
 
 void UIManager::onResize(int w, int h) {
-	//_camera->clampEdges(Vector2(0,0), Vector2(w,h));
-	_camera->onResize(w, h);
+    _width = w;
+    _height = h;
+	_camera->clampEdges(Vector2(-(w/2.0f),-(h/2.0f)), Vector2((w/2.0f),(h/2.0f)));
+
+    _rootContainer->resize(w, h);
+}
+
+int UIManager::getWidth() const { return _width; }
+int UIManager::getHeight() const { return _height; }
+
+void UIManager::addElement(UIElement *element) {
+    element->resize(_width, _height);
+    //addNode(element);
+    _rootContainer->addChild(element);
 }

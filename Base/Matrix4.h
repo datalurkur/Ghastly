@@ -3,6 +3,7 @@
 
 #include <Base/Base.h>
 #include <Base/Assertion.h>
+#include <Base/Vector3.h>
 
 class Matrix4 {
 protected:
@@ -116,6 +117,7 @@ public:
     static Matrix4 MakeOrtho(float l, float r, float b, float t, float n, float f);
 	static Matrix4 MakePerspective(float ratio, float fov, float near, float far);
 	static Matrix4 MakeTranslation(float x, float y, float z);
+    static Matrix4 MakeTranslation(const Vector3 &pos);
 };
 
 std::ostream& operator<<(std::ostream& lhs, const Matrix4 &rhs);

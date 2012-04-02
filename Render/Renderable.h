@@ -27,6 +27,7 @@ public:
 
 public:
 	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, const float z, bool texCoords, bool normals);
+    static Renderable* OrthoBox(const Vector3 &pos, const Vector3 &dims, bool texCoords, bool normals);
     static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *mat);
     static Renderable* Lines(const std::vector<Vector2> &verts);
 

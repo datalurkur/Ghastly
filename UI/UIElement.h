@@ -3,14 +3,15 @@
 
 #include <Engine/SceneNode.h>
 
+class UIManager;
+
 class UIElement: public SceneNode {
 public:
-	static UIElement *Box(const Vector2 &pos, const Vector2 &dims, const Color4 &color, const std::string &name = "UIBox");
-    static UIElement *DebugFont(const std::string &fontName, const std::string &name = "FontDebugger");
-	static UIElement *Text(const Vector2 &pos, const std::string &text, const std::string &fontName, const std::string &name = "TextBox");
+	UIElement(const std::string &name, const Vector2 &pos);
+    virtual void resize(int width, int height);
 
-public:
-	UIElement(const std::string &name);
+protected:
+    Vector2 _uiPosition;
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include <Render/Renderable.h>
+#include <Render/GLHelper.h>
 #include <Base/Log.h>
 
 Renderable::Renderable():
@@ -67,7 +68,7 @@ void Renderable::render() {
 	if(_material) {
 		_material->enable();
 	}
-
+    CheckGLErrors();
 	if(_indexPointer) {
 		if(_vertexPointer) {
 			glEnableClientState(GL_VERTEX_ARRAY);
@@ -85,7 +86,7 @@ void Renderable::render() {
 		}
 		glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, _indexPointer);
 	}
-
+    CheckGLErrors();
 	if(_material) {
 		_material->disable();
 	}
@@ -94,20 +95,21 @@ void Renderable::render() {
 }
 
 Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, const float z, bool texCoords, bool normals) {
+    return OrthoBox(Vector3(pos.x, pos.y, z), Vector3(dims.x, dims.y, z), texCoords, normals);
+}
+
+Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector3 &dims, bool texCoords, bool normals) {
 	Renderable *renderable = new Renderable();
-	renderable->setViewMatrix(Matrix4::MakeTranslation(pos.x, pos.y, z));
-
-	float hW = dims.x / 2.0f,
-		  hH = dims.y / 2.0f;
-
+	renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
+    
 	float verts[4 * 3] = {
-		-hW, -hH, 0,
-		 hW, -hH, 0,
-		 hW,  hH, 0,
-		-hW,  hH, 0
+		0.0f,   0.0f,   0.0f,
+        dims.x, 0.0f,   0.0f,
+        dims.x, dims.y, 0.0f,
+		0.0f,   dims.y, 0.0f
 	};
 	renderable->setVertexPointer(&verts[0], 4, 3);
-
+    
 	if(texCoords) {
 		float texCoords[4 * 2] = {
 			0, 0,
@@ -117,7 +119,7 @@ Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, const 
 		};
 		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
 	}
-
+    
 	if(normals) {
 		float normals[4 * 3] = {
 			0, 0, 1,
@@ -127,10 +129,10 @@ Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, const 
 		};
 		renderable->setNormalPointer(&normals[0], 4);
 	}
-
+    
 	unsigned int indices[4] = { 0, 1, 2, 3 };
 	renderable->setIndexPointer(&indices[0], 4);
-
+    
 	return renderable;
 }
 

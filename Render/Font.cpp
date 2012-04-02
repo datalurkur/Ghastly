@@ -54,8 +54,8 @@ Renderable* Font::createRenderable(const std::string &text) {
             int textureIndexX, textureIndexY;
 
             // Compute in the range (0,1) where the texcoords fall
-            textureIndexX = currentCharacter / 16;
-            textureIndexY = currentCharacter % 16;
+            textureIndexX = currentCharacter % 16;
+            textureIndexY = currentCharacter / 16;
 
             textureXMin = textureIndexX * (_fontWidth  / (float)_textureWidth);
             textureYMin = textureIndexY * (_fontHeight / (float)_textureHeight);
@@ -78,15 +78,15 @@ Renderable* Font::createRenderable(const std::string &text) {
 
             // Set up the texcoords
             texCoordPointer[(characterIndex*8)  ] = textureXMin;
-            texCoordPointer[(characterIndex*8)+1] = textureYMin;
+            texCoordPointer[(characterIndex*8)+1] = textureYMax;
 
-            texCoordPointer[(characterIndex*8)+2] = textureXMax;
+            texCoordPointer[(characterIndex*8)+2] = textureXMin;
             texCoordPointer[(characterIndex*8)+3] = textureYMin;
 
             texCoordPointer[(characterIndex*8)+4] = textureXMax;
-            texCoordPointer[(characterIndex*8)+5] = textureYMax;
+            texCoordPointer[(characterIndex*8)+5] = textureYMin;
 
-            texCoordPointer[(characterIndex*8)+6] = textureXMin;
+            texCoordPointer[(characterIndex*8)+6] = textureXMax;
             texCoordPointer[(characterIndex*8)+7] = textureYMax;
 
 			// Set up the indices

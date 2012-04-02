@@ -13,6 +13,7 @@ public:
     static void Teardown();
 
     static T* Get(const std::string &name);
+    static bool GetName(std::string &name, const T* t);
 	static T* Load(const std::string &name);
 	static T* Load(const std::string &name, T* t);
 
@@ -73,6 +74,18 @@ T* ResourceManager<T,F>::Get(const std::string &name) {
 	typename ContentMap::iterator itr = F::Resources.find(name);
 	ASSERT(itr != F::Resources.end());
 	return itr->second;
+}
+
+template <typename T, typename F>
+bool ResourceManager<T,F>::GetName(std::string &name, const T* t) {
+    typename ContentMap::iterator itr;
+    for(itr = F::Resources.begin(); itr != F::Resources.end(); itr++) {
+        if(itr->second == t) {
+            name = itr->first;
+            return true;
+        }
+    }
+    return false;
 }
 
 template <typename T, typename F>

@@ -9,15 +9,38 @@ class TTFManager;
 
 class Font {
 public:
+    enum Alignment {
+        TOP_LEFT = 0,
+        LEFT,
+        BOTTOM_LEFT,
+        TOP,
+        CENTER,
+        BOTTOM,
+        TOP_RIGHT,
+        RIGHT,
+        BOTTOM_RIGHT
+    };
+
+public:
 	Font();
 	virtual ~Font();
 
-    Renderable* createRenderable(const std::string &text);
-	float textWidth(const std::string &text);
-	float textHeight(const std::string &text);
+    Renderable* createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment);
+    Renderable* createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment);
+    void populateBuffers(char currentCharacter, unsigned int characterIndex, int xOffset, int yOffset, float *vertexPointer, float *texCoordPointer, unsigned int *indexPointer);
+
+	int textWidth(const std::string &text);
+	int textHeight();
 
 	Material *getMaterial() const;
 
+    void splitAtWidth(const std::string &text, int maxWidth, std::list<std::string> &subStrings, bool clobberWords = false);
+    int getSizeInPrintableChars(const std::list<std::string> &strings);
+
+protected:
+    int getAlignedX(const std::string &text, const Vector2 &maxDims, Alignment alignment);
+    int getAlignedY(int numSubStrings, const Vector2 &maxDims, Alignment alignment);
+ 
 protected:
 	int _fontWidth;
 	int _fontHeight;

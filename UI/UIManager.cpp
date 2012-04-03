@@ -28,6 +28,5 @@ int UIManager::getHeight() const { return _height; }
 
 void UIManager::addElement(UIElement *element) {
     element->resize(_width, _height);
-    //addNode(element);
     _rootContainer->addChild(element);
 }

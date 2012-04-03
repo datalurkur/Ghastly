@@ -26,7 +26,6 @@ void TTFManager::DoLoad(const std::string &name, Font *font) {
 	ASSERT(ttfFont);
 
 	collectFontInformation(ttfFont, font);
-	computeCharacterWidths(ttfFont, font);
 	createFontTexture(ttfFont, font, fullName + "glyph");
 
     TTF_CloseFont(ttfFont);
@@ -41,6 +40,8 @@ void TTFManager::collectFontInformation(TTF_Font *ttfFont, Font *font) {
 
 	font->_fontLineSkip    = TTF_FontLineSkip(ttfFont);
 	font->_characterHeight = font->_fontAscent - font->_fontDescent;
+
+	computeCharacterWidths(ttfFont, font);
 }
 
 void TTFManager::computeCharacterWidths(TTF_Font *ttfFont, Font *font) {

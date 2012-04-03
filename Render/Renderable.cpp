@@ -105,15 +105,40 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 	Renderable *renderable = new Renderable();
 	renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
 
-	float verts[4 * 3] = {
-		pos.x,          pos.y,          pos.z,
-        pos.x + dims.x, pos.y,          pos.z,
-        pos.x + dims.x, pos.y + dims.y, pos.z,
-		pos.x,          pos.y + dims.y, pos.z
-	};
-	renderable->setVertexPointer(&verts[0], 4, 3);
+	Vector3 disp = pos + Vector3(dims.x, dims.y, 0.0f);
 
-	if(texCoords) {
+	// Determine if the vertex order needs to be flipped to preserve proper winding order
+	bool flipped = ((dims.x < 0) != (dims.y < 0));
+
+	// Set the verts
+	if(flipped) {
+		float verts[4 * 3] = {
+			pos.x,  disp.y, pos.z,
+			disp.x, disp.y, pos.z,
+			disp.x, pos.y,  pos.z,
+			pos.x,  pos.y,  pos.z
+		};
+		renderable->setVertexPointer(&verts[0], 4, 3);
+	} else {
+		float verts[4 * 3] = {
+			pos.x,  pos.y,  pos.z,
+			disp.x, pos.y,  pos.z,
+			disp.x, disp.y, pos.z,
+			pos.x,  disp.y, pos.z
+		};
+		renderable->setVertexPointer(&verts[0], 4, 3);
+	}
+
+	// Set the texture coordinates
+	if(texCoords && flipped) {
+		float texCoords[4 * 2] = {
+			0, 1,
+			1, 1,
+			1, 0,
+			0, 0
+		};
+		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
+	} else if(texCoords) {
 		float texCoords[4 * 2] = {
 			0, 0,
 			1, 0,
@@ -123,6 +148,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
 	}
 
+	// Set the normals
 	if(normals) {
 		float normals[4 * 3] = {
 			0, 0, 1,
@@ -133,6 +159,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 		renderable->setNormalPointer(&normals[0], 4);
 	}
 
+	// Set the indices
 	unsigned int indices[4] = { 0, 1, 2, 3 };
 	renderable->setIndexPointer(&indices[0], 4);
 
@@ -140,7 +167,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 }
 
 Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *mat) {
-    Renderable *renderable = Renderable::OrthoBox(pos, dims, z, true, true);
+    Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z);
     renderable->setMaterial(mat);
     return renderable;
 }

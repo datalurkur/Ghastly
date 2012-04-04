@@ -91,7 +91,9 @@ protected:
 	bool _dirty;
 
 	RenderableList _renderables;
+
     friend class SceneManager;
+    friend class UIManager;
 };
 
 #endif

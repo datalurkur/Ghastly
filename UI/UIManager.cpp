@@ -3,16 +3,43 @@
 
 UIManager::UIManager(): _camera(0) {
     _camera = new OrthoCamera("UIManagerCamera");
-    _rootContainer = new UIElement("root", Vector2(0.5f, 0.5f));
-    addNode(_rootContainer);
+    _layers.push_back(new UIElement("root", Vector2(0.5f, 0.5f)));
 }
 
 UIManager::~UIManager() {
     if(_camera) { delete _camera; }
+
+    LayerList::iterator itr;
+    for(itr = _layers.begin(); itr != _layers.end(); itr++) {
+        delete (*itr);
+    }
 }
 
 void UIManager::render(RenderContext *context) {
-    SceneManager::render(_camera, context);
+    LayerList::reverse_iterator layerItr;
+
+    // Render the layers from bottom to top
+    for(layerItr = _layers.rbegin(); layerItr != _layers.rend(); layerItr++) {
+        NodeList visibleNodes;
+        RenderableList renderables;
+
+        (*layerItr)->getNodes(visibleNodes, _camera);
+
+        NodeList::iterator nodeItr;
+        for(nodeItr = visibleNodes.begin(); nodeItr != visibleNodes.end(); nodeItr++) {
+            (*nodeItr)->getRenderables(renderables);
+        }
+
+        _camera->setup();
+        context->render(_camera->getProjection(), _camera->getModelView(), renderables);
+    }
+}
+
+void UIManager::update() {
+    LayerList::iterator itr;
+    for(itr = _layers.begin(); itr != _layers.end(); itr++) {
+        (*itr)->updateCachedValues();
+    }
 }
 
 void UIManager::onResize(int w, int h) {
@@ -20,7 +47,10 @@ void UIManager::onResize(int w, int h) {
     _height = h;
 	_camera->clampEdges(Vector2(-(w/2.0f),-(h/2.0f)), Vector2((w/2.0f),(h/2.0f)));
 
-    _rootContainer->resize(w, h);
+    LayerList::iterator itr;
+    for(itr = _layers.begin(); itr != _layers.end(); itr++) {
+        ((UIElement*)(*itr))->resize(w, h);
+    }
 }
 
 int UIManager::getWidth() const { return _width; }
@@ -28,5 +58,5 @@ int UIManager::getHeight() const { return _height; }
 
 void UIManager::addElement(UIElement *element) {
     element->resize(_width, _height);
-    _rootContainer->addChild(element);
+    _layers.front()->addChild(element);
 }

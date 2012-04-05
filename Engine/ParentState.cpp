@@ -40,7 +40,7 @@ void ParentState::pushState(State *state, va_list args) {
     _stateStack.push(state);
 }
 
-bool ParentState::popState(bool deleteOnPop = true) {
+bool ParentState::popState(bool deleteOnPop) {
 	if(_stateStack.empty()) {
 		return false;
 	} else {
@@ -68,26 +68,34 @@ void ParentState::flushStates() {
     while(popState()) {}
 }
 
-void ParentState::keyDown(KeyboardEvent *event) {
+bool ParentState::keyDown(KeyboardEvent *event) {
     if(activeState()) {
-        activeState()->keyDown(event);
+        return activeState()->keyDown(event);
+    } else {
+        return false;
     }
 }
 
-void ParentState::keyUp(KeyboardEvent *event) {
+bool ParentState::keyUp(KeyboardEvent *event) {
     if(activeState()) {
-        activeState()->keyUp(event);
+        return activeState()->keyUp(event);
+    } else {
+        return false;
     }
 }
 
-void ParentState::update(int elapsed) {
+bool ParentState::update(int elapsed) {
     if(activeState()) {
-        activeState()->update(elapsed);
+        return activeState()->update(elapsed);
+    } else {
+        return false;
     }
 }
 
-void ParentState::render(RenderContext *renderContext) {
+bool ParentState::render(RenderContext *renderContext) {
     if(activeState()) {
-        activeState()->render(renderContext);
+        return activeState()->render(renderContext);
+    } else {
+        return false;
     }
 }

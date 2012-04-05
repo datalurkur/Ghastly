@@ -26,8 +26,8 @@ class KeyboardListener {
 public:
 	KeyboardListener();
 
-    virtual void keyDown(KeyboardEvent *event) = 0;
-    virtual void keyUp(KeyboardEvent *event) = 0;
+    virtual bool keyDown(KeyboardEvent *event) = 0;
+    virtual bool keyUp(KeyboardEvent *event) = 0;
 };
 
 #endif

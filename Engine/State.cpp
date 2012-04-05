@@ -15,10 +15,12 @@ void State::setCore(Core *core) {
     _core = core;
 }
 
-void State::keyDown(KeyboardEvent *event) {
+bool State::keyDown(KeyboardEvent *event) {
     Info("Not handling keydown event " << event->key() << ":" << event->modifier());
+    return false;
 }
 
-void State::keyUp(KeyboardEvent *event) {
+bool State::keyUp(KeyboardEvent *event) {
     Info("Not handling keyup event " << event->key() << ":" << event->modifier());
+    return false;
 }

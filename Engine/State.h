@@ -13,11 +13,11 @@ public:
     State();
     virtual ~State();
 
-    virtual void update(int elapsed) = 0;
-    virtual void render(RenderContext *renderContext) = 0;
+    virtual bool update(int elapsed) = 0;
+    virtual bool render(RenderContext *renderContext) = 0;
 
-    virtual void keyDown(KeyboardEvent *event);
-    virtual void keyUp(KeyboardEvent *event);
+    virtual bool keyDown(KeyboardEvent *event);
+    virtual bool keyUp(KeyboardEvent *event);
 
 protected:
     virtual void setup(va_list args) = 0;

@@ -68,10 +68,8 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
 
     // Now set the actual vertex and texcoords
 	characterIndex = 0;
-    yPos = getAlignedY(subStrings.size(), maxDims, textAlignment);
+    yPos = getAlignedY((int)subStrings.size(), maxDims, textAlignment);
     for(ritr = subStrings.rbegin(); ritr != subStrings.rend(); ritr++) {
-        Info("Printing substring " << (*ritr));
-
         xPos = getAlignedX((*ritr), maxDims, textAlignment);
 
         for(i = 0; i < (int)(*ritr).length(); i++) {
@@ -172,17 +170,8 @@ Material* Font::getMaterial() const {
 
 void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::string> &subStrings, bool clobberWords) {
     // Split the primary string into substrings based on newlines and carriage returns already present
-    std::list<std::string> lines;
-    int index, result;
-    
-    index = 0;
-    while((result = text.find('\n', index)) != std::string::npos) {
-        lines.push_back(text.substr(index, result - 1 - index));
-        index = result + 1;
-    }
-    if(index < (int)text.length()) {
-        lines.push_back(text.substr(index));
-    }
+    std::list<std::string> lines;   
+    tokenize_string(text, "\n", lines);
 
     // Go through the lines and split them up by width
     std::list<std::string>::iterator itr;
@@ -195,13 +184,11 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
         widthSinceSpace = 0;
 	    for(i = 0; i < (int)(*itr).length(); i++) {
             if((*itr)[i] >= 32) {
-                Info("Examining letter " << i << " : " << (*itr)[i]);
                 int cWidth;
  
                 cWidth = _characterWidth[(int)(*itr)[i]];
 
                 if((*itr)[i] == 32) {
-                    Info("Found space");
                     lastSpace = i;
                     widthSinceSpace = 0;
                 } else {
@@ -209,7 +196,6 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
                 }
 
                 if(totalWidth + cWidth > maxWidth) {
-                    Info("Reached boundary");
                     if(lastSpace == -1 || clobberWords) {
                         subStrings.push_back((*itr).substr(lastIndex, i - lastIndex + 1));
                         lastIndex = i;
@@ -222,6 +208,9 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
                 }
 			    totalWidth += cWidth;
 		    }
+        }
+        if(lastIndex < (*itr).length()) {
+            subStrings.push_back((*itr).substr(lastIndex));
         }
     }
 }
@@ -246,7 +235,7 @@ int Font::getAlignedX(const std::string &text, const Vector2 &maxDims, Alignment
     case TOP:
     case CENTER:
     case BOTTOM:
-        return (int)maxDims.x - (textWidth(text) / 2);
+        return ((int)maxDims.x - textWidth(text)) / 2;
     case TOP_RIGHT:
     case RIGHT:
     case BOTTOM_RIGHT:
@@ -261,7 +250,7 @@ int Font::getAlignedY(int numSubStrings, const Vector2 &maxDims, Alignment align
     case LEFT:
     case CENTER:
     case RIGHT:
-        return (int)maxDims.y - (textHeight() * numSubStrings / 2);
+        return ((int)maxDims.y - (textHeight() * numSubStrings)) / 2;
     case TOP_LEFT:
     case TOP:
     case TOP_RIGHT:

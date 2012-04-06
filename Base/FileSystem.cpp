@@ -45,17 +45,38 @@ bool FileSystem::SaveFileData(const std::string &filename, char *data, unsigned 
 void FileSystem::CleanFilename(const std::string &filename, std::string &cleaned) {
 	int i, j;
 
-	cleaned = filename;
+    std::string itermediate = filename;
 
 	// Replace backslashes with forward slashes
 	i = 0;
-	while(i < (int)cleaned.size()) {
-		j = (int)cleaned.find('\\', i);
+	while(i < (int)itermediate.size()) {
+		j = (int)itermediate.find('\\', i);
 		if(j != -1) {
-			cleaned[j] = '/';
+			itermediate[j] = '/';
 			i = j+1;
 		} else {
 			break;
 		}
 	}
+    
+    // Find double-dots and deal with them
+    std::list<std::string> pieces;
+    tokenize_string(itermediate, "/", pieces);
+    
+    std::list<std::string>::reverse_iterator ritr;
+    cleaned = "";
+    for(ritr = pieces.rbegin(); ritr != pieces.rend(); ritr++) {
+        i = 0;
+        while((*ritr) == "..") {
+            ritr++;
+            i++;
+            if(ritr == pieces.rend()) { return; }
+        }
+        while(i > 0) {
+            ritr++;
+            i--;
+            if(ritr == pieces.rend()) { return; }
+        }
+        cleaned = (*ritr) + "/" + cleaned;
+    }
 }

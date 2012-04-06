@@ -20,8 +20,9 @@ protected:
 private:
 	static void collectFontInformation(TTF_Font *ttfFont, Font *font);
 	static void computeCharacterWidths(TTF_Font *ttfFont, Font *font);
-	static void createFontTexture(TTF_Font *ttfFont, Font *font, const std::string &name);
+	static void createFontTexture(TTF_Font *ttfFont, Font *font, const std::string &name, const Color4& fontColor);
 	static int getAlphaForPixel(SDL_Surface *surface, int x, int y);
+    static std::string TTFLoadPath();
 };
 
 #endif

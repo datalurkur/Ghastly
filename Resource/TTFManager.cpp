@@ -1,6 +1,7 @@
 #include <Resource/TTFManager.h>
 #include <Resource/TextureManager.h>
 #include <Base/Base.h>
+#include <Base/PropertyMap.h>
 
 const std::string TTFManager::LoadDirectory = "Font";
 
@@ -15,18 +16,46 @@ void TTFManager::Teardown() {
 }
 
 void TTFManager::DoLoad(const std::string &name, Font *font) {
-	std::string fullName;
+    char *fileData;
+	unsigned int fileSize;
+    
+    std::string fontName, fontFullPath;
 	int fontSize;
+    Color4 fontColor;
 
-	fullName = LoadPath() + name;
+    PropertyMap *pMap;
+    std::list<std::string> keys;
+    std::list<std::string>::iterator itr;
 
-	// TODO - Allow font size specification
-	fontSize = 12;
-    TTF_Font *ttfFont = TTF_OpenFont(fullName.c_str(), fontSize);
+    // Load the PMap
+	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
+    if(fileSize == 0) {
+        Error("Failed to load " << name);
+        return;
+    }
+    pMap = new PropertyMap(fileData);
+    free(fileData);
+
+    // Parse the PMap
+    pMap->getKeys(keys);
+    for(itr = keys.begin(); itr != keys.end(); itr++) {
+        if(*itr == "color4") {
+            pMap->getValue(*itr, fontColor);
+        } else if(*itr == "size") {
+            pMap->getValue(*itr, fontSize);
+        } else if(*itr == "ttf") {
+            pMap->getValue(*itr, fontName);
+        }
+    }
+    delete pMap;
+
+    // Build the font
+    fontFullPath = TTFLoadPath() + fontName;
+    TTF_Font *ttfFont = TTF_OpenFont(fontFullPath.c_str(), fontSize);
 	ASSERT(ttfFont);
 
 	collectFontInformation(ttfFont, font);
-	createFontTexture(ttfFont, font, fullName + "glyph");
+	createFontTexture(ttfFont, font, name + "glyph", fontColor);
 
     TTF_CloseFont(ttfFont);
 }
@@ -64,7 +93,7 @@ void TTFManager::computeCharacterWidths(TTF_Font *ttfFont, Font *font) {
     font->_characterWidth[9] = font->_characterWidth[32] * 4;
 }
 
-void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::string &name) {
+void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::string &name, const Color4& fontColor) {
 	int texelCount;
 	unsigned char *texels;
 
@@ -123,7 +152,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
     font->_material = new Material();
     font->_material->setTexture(texture);
 	// TODO - Figure out how to make this color mutable
-	font->_material->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+	font->_material->setColor(fontColor);
 
     free(texels);
 }
@@ -147,4 +176,10 @@ int TTFManager::getAlphaForPixel(SDL_Surface *surface, int x, int y) {
 	ASSERT(alpha <= 255);
 
 	return (int)alpha;
+}
+
+std::string TTFManager::TTFLoadPath() {
+    std::string cleanedPath;
+    FileSystem::CleanFilename(LoadPath() + "../TTF/", cleanedPath);
+    return cleanedPath;
 }

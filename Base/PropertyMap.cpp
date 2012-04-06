@@ -1,5 +1,6 @@
 #include <Base/PropertyMap.h>
 #include <Base/Vector4.h>
+#include <Base/Base.h>
 
 PropertyMap::PropertyMap() {
 }
@@ -35,6 +36,11 @@ void PropertyMap::getKeys(std::list<std::string> &keys) {
 template <>
 void PropertyMap::getValue(const std::string &key, std::string &value) {
     value = _mapData[key];
+}
+
+template <>
+void PropertyMap::getValue(const std::string &key, int &value) {
+    string_to_decimal(_mapData[key], value);
 }
 
 template <>

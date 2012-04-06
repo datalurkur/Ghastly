@@ -21,6 +21,8 @@ UIManager::~UIManager() {
 void UIManager::render(RenderContext *context) {
     LayerList::reverse_iterator layerItr;
 
+    glDisable(GL_DEPTH_TEST);
+
     // Render the layers from bottom to top
     for(layerItr = _layers.rbegin(); layerItr != _layers.rend(); layerItr++) {
         NodeList visibleNodes;
@@ -36,6 +38,8 @@ void UIManager::render(RenderContext *context) {
         _camera->setup();
         context->render(_camera->getProjection(), _camera->getModelView(), renderables);
     }
+    
+    glEnable(GL_DEPTH_TEST);
 }
 
 void UIManager::update() {

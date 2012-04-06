@@ -82,4 +82,17 @@ void tokenize_string(const std::string &string, const std::string &delims, T &to
     }
 }
 
+template <typename T>
+void split_string(const std::string &string, const std::string &splitter, T &tokens) {
+    size_t token_begin, token_end, splitter_size;
+
+    splitter_size = splitter.length();
+    
+    token_end = 0;
+    while((token_begin = string.find(splitter, token_end)) != std::string::npos) {
+        tokens.push_back(string.substr(token_end, token_begin - token_end));
+        token_end = token_begin + splitter_size;
+    }
+}
+
 #endif

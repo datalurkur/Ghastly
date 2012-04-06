@@ -13,13 +13,12 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
     std::list<std::string> keys;
     std::list<std::string>::iterator itr;
 
+    // Load the PMap
 	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
-    
     if(fileSize == 0) {
         Error("Failed to load " << name);
         return;
     }
-
     pMap = new PropertyMap(fileData);
     free(fileData);
     

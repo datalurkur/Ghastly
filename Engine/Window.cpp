@@ -22,7 +22,7 @@ void Window::setup() {
 	_videoFlags |= SDL_GL_DOUBLEBUFFER;
 	_videoFlags |= SDL_HWSURFACE;
 	_videoFlags |= SDL_OPENGL;
-	//_videoFlags |= SDL_RESIZABLE;
+	_videoFlags |= SDL_RESIZABLE;
     _videoFlags |= SDL_HWACCEL;
     _videoFlags |= SDL_HWPALETTE;
 
@@ -42,6 +42,10 @@ void Window::resize(int w, int h) {
 		Error("Failed to create frame buffer.");
         ASSERT(0);
 	}
+	
+	// TODO: This does not do what it would appear to
+	// Turn on vertical sync
+	//SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 }
 
 void Window::swapBuffers() const {

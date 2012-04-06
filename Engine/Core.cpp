@@ -1,7 +1,7 @@
 #include <Engine/Core.h>
 #include <Base/Log.h>
 
-Core::Core(): _running(false), _renderContext(0) {
+Core::Core(): _running(false), _renderContext(0), _elapsedIndex(0) {
     setup();
 }
 
@@ -10,18 +10,23 @@ Core::~Core() {
 }
 
 void Core::setup() {
+	// Set up FPS sampling
+	for(int i = 0; i < FPS_WINDOW_SIZE; i++) {
+		_elapsedSamples[i] = 0;
+	}
+	
     _core = this;
     
     Log::EnableAllChannels();
-    
-    // FIXME - Set this with an options class
+
 	_window = new Window();
     _viewport = new Viewport();
     
 	_eventHandler = new EventHandler();
 	_eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
-    
+
+    // FIXME - Set this with an options class
     resizeWindow(640, 480);
 }
 
@@ -56,6 +61,8 @@ void Core::start() {
     while(_running) {
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
+		
+		//Info("FPS: " << trackFPS(elapsedTime) << "(" << elapsedTime << ")");
 
         _eventHandler->handleEvents();
 
@@ -96,4 +103,22 @@ int Core::getTime() {
 
 Viewport* Core::getViewport() const {
     return _viewport;
+}
+
+float Core::trackFPS(int elapsed) {
+	int sum;
+	int i;
+	
+	_elapsedSamples[_elapsedIndex] = elapsed;
+	_elapsedIndex++;
+	if(_elapsedIndex > FPS_WINDOW_SIZE) {
+		_elapsedIndex = 0;
+	}
+	
+	sum = 0;
+	for(i = 0; i < FPS_WINDOW_SIZE; i++) {
+		sum += _elapsedSamples[i];
+	}
+
+	return (1000 * FPS_WINDOW_SIZE) / (float)sum;
 }

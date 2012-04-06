@@ -7,6 +7,8 @@
 #include <Engine/WindowListener.h>
 #include <Render/Viewport.h>
 
+#define FPS_WINDOW_SIZE 256
+
 class Core: public ParentState, public WindowListener {
 public:
     Core();
@@ -27,6 +29,9 @@ protected:
     int getTime();
 
 private:
+	float trackFPS(int elapsed);
+
+private:
     bool _running;
 
 	EventHandler *_eventHandler;
@@ -34,6 +39,9 @@ private:
 	Window *_window;
     Viewport *_viewport;
 	RenderContext *_renderContext;
+	
+	int _elapsedSamples[FPS_WINDOW_SIZE];
+	int _elapsedIndex;
 };
 
 #endif

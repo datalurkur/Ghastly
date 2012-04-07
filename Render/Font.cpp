@@ -1,13 +1,26 @@
 #include <Render/Font.h>
+#include <Resource/MaterialManager.h>
+#include <Resource/TextureManager.h>
 
-Font::Font(): _material(0) {
+Font::Font() {
+    _material = new Material();
 
+    _material->setTexture(new Texture());
+    _material->getTexture()->setup();
 }
 
 Font::~Font() {
-	if(_material) {
-		delete _material;
-	}
+    if(_material) {
+        if(_material->getTexture()) {
+            delete _material->getTexture();
+        }
+        delete _material;
+    }
+}
+
+void Font::teardown() {
+    _material->getTexture()->teardown();
+    _material->getTexture()->setup();
 }
 
 Renderable* Font::createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment) {
@@ -209,7 +222,7 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
 			    totalWidth += cWidth;
 		    }
         }
-        if(lastIndex < (*itr).length()) {
+        if(lastIndex < (int)(*itr).length()) {
             subStrings.push_back((*itr).substr(lastIndex));
         }
     }

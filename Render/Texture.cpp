@@ -98,15 +98,15 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w,
 
     enable(frame);
 
-    // DEBUG
+    /*// DEBUG
     static int counter = 0;
     std::string name;
     char buffer[4];
-    sprintf(buffer, "%i", counter);
+    sprintf_s(buffer, "%i", counter);
     name = "debug_texture_";
     name.append(buffer);
     counter++;
-    Texture::SavePixelDataToDisk(format, w, h, pixelData, name);
+    Texture::SavePixelDataToDisk(format, w, h, pixelData, name);*/
 
     if(genMipMaps) {
         gluBuild2DMipmaps(target, internalFormat, w, h, format, dataType, (void*)pixelData);

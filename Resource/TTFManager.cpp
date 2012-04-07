@@ -103,8 +103,6 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 	SDL_Color white = { 255, 255, 255, 255 };
 	SDL_Surface *renderedLetter;
 
-    Texture *texture;
-
 	// Compute texture information
 	for(font->_textureWidth  = 1; font->_textureWidth  < (font->_fontWidth  * 16); font->_textureWidth  <<= 1) {}
 	for(font->_textureHeight = 1; font->_textureHeight < (font->_fontHeight * 16); font->_textureHeight <<= 1) {}
@@ -141,16 +139,9 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
         }
     }
 
-	// Make sure this font doesn't already have a material, for some weird reason
-	ASSERT(!font->_material);
+	// Populate the texture with data
+	font->getMaterial()->getTexture()->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
 
-	// Create the texture and populate it with texture data
-	texture = new Texture();
-    texture->setup();
-	texture->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
-
-    font->_material = new Material();
-    font->_material->setTexture(texture);
 	// TODO - Figure out how to make this color mutable
 	font->_material->setColor(fontColor);
 

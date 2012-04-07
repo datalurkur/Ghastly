@@ -37,15 +37,14 @@ void Window::resize(int w, int h) {
 	if(_frameBuffer) {
 		SDL_FreeSurface(_frameBuffer);
 	}
+    	
+	// Turn on vertical sync
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 
 	if(!(_frameBuffer = SDL_SetVideoMode(_w, _h, 32, _videoFlags))) {
 		Error("Failed to create frame buffer.");
         ASSERT(0);
 	}
-	
-	// TODO: This does not do what it would appear to
-	// Turn on vertical sync
-	//SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 }
 
 void Window::swapBuffers() const {

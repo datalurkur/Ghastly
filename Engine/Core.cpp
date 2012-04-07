@@ -1,5 +1,6 @@
 #include <Engine/Core.h>
 #include <Base/Log.h>
+#include <Base/Debug.h>
 
 Core::Core(): _running(false), _renderContext(0), _elapsedIndex(0) {
     setup();
@@ -25,6 +26,8 @@ void Core::setup() {
 	_eventHandler = new EventHandler();
 	_eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
+
+    _renderContext = new RenderContext();
 
     // FIXME - Set this with an options class
     resizeWindow(640, 480);
@@ -83,12 +86,9 @@ void Core::stop() {
 }
 
 void Core::resizeWindow(const int w, const int h) {
-    if(_renderContext) { delete _renderContext; }
-
     _window->resize(w, h);
+    _renderContext->setup();
     _viewport->resize(0, 0, w, h);
-    
-    _renderContext = new RenderContext();
     _renderContext->setViewport(_viewport);
 }
 

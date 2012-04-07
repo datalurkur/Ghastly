@@ -2,7 +2,9 @@
 #include <SDL/SDL_opengl.h>
 #include <Render/GLHelper.h>
 
-RenderContext::RenderContext() {
+RenderContext::RenderContext() {}
+
+void RenderContext::setup() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
 
@@ -20,8 +22,6 @@ RenderContext::RenderContext() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    CheckGLErrors();
 }
 
 void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables) {
@@ -37,9 +37,6 @@ void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, 
         (*itr)->render();
 	}
 	// FIXME - Add the render queue and group rendering by material
-
-    // Check for GL Errors
-    CheckGLErrors();
 }
 
 void RenderContext::clear() { 

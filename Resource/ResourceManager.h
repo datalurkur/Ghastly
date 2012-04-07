@@ -14,8 +14,7 @@ public:
 
     static T* Get(const std::string &name);
     static bool GetName(std::string &name, const T* t);
-	static T* Load(const std::string &name);
-	static T* Load(const std::string &name, T* t);
+	static T* Load(const std::string &name, T* t = 0);
 
 	static void LoadAllFromPath();
     static unsigned int LoadNextFromPath_r(unsigned int &pos);
@@ -55,9 +54,9 @@ template <typename T, typename F>
 void ResourceManager<T,F>::Setup() {
 	FileSystem::GetDirectoryContents(LoadPath(), F::AvailableResources);
 	std::vector<std::string>::iterator itr = F::AvailableResources.begin();
-	for(; itr != F::AvailableResources.end(); itr++) {
+	/*for(; itr != F::AvailableResources.end(); itr++) {
 		Info(" - " << (*itr));
-	}
+	}*/
 }
 
 template <typename T, typename F>
@@ -89,17 +88,9 @@ bool ResourceManager<T,F>::GetName(std::string &name, const T* t) {
 }
 
 template <typename T, typename F>
-T* ResourceManager<T,F>::Load(const std::string &name) {
-	T* t = new T();
-
-	F::DoLoad(name, t);
-	F::Register(name, t);
-
-    return t;
-}
-
-template <typename T, typename F>
 T* ResourceManager<T,F>::Load(const std::string &name, T* t) {
+    Info("Loading " << name);
+
 	if(!t) { t = new T(); }
 
 	F::DoLoad(name, t);

@@ -9,6 +9,8 @@ class RenderContext {
 public:
     RenderContext();
 
+    void setup();
+
 	void render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables);
 	void clear();
 

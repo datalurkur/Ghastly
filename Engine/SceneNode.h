@@ -59,9 +59,7 @@ public:
 	void clearRenderables(bool deleteOnClear = true);
 
 	// Regenerate the renderables automatically (on a resize, for example)
-	virtual void recreateRenderables() {
-		Info("SceneNode regenerating renderables");
-	}
+    virtual void recreateRenderables() {}
 
 protected:
 	SceneNode(const std::string &name, const std::string &type);

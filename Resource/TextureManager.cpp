@@ -11,8 +11,6 @@ void TextureManager::DoLoad(const std::string &name, Texture *texture) {
 	SDL_Surface *tSurf;
     GLenum internalFormat, format;
 
-    Info("Loading: " << name);
-
 	// Create an SDL surface with the image data
     fullName = LoadPath() + name;
 	tSurf = IMG_Load(fullName.c_str());

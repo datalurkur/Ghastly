@@ -25,6 +25,8 @@ public:
 	Font();
 	virtual ~Font();
 
+    void teardown();
+
     Renderable* createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment);
     Renderable* createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment);
     void populateBuffers(char currentCharacter, unsigned int characterIndex, int xOffset, int yOffset, float *vertexPointer, float *texCoordPointer, unsigned int *indexPointer);

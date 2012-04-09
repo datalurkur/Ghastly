@@ -19,6 +19,10 @@ void Material::setTexture(Texture *texture) {
     _texture = texture;
 }
 
+Texture *Material::getTexture() {
+    return _texture;
+}
+
 void Material::enable() {
     if(_texture) {
 		_texture->enable();

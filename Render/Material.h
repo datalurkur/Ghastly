@@ -12,6 +12,7 @@ public:
     void setColor(float r, float g, float b, float a);
     void setColor(const Color4 &color);
     void setTexture(Texture *texture);
+    Texture *getTexture();
 
     void enable();
     void disable();

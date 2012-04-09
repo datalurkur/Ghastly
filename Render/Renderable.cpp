@@ -3,9 +3,7 @@
 #include <Base/Log.h>
 
 Renderable::Renderable():
-	_viewMatrix(Matrix4::Identity), _material(0),
-	_vertexPointer(0), _texCoordPointer(0), _normalPointer(0),
-	_vertSize(3), _texCoordSize(2),
+	_viewMatrix(Matrix4::Identity), _shader(0),
 	_indexPointer(0), _numIndices(0),
 	_drawMode(GL_QUADS)
 {
@@ -13,9 +11,7 @@ Renderable::Renderable():
 
 Renderable::~Renderable() {
 	if(_indexPointer) { free(_indexPointer); }
-	if(_vertexPointer) { free(_vertexPointer); }
-	if(_texCoordPointer) { free(_texCoordPointer); }
-	if(_normalPointer) { free(_normalPointer); }
+    clearRenderStates();
 }
 
 void Renderable::setViewMatrix(const Matrix4 &matrix) {
@@ -26,24 +22,16 @@ const Matrix4& Renderable::getViewMatrix() const {
 	return _viewMatrix;
 }
 
-void Renderable::setVertexPointer(float *vertexPointer, const unsigned int numVerts, const unsigned int vertSize) {
-	size_t byteSize = numVerts * vertSize * sizeof(float);
-	_vertexPointer = (float*)malloc(byteSize);
-	memcpy(_vertexPointer, vertexPointer, byteSize);
-	_vertSize = vertSize;
+void Renderable::addRenderState(GenericRenderState *renderState) {
+    _renderStates.push_back(renderState);
 }
 
-void Renderable::setTexCoordPointer(float *texCoordPointer, const unsigned int numTexCoords, const unsigned int texCoordSize) {
-	size_t byteSize = numTexCoords * texCoordSize * sizeof(float);
-	_texCoordPointer = (float*)malloc(byteSize);
-	memcpy(_texCoordPointer, texCoordPointer, byteSize);
-	_texCoordSize = texCoordSize;
-}
-
-void Renderable::setNormalPointer(float *normalPointer, const unsigned int numNormals) {
-	size_t byteSize = numNormals * 3 * sizeof(float);
-	_normalPointer = (float*)malloc(byteSize);
-	memcpy(_normalPointer, normalPointer, byteSize);
+void Renderable::clearRenderStates() {
+    RenderStateList::iterator itr;
+    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
+        delete (*itr);
+    }
+    _renderStates.clear();
 }
 
 void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int numIndices) {
@@ -53,8 +41,8 @@ void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int 
 	_numIndices = numIndices;
 }
 
-void Renderable::setMaterial(Material *material) {
-	_material = material;
+void Renderable::setShader(Shader *shader) {
+	_shader = shader;
 }
 
 void Renderable::setDrawMode(GLenum mode) {
@@ -62,36 +50,26 @@ void Renderable::setDrawMode(GLenum mode) {
 }
 
 void Renderable::render() {
+    RenderStateList::iterator itr;
+
     glPushMatrix();
     glMultMatrixf(_viewMatrix.ptr());
 
-	if(_material) {
-		_material->enable();
+	if(_shader) {
+		_shader->enable();
 	}
+    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
+        (*itr)->preRender();
+    }
 
-    CheckGLErrors();
-	if(_indexPointer) {
-		if(_vertexPointer) {
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(_vertSize, GL_FLOAT, 0, _vertexPointer);
-		}
+    ASSERT(_indexPointer);
+    glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, _indexPointer);
 
-		if(_texCoordPointer) {
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(_texCoordSize, GL_FLOAT, 0, _texCoordPointer);
-		}
-
-		if(_normalPointer) {
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glNormalPointer(GL_FLOAT, 0, _normalPointer);
-		}
-
-		glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, _indexPointer);
-        CheckGLErrors();
-	}
-
-	if(_material) {
-		_material->disable();
+    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
+        (*itr)->postRender();
+    }
+	if(_shader) {
+		_shader->disable();
 	}
 
     glPopMatrix();
@@ -118,7 +96,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			disp.x, pos.y,  pos.z,
 			pos.x,  pos.y,  pos.z
 		};
-		renderable->setVertexPointer(&verts[0], 4, 3);
+        renderable->addRenderState(new VertexBufferState(4, GL_FLOAT, 3, &verts[0]));
 	} else {
 		float verts[4 * 3] = {
 			pos.x,  pos.y,  pos.z,
@@ -126,7 +104,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			disp.x, disp.y, pos.z,
 			pos.x,  disp.y, pos.z
 		};
-		renderable->setVertexPointer(&verts[0], 4, 3);
+        renderable->addRenderState(new VertexBufferState(4, GL_FLOAT, 3, &verts[0]));
 	}
 
 	// Set the texture coordinates
@@ -137,7 +115,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			1, 0,
 			0, 0
 		};
-		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
+        renderable->addRenderState(new TexCoordBufferState(4, GL_FLOAT, 2, &texCoords[0]));
 	} else if(texCoords) {
 		float texCoords[4 * 2] = {
 			0, 0,
@@ -145,7 +123,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			1, 1,
 			0, 1
 		};
-		renderable->setTexCoordPointer(&texCoords[0], 4, 2);
+        renderable->addRenderState(new TexCoordBufferState(4, GL_FLOAT, 2, &texCoords[0]));
 	}
 
 	// Set the normals
@@ -156,7 +134,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			0, 0, 1,
 			0, 0, 1
 		};
-		renderable->setNormalPointer(&normals[0], 4);
+        renderable->addRenderState(new NormalBufferState(4, GL_FLOAT, &normals[0]));
 	}
 
 	// Set the indices
@@ -166,9 +144,9 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 	return renderable;
 }
 
-Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *mat) {
+Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Shader *shader) {
     Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z);
-    renderable->setMaterial(mat);
+    renderable->setShader(shader);
     return renderable;
 }
 
@@ -194,7 +172,7 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
         indexBuffer[i] = i;
     }
 
-    renderable->setVertexPointer(&vertexBuffer[0], size, 3);
+    renderable->addRenderState(new VertexBufferState(size, GL_FLOAT, 3, &vertexBuffer[0]));
     renderable->setIndexPointer(&indexBuffer[0], size);
     renderable->setDrawMode(GL_LINE_STRIP);
 

@@ -4,7 +4,8 @@
 #include <Base/Base.h>
 #include <Base/Vector2.h>
 #include <Base/Matrix4.h>
-#include <Render/Material.h>
+#include <Render/Shader.h>
+#include <Render/BufferState.h>
 #include <SDL/SDL_opengl.h>
 
 class Renderable {
@@ -15,12 +16,11 @@ public:
 	void setViewMatrix(const Matrix4 &matrix);
 	const Matrix4& getViewMatrix() const;
 
-	void setVertexPointer(float *vertexPointer, const unsigned int numVerts, const unsigned int vertSize);
-	void setTexCoordPointer(float *texCoordPointer, const unsigned int numTexCoords, const unsigned int texCoordSize);
-	void setNormalPointer(float *normalPointer, const unsigned int numNormals);
+    void addRenderState(GenericRenderState *renderState);
+    void clearRenderStates();
 	void setIndexPointer(unsigned int *indices, const unsigned int numIndices);
 
-	void setMaterial(Material *material);
+	void setShader(Shader *shader);
     void setDrawMode(GLenum mode);
 
 	void render();
@@ -28,17 +28,17 @@ public:
 public:
 	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z = 0.0f);
     static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals);
-    static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *mat);
+    static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Shader *mat);
     static Renderable* Lines(const std::vector<Vector2> &verts);
+
+private:
+    typedef std::list<GenericRenderState*> RenderStateList;
 
 private:
 	Matrix4 _viewMatrix;
 
-	Material *_material;
-
-	float *_vertexPointer, *_texCoordPointer, *_normalPointer;
-	unsigned int _vertSize, _texCoordSize;
-
+	Shader *_shader;
+    RenderStateList _renderStates;
 	unsigned int *_indexPointer;
 	unsigned int _numIndices;
 

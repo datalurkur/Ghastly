@@ -1,4 +1,5 @@
 #include <Render/BufferState.h>
+#include <Base/Assertion.h>
 
 // Buffer State
 // ============
@@ -35,6 +36,9 @@ void BufferState::postRender() {
 
 // Vertex Buffer State
 // ===================
+VertexBufferState::VertexBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
+    BufferState(numElements, elementType, elementSize, buffer, GL_VERTEX_ARRAY) {}
+
 void VertexBufferState::preRender() {
     BufferState::preRender();
     glVertexPointer(_elementSize, _elementType, 0, _buffer);
@@ -42,6 +46,9 @@ void VertexBufferState::preRender() {
 
 // Tex Coord Buffer State
 // ======================
+TexCoordBufferState::TexCoordBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
+    BufferState(numElements, elementType, elementSize, buffer, GL_TEXTURE_COORD_ARRAY) {}
+
 void TexCoordBufferState::preRender() {
     BufferState::preRender();
     glTexCoordPointer(_elementSize, _elementType, 0, _buffer);
@@ -49,6 +56,9 @@ void TexCoordBufferState::preRender() {
 
 // Color Buffer State
 // ==================
+ColorBufferState::ColorBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
+    BufferState(numElements, elementType, elementSize, buffer, GL_COLOR_ARRAY) {}
+
 void ColorBufferState::preRender() {
     BufferState::preRender();
     glColorPointer(_elementSize, _elementType, 0, _buffer);
@@ -56,8 +66,8 @@ void ColorBufferState::preRender() {
 
 // Normal Buffer State
 // ===================
-NormalBufferState::NormalBufferState(unsigned int numElements, GLenum elementType, void *buffer, GLenum bufferType):
-    BufferState(numElements, elementType, 3, buffer, bufferType) {}
+NormalBufferState::NormalBufferState(unsigned int numElements, GLenum elementType, void *buffer):
+    BufferState(numElements, elementType, 3, buffer, GL_NORMAL_ARRAY) {}
 
 void NormalBufferState::preRender() {
     BufferState::preRender();

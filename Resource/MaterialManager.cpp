@@ -2,6 +2,7 @@
 #include <Base/PropertyMap.h>
 #include <Resource/MaterialManager.h>
 #include <Resource/TextureManager.h>
+#include <Resource/ShaderManager.h>
 
 const std::string MaterialManager::LoadDirectory = "Material";
 
@@ -34,6 +35,12 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
             pMap->getValue(*itr, textureName);
             texture = TextureManager::Get(textureName);
             material->setTexture(texture);
+        } else if(*itr == "shader") {
+            std::string shaderName;
+            Shader *shader;
+            pMap->getValue(*itr, shaderName);
+            shader = ShaderManager::Get(shaderName);
+            material->setShader(shader);
         }
     }
     

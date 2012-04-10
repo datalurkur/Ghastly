@@ -106,8 +106,7 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
     textBox->addRenderState(new TexCoordBufferState(numCharacters * 4, GL_FLOAT, 2, texCoordPointer));
 	textBox->setIndexPointer(indexPointer, numCharacters * 4);
     
-    // FIXME - Shader stuff
-    //textBox->setMaterial(_material);
+    textBox->setMaterial(_material);
 
 	// Free pointers
 	free(vertexPointer);

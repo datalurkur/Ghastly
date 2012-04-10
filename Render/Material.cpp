@@ -1,7 +1,7 @@
 #include <Render/Material.h>
 #include <SDL/SDL_opengl.h>
 
-Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(0) {
+Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(0), _shader(0) {
 }
 
 Material::~Material() {
@@ -23,7 +23,18 @@ Texture *Material::getTexture() {
     return _texture;
 }
 
+void Material::setShader(Shader *shader) {
+    _shader = shader;
+}
+
+Shader *Material::getShader() {
+    return _shader;
+}
+
 void Material::enable() {
+    if(_shader) {
+        _shader->enable();
+    }
     if(_texture) {
 		_texture->enable();
     }
@@ -34,4 +45,7 @@ void Material::disable() {
 	if(_texture) {
 		_texture->disable();
 	}
+    if(_shader) {
+        _shader->disable();
+    }
 }

@@ -2,6 +2,7 @@
 #define MATERIAL_H
 
 #include <Render/Texture.h>
+#include <Render/Shader.h>
 #include <Base/Color.h>
 
 class Material {
@@ -13,6 +14,8 @@ public:
     void setColor(const Color4 &color);
     void setTexture(Texture *texture);
     Texture *getTexture();
+    void setShader(Shader *shader);
+    Shader *getShader();
 
     void enable();
     void disable();
@@ -20,6 +23,7 @@ public:
 private:
     Color4 _color;
     Texture *_texture;
+    Shader *_shader;
 };
 
 #endif

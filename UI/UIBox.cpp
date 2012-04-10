@@ -2,11 +2,10 @@
 #include <Resource/MaterialManager.h>
 
 UIBox::UIBox(const std::string &name, const Vector2 &pos, const Vector2 &dims, const std::string &material, float borderWidth, const std::string &borderMaterial):
-    UIElement(name, pos, dims) {//, _material(0), _uiBorder(borderWidth), _borderMaterial(0) {
-    // FIXME - Shader stuff
-    //_material = MaterialManager::Get(material);
+    UIElement(name, pos, dims), _material(0), _uiBorder(borderWidth), _borderMaterial(0) {
+    _material = MaterialManager::Get(material);
     if(_uiBorder != 0.0f) {
-        //_borderMaterial = MaterialManager::Get(borderMaterial);
+        _borderMaterial = MaterialManager::Get(borderMaterial);
     }
 }
 
@@ -28,8 +27,7 @@ void UIBox::resize(int width, int height) {
     } else {
         renderable = Renderable::OrthoBox(Vector3(0.0f, 0.0f, 0.0f), Vector2(_dimensions.x, _dimensions.y), false, false);
     }
-    // FIXME - Shader stuff
-    //renderable->setMaterial(_material);
+    renderable->setMaterial(_material);
     addRenderable(renderable);
 
     if(_uiBorder != 0.0f) {
@@ -41,22 +39,22 @@ void UIBox::resize(int width, int height) {
 		
         // Top border
         renderable = Renderable::OrthoBox(Vector3(bWidth, _dimensions.h, 0.0f), Vector2(_dimensions.w - (bWidth * 2), -bHeight), false, false);
-        //renderable->setMaterial(_borderMaterial);
+        renderable->setMaterial(_borderMaterial);
         addRenderable(renderable);
 
         // Bottom border
         renderable = Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(_dimensions.w - (bWidth * 2), bHeight), false, false);
-        //renderable->setMaterial(_borderMaterial);
+        renderable->setMaterial(_borderMaterial);
         addRenderable(renderable);
 		
         // Left border
         renderable = Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false);
-        //renderable->setMaterial(_borderMaterial);
+        renderable->setMaterial(_borderMaterial);
         addRenderable(renderable);
 
         // Right border
         renderable = Renderable::OrthoBox(Vector3(_dimensions.w, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false);
-        //renderable->setMaterial(_borderMaterial);
+        renderable->setMaterial(_borderMaterial);
         addRenderable(renderable);
     }
 }

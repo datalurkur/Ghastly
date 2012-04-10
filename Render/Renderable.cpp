@@ -3,7 +3,7 @@
 #include <Base/Log.h>
 
 Renderable::Renderable():
-	_viewMatrix(Matrix4::Identity), _shader(0),
+	_viewMatrix(Matrix4::Identity), _material(0),
 	_indexPointer(0), _numIndices(0),
 	_drawMode(GL_QUADS)
 {
@@ -41,8 +41,8 @@ void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int 
 	_numIndices = numIndices;
 }
 
-void Renderable::setShader(Shader *shader) {
-	_shader = shader;
+void Renderable::setMaterial(Material *material) {
+	_material = material;
 }
 
 void Renderable::setDrawMode(GLenum mode) {
@@ -55,8 +55,8 @@ void Renderable::render() {
     glPushMatrix();
     glMultMatrixf(_viewMatrix.ptr());
 
-	if(_shader) {
-		_shader->enable();
+	if(_material) {
+		_material->enable();
 	}
     for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
         (*itr)->preRender();
@@ -68,8 +68,8 @@ void Renderable::render() {
     for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
         (*itr)->postRender();
     }
-	if(_shader) {
-		_shader->disable();
+	if(_material) {
+		_material->disable();
 	}
 
     glPopMatrix();
@@ -144,9 +144,9 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 	return renderable;
 }
 
-Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Shader *shader) {
+Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material) {
     Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z);
-    renderable->setShader(shader);
+    renderable->setMaterial(material);
     return renderable;
 }
 

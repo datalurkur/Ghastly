@@ -4,7 +4,7 @@
 #include <Base/Base.h>
 #include <Base/Vector2.h>
 #include <Base/Matrix4.h>
-#include <Render/Shader.h>
+#include <Render/Material.h>
 #include <Render/BufferState.h>
 #include <SDL/SDL_opengl.h>
 
@@ -20,7 +20,7 @@ public:
     void clearRenderStates();
 	void setIndexPointer(unsigned int *indices, const unsigned int numIndices);
 
-	void setShader(Shader *shader);
+	void setMaterial(Material *material);
     void setDrawMode(GLenum mode);
 
 	void render();
@@ -28,7 +28,7 @@ public:
 public:
 	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z = 0.0f);
     static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals);
-    static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Shader *mat);
+    static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material);
     static Renderable* Lines(const std::vector<Vector2> &verts);
 
 private:
@@ -37,7 +37,7 @@ private:
 private:
 	Matrix4 _viewMatrix;
 
-	Shader *_shader;
+	Material *_material;
     RenderStateList _renderStates;
 	unsigned int *_indexPointer;
 	unsigned int _numIndices;

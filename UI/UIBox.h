@@ -10,11 +10,10 @@ public:
 
 private:
     Vector2 _uiDimensions;
-    // FIXME - Shader stuff
-    //Material *_material;
+    Material *_material;
 
     float _uiBorder;
-    //Material *_borderMaterial;
+    Material *_borderMaterial;
 };
 
 #endif

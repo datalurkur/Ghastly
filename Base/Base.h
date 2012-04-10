@@ -28,7 +28,10 @@
 #include <vector>
 
 // SDL
-#include "SDL/SDL.h"
+// Turn off GL extensions so we can enable GLSL shaders ourselves
+#define NO_SDL_GLEXT
+#include <SDL/SDL.h>
+#include <SDL/SDL_opengl.h>
 
 // Platform-specific defines
 #define	PLATFORM_APPLE 0
@@ -49,6 +52,8 @@
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>
+#elif SYS_PLATFORM == PLATFORM_APPLE
+# include <OpenGL/glext.h>
 #endif
 
 #if SYS_PLATFORM != PLATFORM_WIN32

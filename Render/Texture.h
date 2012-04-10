@@ -1,7 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <SDL/SDL_opengl.h>
 #include <SDL/SDL_image.h>
 #include <Base/Base.h>
 

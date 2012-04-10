@@ -6,17 +6,10 @@
 
 class ShaderParameter {
 public:
-    ShaderParameter(const std::string &parameterName);
+    ShaderParameter(GLenum type, unsigned int count, void *data);
     ~ShaderParameter();
 
-    void bind(Shader *shader);
-
-    void setData(GLenum type, unsigned int count, void *data);
-
 private:
-    std::string _parameterName;
-    GLint _parameterLocation;
-
     GLenum _type;
     unsigned int _count;
     void *_data;

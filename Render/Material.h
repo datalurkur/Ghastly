@@ -10,20 +10,20 @@ public:
     Material();
     virtual ~Material();
 
-    void setColor(float r, float g, float b, float a);
-    void setColor(const Color4 &color);
-    void setTexture(Texture *texture);
-    Texture *getTexture();
     void setShader(Shader *shader);
     Shader *getShader();
+
+    void setUniform(const std::string &name, ShaderParameter *param);
+    ShaderParameter* getUniform(const std::string &name)
 
     void enable();
     void disable();
 
 private:
-    Color4 _color;
-    Texture *_texture;
     Shader *_shader;
+
+    typedef std::map<std::string, ShaderParameter*> ShaderParamMap;
+    ShaderParamMap _shaderUniforms;
 };
 
 #endif

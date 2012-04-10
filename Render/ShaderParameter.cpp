@@ -1,20 +1,8 @@
 #include <Render/ShaderParameter.h>
 #include <Base/Assertion.h>
 
-ShaderParameter::ShaderParameter(const std::string &parameterName):
-    _parameterName(parameterName), _data(0)
+ShaderParameter::ShaderParameter(GLenum type, unsigned int count, void *data):
 {
-}
-
-ShaderParameter::~ShaderParameter() {
-    if(_data) { free(_data); }
-}
-
-void ShaderParameter::bind(Shader *shader) {
-    _parameterLocation = shader->getUniformLocation(_parameterName);
-}
-
-void ShaderParameter::setData(GLenum type, unsigned int count, void *data) {
     unsigned int totalByteSize;
 
     _type = type;
@@ -35,7 +23,10 @@ void ShaderParameter::setData(GLenum type, unsigned int count, void *data) {
         break;
     };
 
-    if(_data) { free(_data); }
     _data = malloc(totalByteSize);
     memcpy(_data, data, totalByteSize);
+}
+
+ShaderParameter::~ShaderParameter() {
+    free(_data);
 }

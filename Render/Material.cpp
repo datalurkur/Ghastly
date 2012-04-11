@@ -1,48 +1,30 @@
 #include <Render/Material.h>
 #include <SDL/SDL_opengl.h>
 
-Material::Material(): _shader(0) {
+Material::Material(): _shader(0), _ubo(0) {
 }
 
 Material::~Material() {
+    if(_ubo) { delete _ubo; }
 }
 
 void Material::setShader(Shader *shader) {
     _shader = shader;
+    _ubo = _shader->createUniformBuffer();
 }
 
 Shader *Material::getShader() {
     return _shader;
 }
 
-void Material::setUniform(const std::string &name, ShaderParameter *param) {
-    ShaderParamMap::iterator itr;
-    itr = _shaderUniforms.find(name);
-    if(itr != _shaderUniforms.end()) {
-        delete itr->second;
-    }
-    _shaderUniforms[name] = param;
-}
-
-ShaderParameter* Material::getUniform(const std::string &name) {
-    ShaderParamMap::iterator itr;
-    itr = _shaderUniforms.find(name);
-
-    if(itr != _shaderUniforms.end()) {
-        return itr->second;
-    } else {
-        return 0;
-    }
+void Material::setUniform(const std::string &name, const ShaderParameter &param) {
+    ASSERT(_ubo);
+    _ubo->setParameter(name, param.getUniformData());
 }
 
 void Material::enable() {
     if(_shader) {
         _shader->enable();
-    }
-
-    ShaderParamList::iterator itr;
-    for(itr = _shaderUniforms.begin(); itr != _shaderUniforms.end(); itr++ ) {
-        ASSERT(0);
     }
 }
 

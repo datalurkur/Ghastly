@@ -2,6 +2,8 @@
 #include <Resource/TextureManager.h>
 #include <Base/Base.h>
 #include <Base/PropertyMap.h>
+#include <Render/TextureParameter.h>
+#include <Render/ColorParameter.h>
 
 const std::string TTFManager::LoadDirectory = "Font";
 
@@ -140,10 +142,9 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
     }
 
 	// Populate the texture with data
-	font->getMaterial()->getTexture()->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
-
-	// TODO - Figure out how to make this color mutable
-	font->_material->setColor(fontColor);
+    font->_glyph->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
+    font->_material->setUniform("texture", TextureParameter(font->_glyph));
+	font->_material->setUniform("color", ColorParameter(fontColor));
 
     free(texels);
 }

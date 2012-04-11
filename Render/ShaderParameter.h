@@ -6,13 +6,10 @@
 
 class ShaderParameter {
 public:
-    ShaderParameter(GLenum type, unsigned int count, void *data);
-    ~ShaderParameter();
+    virtual void enable();
+    virtual void disable();
 
-private:
-    GLenum _type;
-    unsigned int _count;
-    void *_data;
+    virtual const void *getUniformData() const = 0;
 };
 
 #endif

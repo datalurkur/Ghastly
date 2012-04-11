@@ -1,7 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <SDL/SDL_opengl.h>
+#include <Base/Base.h>
+#include <Render/UniformBuffer.h>
 
 class Shader {
 public:
@@ -9,18 +10,22 @@ public:
     virtual ~Shader();
 
     GLuint compile(const char *shaderProgramData, GLenum type);
+    void bindToUniformBlock(const std::string &uniformBlockName);
+
     void setup(GLuint vertexShader, GLuint geometryShader, GLuint fragmentShader);
     void teardown();
+
+    UniformBuffer* createUniformBuffer();
 
     void enable();
     void disable();
 
-    GLint getAttributeLocation(const std::string &attributeName);
-    GLint getUniformLocation(const std::string &uniformName);
-
 protected:
     GLuint _program;
     GLuint _vertexShader, _geometryShader, _fragmentShader;
+
+    bool _hasUniformBlock;
+    std::string _uniformBlockName;
 
     friend class ShaderManager;
 };

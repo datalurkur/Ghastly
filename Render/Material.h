@@ -3,6 +3,7 @@
 
 #include <Render/Texture.h>
 #include <Render/Shader.h>
+#include <Render/ShaderParameter.h>
 #include <Base/Color.h>
 
 class Material {
@@ -13,17 +14,14 @@ public:
     void setShader(Shader *shader);
     Shader *getShader();
 
-    void setUniform(const std::string &name, ShaderParameter *param);
-    ShaderParameter* getUniform(const std::string &name)
+    void setUniform(const std::string &name, const ShaderParameter &param);
 
     void enable();
     void disable();
 
 private:
     Shader *_shader;
-
-    typedef std::map<std::string, ShaderParameter*> ShaderParamMap;
-    ShaderParamMap _shaderUniforms;
+    UniformBuffer *_ubo;
 };
 
 #endif

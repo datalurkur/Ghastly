@@ -25,6 +25,7 @@ public:
 	Font();
 	virtual ~Font();
 
+    void setup();
     void teardown();
 
     Renderable* createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment);
@@ -58,6 +59,7 @@ protected:
 	int _fontLineSkip;
 
 	Material *_material;
+    Texture *_glyph;
 
     friend class TTFManager;
 };

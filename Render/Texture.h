@@ -26,6 +26,7 @@ protected:
 	unsigned int _frames;
 
 	friend class TextureManager;
+    friend class TextureParameter;
 };
 
 #endif

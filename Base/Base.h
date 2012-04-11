@@ -52,6 +52,8 @@
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>
+//# define GL_GLEXT_PROTOTYPES 1
+# include <GL/glext.h>
 #elif SYS_PLATFORM == PLATFORM_APPLE
 # include <OpenGL/glext.h>
 #endif

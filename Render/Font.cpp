@@ -4,23 +4,25 @@
 
 Font::Font() {
     _material = new Material();
-
-    _material->setTexture(new Texture());
-    _material->getTexture()->setup();
+    _glyph = new Texture();
 }
 
 Font::~Font() {
+    if(_glyph) {
+        delete _glyph;
+    }
+
     if(_material) {
-        if(_material->getTexture()) {
-            delete _material->getTexture();
-        }
         delete _material;
     }
 }
 
+void Font::setup() {
+    _glyph->setup();
+}
+
 void Font::teardown() {
-    _material->getTexture()->teardown();
-    _material->getTexture()->setup();
+    _glyph->teardown();
 }
 
 Renderable* Font::createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment) {

@@ -2,7 +2,7 @@
 #include <Render/Shader.h>
 
 Shader::Shader():
-    _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0)
+    _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0), _hasUniformBlock(false)
 {
 }
 
@@ -22,6 +22,11 @@ GLuint Shader::compile(const char *shaderProgramData, GLenum type) {
     ASSERT(compileStatus);
 
     return shader;
+}
+
+void Shader::bindToUniformBlock(const std::string &uniformBlockName) {
+    _hasUniformBlock = true;
+    _uniformBlockName = uniformBlockName;
 }
 
 void Shader::setup(GLuint vertexShader, GLuint geometryShader, GLuint fragmentShader) {
@@ -76,19 +81,29 @@ void Shader::teardown() {
     }
 }
 
+UniformBuffer* Shader::createUniformBuffer() {
+    if(_hasUniformBlock) {
+        UniformBuffer *uBuffer = new UniformBuffer();
+
+        if(uBuffer->setup(_program, _uniformBlockName)) {
+            return uBuffer;
+        } else {
+            delete uBuffer;
+        }
+    }
+
+	return 0;
+}
+
 void Shader::enable() {
     ASSERT(_program);
     glUseProgram(_program);
+    // Not certain this is necessary
+    //if(_ubo) { _ubo->enable(); }
 }
 
 void Shader::disable() {
+    // Not certain this is necessary
+    //if(_ubo) { _ubo->disable(); }
     glUseProgram(0);
-}
-
-GLint Shader::getAttributeLocation(const std::string &attributeName) {
-    return glGetAttribLocation(_program, attributeName.c_str());
-}
-
-GLint Shader::getUniformLocation(const std::string &uniformName) {
-    return glGetUniformLocation(_program, uniformName.c_str());
 }

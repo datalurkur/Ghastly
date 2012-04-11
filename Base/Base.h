@@ -49,10 +49,12 @@
 #if SYS_PLATFORM == PLATFORM_WIN32
 # define WIN32_LEAN_AND_MEAN
 # define sleep(seconds) Sleep(seconds*1000)
+// Windows doesn't include anything beyond OGL 1.1
+// We need to either use glew or manually define the GL extensions we need using wglGetProcAddress
+//# include <gl/glext.h>
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>
-//# define GL_GLEXT_PROTOTYPES 1
 # include <GL/glext.h>
 #elif SYS_PLATFORM == PLATFORM_APPLE
 # include <OpenGL/glext.h>

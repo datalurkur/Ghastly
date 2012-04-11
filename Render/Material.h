@@ -14,7 +14,7 @@ public:
     void setShader(Shader *shader);
     Shader *getShader();
 
-    void setUniform(const std::string &name, const ShaderParameter &param);
+    void setParameter(const std::string &name, ShaderParameter *param);
 
     void enable();
     void disable();
@@ -22,6 +22,9 @@ public:
 private:
     Shader *_shader;
     UniformBuffer *_ubo;
+
+    typedef std::map<std::string,ShaderParameter*> ShaderParamMap;
+    ShaderParamMap _shaderParams;
 };
 
 #endif

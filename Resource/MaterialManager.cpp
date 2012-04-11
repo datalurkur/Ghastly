@@ -1,5 +1,7 @@
 #include <Base/Base.h>
 #include <Base/PropertyMap.h>
+#include <Render/TextureParameter.h>
+#include <Render/ColorParameter.h>
 #include <Resource/MaterialManager.h>
 #include <Resource/TextureManager.h>
 #include <Resource/ShaderManager.h>
@@ -28,13 +30,13 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
         if(*itr == "color4") {
             Color4 color;
             pMap->getValue(*itr, color);
-            material->setColor(color);
+            material->setParameter("color", new ColorParameter(color));
         } else if(*itr == "texture") {
             std::string textureName;
             Texture *texture;
             pMap->getValue(*itr, textureName);
             texture = TextureManager::Get(textureName);
-            material->setTexture(texture);
+            material->setParameter("texture", new TextureParameter(texture));
         } else if(*itr == "shader") {
             std::string shaderName;
             Shader *shader;

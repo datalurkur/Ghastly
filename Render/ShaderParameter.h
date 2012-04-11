@@ -6,10 +6,17 @@
 
 class ShaderParameter {
 public:
+    ShaderParameter(bool hasState = false);
+
+    bool hasState() const;
+
     virtual void enable();
     virtual void disable();
 
     virtual const void *getUniformData() const = 0;
+
+private:
+    bool _hasState;
 };
 
 #endif

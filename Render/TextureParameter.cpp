@@ -2,7 +2,7 @@
 #include <Base/Assertion.h>
 
 TextureParameter::TextureParameter(Texture *texture, GLuint frame, GLuint channel):
-    _texture(texture), _frame(frame), _channel(channel)
+    ShaderParameter(true), _texture(texture), _frame(frame), _channel(channel)
 {
     // Multitexturing is not yet supported
     ASSERT(_channel == 0);

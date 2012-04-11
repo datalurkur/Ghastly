@@ -74,10 +74,8 @@
     <ClCompile Include="..\..\Base\Timestamp.cpp" />
     <ClCompile Include="..\..\Network\ClientProvider.cpp" />
     <ClCompile Include="..\..\Network\ConnectionBuffer.cpp" />
-    <ClCompile Include="..\..\Network\ConnectionProvider.cpp" />
     <ClCompile Include="..\..\Network\GhastlyClient.cpp" />
     <ClCompile Include="..\..\Network\GhastlyHost.cpp" />
-    <ClCompile Include="..\..\Network\GhastlyProtocol.cpp" />
     <ClCompile Include="..\..\Network\GhastlyServer.cpp" />
     <ClCompile Include="..\..\Network\ListenSocket.cpp" />
     <ClCompile Include="..\..\Network\MultiConnectionProvider.cpp" />

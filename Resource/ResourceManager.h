@@ -52,7 +52,7 @@ typename ResourceManager<T,F>::ContentMap ResourceManager<T,F>::Resources;
 
 template <typename T, typename F>
 void ResourceManager<T,F>::Setup() {
-	FileSystem::GetDirectoryContents(LoadPath(), F::AvailableResources);
+	FileSystem::GetDirectoryContents(LoadPath(), F::AvailableResources, false);
 	std::vector<std::string>::iterator itr = F::AvailableResources.begin();
 	/*for(; itr != F::AvailableResources.end(); itr++) {
 		Info(" - " << (*itr));

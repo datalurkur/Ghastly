@@ -6,7 +6,7 @@
 
 class ShaderManager;
 
-class ShaderManager: public ThreadedResourceManager<Shader, ShaderManager> {
+class ShaderManager: public ResourceManager<Shader, ShaderManager> {
 protected:
     static void DoLoad(const std::string &name, Shader *shader);
     static const std::string LoadDirectory;

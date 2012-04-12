@@ -1,9 +1,6 @@
 #include <Base/Assertion.h>
 #include <Render/Shader.h>
 
-// DEBUG
-#include <OpenGL/CGLCurrent.h> 
-
 Shader::Shader():
     _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0), _hasUniformBlock(false)
 {
@@ -16,16 +13,24 @@ Shader::~Shader() {
 GLuint Shader::compile(const char *shaderProgramData, GLenum type) {
     GLuint shader;
     GLint compileStatus;
-
-    // DEBUG
-    ASSERT(CGLGetCurrentContext);
-
+    
     shader = glCreateShader(type);
     glShaderSource(shader, 1, &shaderProgramData, NULL);
     glCompileShader(shader);
 
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
-    ASSERT(compileStatus);
+    if(!compileStatus) {
+        GLchar *buffer;
+        GLsizei bufferLength, actualLength;
+        
+        bufferLength=512;
+        buffer = (GLchar*)calloc(sizeof(GLchar), bufferLength);
+        glGetShaderInfoLog(shader, bufferLength, &actualLength, buffer);
+        Error("Shader failed to compile: " << buffer);
+        free(buffer);
+        
+        ASSERT(0);   
+    }
 
     return shader;
 }

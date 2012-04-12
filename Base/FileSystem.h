@@ -14,7 +14,7 @@
 class FileSystem {
 public:
     template <typename T>
-	static void GetDirectoryContents(const std::string &dir, T &files);
+	static void GetDirectoryContents(const std::string &dir, T &files, bool includeDirectories = true);
 
 	static unsigned int GetFileData(const std::string &filename, char **data);
     static bool SaveFileData(const std::string &filename, char *data, unsigned int size);
@@ -23,7 +23,7 @@ public:
 };
 
 template <typename T>
-void FileSystem::GetDirectoryContents(const std::string &dir, T &files) {
+void FileSystem::GetDirectoryContents(const std::string &dir, T &files, bool includeDirectories) {
 	std::string cleanDirName;
     
     // Clean up the directory name
@@ -44,7 +44,7 @@ void FileSystem::GetDirectoryContents(const std::string &dir, T &files) {
 		return;
 	}
 	while(_findnext(handle, &fileInfo) == 0) {
-        if(fileInfo.name[0] != '.') {
+        if((fileInfo.name[0] != '.') && (fileInfo.attrib == _A_NORMAL)) {
             files.push_back(fileInfo.name);
         }
 	}
@@ -61,7 +61,7 @@ void FileSystem::GetDirectoryContents(const std::string &dir, T &files) {
     
     // Iterate through the directory
     while((entry = readdir(dirObj)) != 0) {
-        if(entry->d_name[0] != '.') {
+        if((entry->d_name[0] != '.') && (entry->d_type == DT_REG)) {
             files.push_back(entry->d_name);
         }
     }

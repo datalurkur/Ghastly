@@ -5,10 +5,10 @@
 
 class UniformBuffer {
 public:
-    UniformBuffer();
+    UniformBuffer(GLuint program);
     ~UniformBuffer();
 
-    bool setup(GLuint program, const std::string &blockName);
+    bool setup(const std::string &blockName);
     void teardown();
 
     void enable();
@@ -17,7 +17,7 @@ public:
     void setParameter(const std::string &name, const void *data);
 
 private:
-    void fetchUniformData(GLint program);
+    void fetchUniformData();
 
     GLuint getUniformIndex(const std::string &name);
     GLint getUniformOffset(GLuint index);
@@ -27,6 +27,8 @@ private:
     void uploadBufferData(const void *data);
 
 private:
+    GLuint _program;
+
     GLint _blockIndex;
     GLint _blockSize;
     GLuint _bufferHandle;

@@ -27,12 +27,6 @@
 #include <list>
 #include <vector>
 
-// SDL
-// Turn off GL extensions so we can enable GLSL shaders ourselves
-#define NO_SDL_GLEXT
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-
 // Platform-specific defines
 #define	PLATFORM_APPLE 0
 #define PLATFORM_WIN32 1
@@ -46,12 +40,23 @@
 # define SYS_PLATFORM PLATFORM_LINUX
 #endif
 
+// OpenGL extension wrangler (necessary for OGL extensions in Windows)
+#if SYS_PLATFORM == PLATFORM_WIN32
+# include <GL/glew.h>
+#endif
+
+// SDL
+// Turn off GL extensions so we can enable GLSL shaders ourselves
+#define NO_SDL_GLEXT
+#include <SDL/SDL.h>
+
+#if SYS_PLATFORM != PLATFORM_WIN32
+# include <SDL/SDL_opengl.h>
+#endif
+
 #if SYS_PLATFORM == PLATFORM_WIN32
 # define WIN32_LEAN_AND_MEAN
 # define sleep(seconds) Sleep(seconds*1000)
-// Windows doesn't include anything beyond OGL 1.1
-// We need to either use glew or manually define the GL extensions we need using wglGetProcAddress
-//# include <gl/glext.h>
 #elif SYS_PLATFORM == PLATFORM_LINUX
 # include <GL/gl.h>
 # include <GL/glu.h>

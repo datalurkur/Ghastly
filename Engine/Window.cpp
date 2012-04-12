@@ -48,7 +48,9 @@ void Window::resize(int w, int h) {
 	if(!(_frameBuffer = SDL_SetVideoMode(_w, _h, 32, _videoFlags))) {
 		Error("Failed to create frame buffer.");
         ASSERT(0);
-	}
+	} else {
+        Info("Framebuffer setup complete.");
+    }
 }
 
 void Window::swapBuffers() const {

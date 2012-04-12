@@ -33,6 +33,12 @@ void PropertyMap::getKeys(std::list<std::string> &keys) {
     }
 }
 
+bool PropertyMap::hasKey(const std::string &key) {
+    std::map<std::string,std::string>::iterator itr;
+    itr = _mapData.find(key);
+    return(itr != _mapData.end());
+}
+
 template <>
 void PropertyMap::getValue(const std::string &key, std::string &value) {
     value = _mapData[key];

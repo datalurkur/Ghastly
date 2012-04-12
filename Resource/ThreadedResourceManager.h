@@ -41,7 +41,6 @@ public:
     static void Teardown();
 
     static T* Get(const std::string &name);
-	static T* Load(const std::string &name);
     static T* Load(const std::string &name, T* t = 0);
     static void Unload(T* t);
 	static void Unload(const std::string &name);
@@ -115,21 +114,6 @@ T* ThreadedResourceManager<T,F>::Get(const std::string &name) {
 
 	LOCK_MUTEX;
 	t = ResourceManager<T,F>::Get(name);
-    UNLOCK_MUTEX;
-
-    return t;
-}
-
-template <typename T, typename F>
-T* ThreadedResourceManager<T,F>::Load(const std::string &name) {
-	T *t;
-
-	LOCK_MUTEX;
-	t = new T();
-	ResourceThreadParams params(name, (void*)t, F::Lock);
-    SDL_Thread *thread = SDL_CreateThread(F::ThreadedLoad, (void*)&params);
-    F::Threads[t] = ThreadInfo(thread);
-    F::Resources[name] = t;
     UNLOCK_MUTEX;
 
     return t;

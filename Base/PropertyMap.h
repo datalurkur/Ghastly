@@ -9,6 +9,7 @@ public:
     PropertyMap(const char *data);
 
     void getKeys(std::list<std::string> &keys);
+    bool hasKey(const std::string &key);
     
     template <typename T>
     void getValue(const std::string &key, T &value);

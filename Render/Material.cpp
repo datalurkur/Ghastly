@@ -16,7 +16,14 @@ Material::~Material() {
 
 void Material::setShader(Shader *shader) {
     _shader = shader;
+
+    if(_ubo) { delete _ubo; }
     _ubo = _shader->createUniformBuffer();
+
+    ShaderParamMap::iterator itr;
+    for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
+        _ubo->setParameter(itr->first, itr->second->getUniformData());
+    }
 }
 
 Shader *Material::getShader() {
@@ -47,6 +54,8 @@ void Material::enable() {
     if(_shader) {
         _shader->enable();
     }
+    
+    if(_ubo) { _ubo->enable(); }
 
     for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
         if(itr->second->hasState()) { itr->second->enable(); }
@@ -59,6 +68,8 @@ void Material::disable() {
     for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
         if(itr->second->hasState()) { itr->second->disable(); }
     }
+    
+    if(_ubo) { _ubo->disable(); }
 
     if(_shader) {
         _shader->disable();

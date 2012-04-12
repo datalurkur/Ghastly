@@ -15,7 +15,7 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
     PropertyMap *pMap;
     std::list<std::string> keys;
     std::list<std::string>::iterator itr;
-
+    
     // Load the PMap
 	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
     if(fileSize == 0) {
@@ -25,6 +25,15 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
     pMap = new PropertyMap(fileData);
     free(fileData);
     
+    // The shader must be set first
+    std::string shaderName;
+    if(pMap->hasKey("shader")) {
+        pMap->getValue("shader", shaderName);
+    } else {
+        shaderName = "default";
+    }
+    material->setShader(ShaderManager::Get(shaderName));
+
     pMap->getKeys(keys);
     for(itr = keys.begin(); itr != keys.end(); itr++) {
         if(*itr == "color4") {
@@ -37,12 +46,6 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
             pMap->getValue(*itr, textureName);
             texture = TextureManager::Get(textureName);
             material->setParameter("texture", new TextureParameter(texture));
-        } else if(*itr == "shader") {
-            std::string shaderName;
-            Shader *shader;
-            pMap->getValue(*itr, shaderName);
-            shader = ShaderManager::Get(shaderName);
-            material->setShader(shader);
         }
     }
     

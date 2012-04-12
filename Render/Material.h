@@ -11,9 +11,9 @@ public:
     Material();
     virtual ~Material();
 
-    void setShader(Shader *shader);
     Shader *getShader();
-
+    
+    void setShader(Shader *shader);
     void setParameter(const std::string &name, ShaderParameter *param);
 
     void enable();

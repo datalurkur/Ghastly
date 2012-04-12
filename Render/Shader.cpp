@@ -1,6 +1,9 @@
 #include <Base/Assertion.h>
 #include <Render/Shader.h>
 
+// DEBUG
+#include <OpenGL/CGLCurrent.h> 
+
 Shader::Shader():
     _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0), _hasUniformBlock(false)
 {
@@ -13,6 +16,9 @@ Shader::~Shader() {
 GLuint Shader::compile(const char *shaderProgramData, GLenum type) {
     GLuint shader;
     GLint compileStatus;
+
+    // DEBUG
+    ASSERT(CGLGetCurrentContext);
 
     shader = glCreateShader(type);
     glShaderSource(shader, 1, &shaderProgramData, NULL);
@@ -83,9 +89,9 @@ void Shader::teardown() {
 
 UniformBuffer* Shader::createUniformBuffer() {
     if(_hasUniformBlock) {
-        UniformBuffer *uBuffer = new UniformBuffer();
+        UniformBuffer *uBuffer = new UniformBuffer(_program);
 
-        if(uBuffer->setup(_program, _uniformBlockName)) {
+        if(uBuffer->setup(_uniformBlockName)) {
             return uBuffer;
         } else {
             delete uBuffer;
@@ -98,12 +104,8 @@ UniformBuffer* Shader::createUniformBuffer() {
 void Shader::enable() {
     ASSERT(_program);
     glUseProgram(_program);
-    // Not certain this is necessary
-    //if(_ubo) { _ubo->enable(); }
 }
 
 void Shader::disable() {
-    // Not certain this is necessary
-    //if(_ubo) { _ubo->disable(); }
     glUseProgram(0);
 }

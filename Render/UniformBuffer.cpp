@@ -12,7 +12,7 @@ UniformBuffer::~UniformBuffer() {
 bool UniformBuffer::setup(const std::string &blockName) {
     // Find the block index
     _blockIndex = glGetUniformBlockIndex(_program, blockName.c_str());
-    if(_blockIndex != -1) {
+    if(_blockIndex == -1) {
         Error("Uniform block " << blockName << " not found for shader.");
         return false;
     }

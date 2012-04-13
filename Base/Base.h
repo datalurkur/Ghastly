@@ -40,10 +40,7 @@
 # define SYS_PLATFORM PLATFORM_LINUX
 #endif
 
-// OpenGL extension wrangler (necessary for OGL extensions in Windows)
-#if SYS_PLATFORM == PLATFORM_WIN32
-# include <GL/glew.h>
-#endif
+#include <GL/glew.h>
 
 // SDL
 // Turn off GL extensions so we can enable GLSL shaders ourselves

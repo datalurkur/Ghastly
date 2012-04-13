@@ -7,6 +7,7 @@
 class ShaderParameter {
 public:
     ShaderParameter(bool hasState = false);
+    virtual ~ShaderParameter();
 
     bool hasState() const;
 

@@ -31,6 +31,8 @@ void Window::setup() {
 }
 
 void Window::resize(int w, int h) {
+    GLenum glewStatus;
+
 	_w = w;
 	_h = h;
 
@@ -51,6 +53,15 @@ void Window::resize(int w, int h) {
 	} else {
         Info("Framebuffer setup complete.");
     }
+    
+    // Setup GLEW
+    glewStatus = glewInit();
+    if(glewStatus != GLEW_OK) {
+        Error("Error during extension wrangling: " << glewStatus);
+        ASSERT(0);
+    }
+    
+    // TODO - This is where we ought to check extensions to make sure all good things are supported
 }
 
 void Window::swapBuffers() const {

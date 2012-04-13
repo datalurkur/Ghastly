@@ -44,7 +44,7 @@ void FileSystem::GetDirectoryContents(const std::string &dir, T &files, bool inc
 		return;
 	}
 	while(_findnext(handle, &fileInfo) == 0) {
-        if((fileInfo.name[0] != '.') && (fileInfo.attrib == _A_NORMAL)) {
+        if((fileInfo.name[0] != '.') && (fileInfo.attrib != _A_SUBDIR || includeDirectories)) {
             files.push_back(fileInfo.name);
         }
 	}
@@ -61,7 +61,7 @@ void FileSystem::GetDirectoryContents(const std::string &dir, T &files, bool inc
     
     // Iterate through the directory
     while((entry = readdir(dirObj)) != 0) {
-        if((entry->d_name[0] != '.') && (entry->d_type == DT_REG)) {
+        if((entry->d_name[0] != '.') && (entry->d_type == DT_REG || includeDirectories)) {
             files.push_back(entry->d_name);
         }
     }

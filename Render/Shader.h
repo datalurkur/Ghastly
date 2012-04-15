@@ -10,12 +10,12 @@ public:
     virtual ~Shader();
 
     GLuint compile(const char *shaderProgramData, GLenum type);
-    void bindToUniformBlock(const std::string &uniformBlockName);
+    GLint getUniformLocation(const std::string &uniformName);
 
     void setup(GLuint vertexShader, GLuint geometryShader, GLuint fragmentShader);
     void teardown();
 
-    UniformBuffer* createUniformBuffer();
+    UniformBuffer* createUniformBuffer(const std::string &uniformBlockName);
 
     void enable();
     void disable();
@@ -23,9 +23,6 @@ public:
 protected:
     GLuint _program;
     GLuint _vertexShader, _geometryShader, _fragmentShader;
-
-    bool _hasUniformBlock;
-    std::string _uniformBlockName;
 
     friend class ShaderManager;
 };

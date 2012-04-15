@@ -15,13 +15,21 @@ public:
     void disable();
 
     void setParameter(const std::string &name, const void *data);
+    
+private:
+    struct UniformInfo {
+        GLuint index;
+        GLint offset;
+        GLint size;
+
+        UniformInfo();
+        UniformInfo(GLuint i, GLint o, GLint s);
+        UniformInfo(const UniformInfo &other);
+    };
 
 private:
     void fetchUniformData();
-
-    GLuint getUniformIndex(const std::string &name);
-    GLint getUniformOffset(GLuint index);
-    GLint getUniformSize(GLuint index);
+    const UniformInfo& getUniformData(const std::string &name);
 
     void uploadPartialBufferData(unsigned int offset, unsigned int size, const void *data);
     void uploadBufferData(const void *data);
@@ -33,9 +41,7 @@ private:
     GLint _blockSize;
     GLuint _bufferHandle;
 
-    std::map<std::string,GLuint> _uniformIndices;
-    std::map<GLuint,GLint> _uniformOffsets;
-    std::map<GLuint,GLint> _uniformSizes;
+    std::map<std::string,UniformInfo> _uniformData;
 };
 
 #endif

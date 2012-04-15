@@ -12,9 +12,6 @@ void ShaderManager::DoLoad(const std::string &name, Shader *shader) {
     std::list<std::string>::iterator itr;
 
     GLuint vShader, gShader, fShader;
-    
-    bool hasUniformBlock;
-    std::string uniformBlockName;
 
     // Load the PMap
 	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
@@ -59,16 +56,9 @@ void ShaderManager::DoLoad(const std::string &name, Shader *shader) {
                 continue;
             }
             fShader = shader->compile(fileData, GL_FRAGMENT_SHADER);
-        } else if(*itr == "uniform_block") {
-            pMap->getValue(*itr, uniformBlockName);
-            hasUniformBlock = true;
         }
     }
     delete pMap;
 
     shader->setup(vShader, gShader, fShader);
-    
-    if(hasUniformBlock) {
-        shader->bindToUniformBlock(uniformBlockName);
-    }
 }

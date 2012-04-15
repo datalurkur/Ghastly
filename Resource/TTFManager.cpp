@@ -105,6 +105,9 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 	SDL_Color white = { 255, 255, 255, 255 };
 	SDL_Surface *renderedLetter;
 
+    // Setup basic font
+    font->setup();
+
 	// Compute texture information
 	for(font->_textureWidth  = 1; font->_textureWidth  < (font->_fontWidth  * 16); font->_textureWidth  <<= 1) {}
 	for(font->_textureHeight = 1; font->_textureHeight < (font->_fontHeight * 16); font->_textureHeight <<= 1) {}
@@ -143,7 +146,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
 
 	// Populate the texture with data
     font->_glyph->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
-    font->_material->setParameter("texture", new TextureParameter(font->_glyph));
+    font->_material->setParameter("texture0", new TextureParameter(font->_glyph));
 	font->_material->setParameter("color", new ColorParameter(fontColor));
 
     free(texels);

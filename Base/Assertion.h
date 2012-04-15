@@ -18,6 +18,7 @@
 #  define ASSERT(conditional) \
      do { \
          if(!(conditional)) { \
+            Error("Assertion in " << __FILE__ << ":" << __LINE__ << " hit."); \
 		 	ASSERT_FUNCTION; \
 		 } \
      } while(false)

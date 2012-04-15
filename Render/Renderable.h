@@ -6,6 +6,7 @@
 #include <Base/Matrix4.h>
 #include <Render/Material.h>
 #include <Render/BufferState.h>
+#include <Render/UniformBuffer.h>
 #include <SDL/SDL_opengl.h>
 
 class Renderable {
@@ -23,7 +24,7 @@ public:
 	void setMaterial(Material *material);
     void setDrawMode(GLenum mode);
 
-	void render();
+	void render(const Matrix4 &projection, const Matrix4 &modelView);
 
 public:
 	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z = 0.0f);
@@ -35,7 +36,12 @@ private:
     typedef std::list<GenericRenderState*> RenderStateList;
 
 private:
+    void recreateTransformBuffer(Shader *shader);
+    void updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView);
+
+private:
 	Matrix4 _viewMatrix;
+    UniformBuffer *_transformBuffer;
 
 	Material *_material;
     RenderStateList _renderStates;

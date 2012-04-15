@@ -1,15 +1,18 @@
 #include <Render/Renderable.h>
 #include <Render/GLHelper.h>
 #include <Base/Log.h>
+#include <Base/Matrix4.h>
+#include <Resource/MaterialManager.h>
 
+// TODO - Move drawmode into the material
 Renderable::Renderable():
-	_viewMatrix(Matrix4::Identity), _material(0),
-	_indexPointer(0), _numIndices(0),
-	_drawMode(GL_QUADS)
+	_viewMatrix(Matrix4::Identity), _transformBuffer(0), _material(0), _indexPointer(0), _numIndices(0), _drawMode(GL_QUADS)
 {
+    setMaterial(MaterialManager::Get("default"));
 }
 
 Renderable::~Renderable() {
+    if(_transformBuffer) { delete _transformBuffer; }
 	if(_indexPointer) { free(_indexPointer); }
     clearRenderStates();
 }
@@ -43,17 +46,23 @@ void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int 
 
 void Renderable::setMaterial(Material *material) {
 	_material = material;
+    recreateTransformBuffer(material->getShader());
 }
 
 void Renderable::setDrawMode(GLenum mode) {
     _drawMode = mode;
 }
 
-void Renderable::render() {
+void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     RenderStateList::iterator itr;
 
-    glPushMatrix();
-    glMultMatrixf(_viewMatrix.ptr());
+    // This functionality deprecated by projection and modelview matrices being included in the shader uniforms
+    //glPushMatrix();
+    //glMultMatrixf(_viewMatrix.ptr());
+
+    updateTransformBuffer(projection, modelView);
+
+    _transformBuffer->enable();
 
 	if(_material) {
 		_material->enable();
@@ -72,7 +81,9 @@ void Renderable::render() {
 		_material->disable();
 	}
 
-    glPopMatrix();
+    _transformBuffer->disable();
+
+    //glPopMatrix();
 }
 
 Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z) {
@@ -180,4 +191,15 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
     delete indexBuffer;
 
     return renderable;
+}
+
+void Renderable::recreateTransformBuffer(Shader *shader) {
+    if(_transformBuffer) { delete _transformBuffer; }
+    _transformBuffer = shader->createUniformBuffer("transform");
+    updateTransformBuffer(Matrix4::Identity, _viewMatrix);
+}
+
+void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView) {
+    _transformBuffer->setParameter("projection_matrix", projection.ptr());
+    _transformBuffer->setParameter("modelview_matrix", (modelView * _viewMatrix).ptr());
 }

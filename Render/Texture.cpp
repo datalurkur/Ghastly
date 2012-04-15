@@ -119,6 +119,7 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w,
 }
 
 void Texture::enable(const unsigned int frame) {
+    CheckGLErrors();
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, _ids[frame]);

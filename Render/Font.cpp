@@ -1,5 +1,6 @@
 #include <Render/Font.h>
 #include <Resource/MaterialManager.h>
+#include <Resource/ShaderManager.h>
 #include <Resource/TextureManager.h>
 
 Font::Font() {
@@ -19,6 +20,9 @@ Font::~Font() {
 
 void Font::setup() {
     _glyph->setup();
+
+    // TODO - Create a font shader
+    _material->setShader(ShaderManager::Get("textured"));
 }
 
 void Font::teardown() {

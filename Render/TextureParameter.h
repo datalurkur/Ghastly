@@ -8,10 +8,8 @@ class TextureParameter: public ShaderParameter {
 public:
     TextureParameter(Texture *texture, GLuint frame = 0, GLuint channel = 0);
 
-    void enable();
-    void disable();
-
-    const void* getUniformData() const;
+    void enable(Shader *shader);
+    void disable(Shader *shader);
 
 private:
     Texture *_texture;

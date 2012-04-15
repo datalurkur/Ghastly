@@ -54,9 +54,8 @@ void UniformBuffer::disable() {
 }
 
 void UniformBuffer::setParameter(const std::string &name, const void *data) {
-    GLuint index;
-    index = getUniformIndex(name);
-    uploadPartialBufferData(getUniformOffset(index), getUniformSize(index), data);
+    UniformInfo info = getUniformData(name);
+    uploadPartialBufferData(info.offset, info.size, data);
 }
 
 void UniformBuffer::fetchUniformData() {
@@ -84,42 +83,23 @@ void UniformBuffer::fetchUniformData() {
         // Get the uniform name for this index and set it appropriately
         buffer = (GLchar*)calloc(sizeof(GLchar), bufferSize);
         glGetActiveUniformName(_program, uIndex, bufferSize, &actualSize, buffer);
-        _uniformIndices[std::string(buffer)] = uIndex;
-        free(buffer);
 
         // Get the uniform offset and size
         glGetActiveUniformsiv(_program, 1, &uIndex, GL_UNIFORM_OFFSET, &uOffset);
-        _uniformOffsets[uIndex] = uOffset;
         glGetActiveUniformsiv(_program, 1, &uIndex, GL_UNIFORM_SIZE, &uSize);
-        _uniformSizes[uIndex] = uSize;
+
+        _uniformData[std::string(buffer)] = UniformInfo(uIndex, uOffset, uSize);
+        free(buffer);
     }
 
     free(uniformIndices);
 }
 
-GLuint UniformBuffer::getUniformIndex(const std::string &name) {
-    std::map<std::string,GLuint>::iterator itr;
+const UniformBuffer::UniformInfo& UniformBuffer::getUniformData(const std::string &name) {
+    std::map<std::string,UniformInfo>::iterator itr;
 
-    itr = _uniformIndices.find(name);
-    ASSERT(itr != _uniformIndices.end());
-
-    return itr->second;
-}
-
-GLint UniformBuffer::getUniformOffset(GLuint index) {
-    std::map<GLuint,GLint>::iterator itr;
-
-    itr = _uniformOffsets.find(index);
-    ASSERT(itr != _uniformOffsets.end());
-
-    return itr->second;
-}
-
-GLint UniformBuffer::getUniformSize(GLuint index) {
-    std::map<GLuint,GLint>::iterator itr;
-
-    itr = _uniformSizes.find(index);
-    ASSERT(itr != _uniformSizes.end());
+    itr = _uniformData.find(name);
+    ASSERT(itr != _uniformData.end());
 
     return itr->second;
 }
@@ -135,3 +115,7 @@ void UniformBuffer::uploadBufferData(const void *data) {
     glBufferData(GL_UNIFORM_BUFFER, _blockSize, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
+
+UniformBuffer::UniformInfo::UniformInfo() {}
+UniformBuffer::UniformInfo::UniformInfo(GLuint i, GLint o, GLint s): index(i), offset(o), size(s) {}
+UniformBuffer::UniformInfo::UniformInfo(const UniformInfo &other): index(other.index), offset(other.offset), size(other.size) {}

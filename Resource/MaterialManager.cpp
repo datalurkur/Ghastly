@@ -45,7 +45,7 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
             Texture *texture;
             pMap->getValue(*itr, textureName);
             texture = TextureManager::Get(textureName);
-            material->setParameter("texture", new TextureParameter(texture));
+            material->setParameter("texture0", new TextureParameter(texture));
         }
     }
     

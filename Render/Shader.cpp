@@ -1,8 +1,9 @@
 #include <Base/Assertion.h>
 #include <Render/Shader.h>
+#include <Render/GLHelper.h>
 
 Shader::Shader():
-    _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0), _hasUniformBlock(false)
+    _program(0), _vertexShader(0), _geometryShader(0), _fragmentShader(0)
 {
 }
 
@@ -35,9 +36,18 @@ GLuint Shader::compile(const char *shaderProgramData, GLenum type) {
     return shader;
 }
 
-void Shader::bindToUniformBlock(const std::string &uniformBlockName) {
-    _hasUniformBlock = true;
-    _uniformBlockName = uniformBlockName;
+GLint Shader::getUniformLocation(const std::string &uniformName) {
+    GLint location;
+
+    ASSERT(_program);
+    location = glGetUniformLocation(_program, uniformName.c_str());
+
+    if(location == -1) {
+        Error("Failed to locate uniform " << uniformName);
+         ASSERT(0);
+    }
+
+    return location;
 }
 
 void Shader::setup(GLuint vertexShader, GLuint geometryShader, GLuint fragmentShader) {
@@ -92,18 +102,16 @@ void Shader::teardown() {
     }
 }
 
-UniformBuffer* Shader::createUniformBuffer() {
-    if(_hasUniformBlock) {
-        UniformBuffer *uBuffer = new UniformBuffer(_program);
+UniformBuffer* Shader::createUniformBuffer(const std::string &uniformBlockName) {
+    ASSERT(_program);
+    UniformBuffer *uBuffer = new UniformBuffer(_program);
 
-        if(uBuffer->setup(_uniformBlockName)) {
-            return uBuffer;
-        } else {
-            delete uBuffer;
-        }
+    if(uBuffer->setup(uniformBlockName)) {
+        return uBuffer;
+    } else {
+        delete uBuffer;
     }
-
-	return 0;
+    return 0;
 }
 
 void Shader::enable() {

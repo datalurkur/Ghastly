@@ -57,9 +57,9 @@ Matrix4 Matrix4::MakeTranslation(const Vector3 &pos) {
 }
 
 std::ostream& operator<<(std::ostream& lhs, const Matrix4 &rhs) {
-	lhs << "Matrix4";
+	lhs << "Matrix4" << "\n";
 	for(int i=0; i<4; i++) {
-		lhs << " " << rhs[i][0] << " " << rhs[i][1] << " " << rhs[i][2] << " " << rhs[i][3];
+		lhs << " " << rhs[i][0] << " " << rhs[i][1] << " " << rhs[i][2] << " " << rhs[i][3] << "\n";
 	}
 	return lhs;
 }

@@ -14,6 +14,7 @@ public:
 
 public:
     inline Vector4(): x(0), y(0), z(0), w(0) {}
+    inline explicit Vector4(const float *data): x(data[0]), y(data[1]), z(data[2]), w(data[3]) {}
     inline Vector4(const Vector4 &other): x(other.x), y(other.y), z(other.z), w(other.w) {}
 	inline Vector4(const float nX, const float nY, const float nZ, const float nW): x(nX), y(nY), z(nZ), w(nW) {}
 

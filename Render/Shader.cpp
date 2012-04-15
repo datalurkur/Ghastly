@@ -104,9 +104,9 @@ void Shader::teardown() {
 
 UniformBuffer* Shader::createUniformBuffer(const std::string &uniformBlockName) {
     ASSERT(_program);
-    UniformBuffer *uBuffer = new UniformBuffer(_program);
+    UniformBuffer *uBuffer = new UniformBuffer(_program, uniformBlockName);
 
-    if(uBuffer->setup(uniformBlockName)) {
+    if(uBuffer->setup()) {
         return uBuffer;
     } else {
         delete uBuffer;

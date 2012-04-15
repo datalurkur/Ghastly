@@ -41,6 +41,7 @@ private:
 
 private:
 	Matrix4 _viewMatrix;
+    // TODO - This seems like a really cludgey way of doing this
     UniformBuffer *_transformBuffer;
 
 	Material *_material;

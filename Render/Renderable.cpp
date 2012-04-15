@@ -61,7 +61,6 @@ void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     //glMultMatrixf(_viewMatrix.ptr());
 
     updateTransformBuffer(projection, modelView);
-
     _transformBuffer->enable();
 
 	if(_material) {

@@ -2,13 +2,24 @@
 #define UNIFORMBUFFER_H
 
 #include <Base/Base.h>
+#include <Base/IndexPool.h>
 
 class UniformBuffer {
+// STATIC
+// This section allows UniformBuffer to keep track of how many UBOs exist for each uniform block globally
+private:
+    static GLuint GetBindPoint(const std::string &blockName);
+    static void ReleaseBindPoint(const std::string &blockName, GLuint bindPoint);
+
+private:
+    static IndexPool BlockIndices;
+
+// NON STATIC
 public:
-    UniformBuffer(GLuint program);
+    UniformBuffer(GLuint program, const std::string &blockName);
     ~UniformBuffer();
 
-    bool setup(const std::string &blockName);
+    bool setup();
     void teardown();
 
     void enable();
@@ -36,6 +47,8 @@ private:
 
 private:
     GLuint _program;
+    std::string _blockName;
+    GLuint _bindPoint;
 
     GLint _blockIndex;
     GLint _blockSize;

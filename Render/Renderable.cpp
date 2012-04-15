@@ -85,13 +85,16 @@ void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     //glPopMatrix();
 }
 
-Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z) {
-    return OrthoBox(Vector3(pos.x, pos.y, z), Vector2(dims.x, dims.y), texCoords, normals);
+Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material) {
+    return OrthoBox(Vector3(pos.x, pos.y, z), Vector2(dims.x, dims.y), texCoords, normals, material);
 }
 
-Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals) {
+Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material) {
+    Shader *shader = material->getShader();
+
 	Renderable *renderable = new Renderable();
 	renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
+    renderable->setMaterial(material);
 
 	Vector3 disp = pos + Vector3(dims.x, dims.y, 0.0f);
 
@@ -106,7 +109,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			disp.x, pos.y,  pos.z,
 			pos.x,  pos.y,  pos.z
 		};
-        renderable->addRenderState(new VertexBufferState(4, GL_FLOAT, 3, &verts[0]));
+        renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
 	} else {
 		float verts[4 * 3] = {
 			pos.x,  pos.y,  pos.z,
@@ -114,7 +117,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			disp.x, disp.y, pos.z,
 			pos.x,  disp.y, pos.z
 		};
-        renderable->addRenderState(new VertexBufferState(4, GL_FLOAT, 3, &verts[0]));
+        renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
 	}
 
 	// Set the texture coordinates
@@ -125,7 +128,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			1, 0,
 			0, 0
 		};
-        renderable->addRenderState(new TexCoordBufferState(4, GL_FLOAT, 2, &texCoords[0]));
+        renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
 	} else if(texCoords) {
 		float texCoords[4 * 2] = {
 			0, 0,
@@ -133,7 +136,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			1, 1,
 			0, 1
 		};
-        renderable->addRenderState(new TexCoordBufferState(4, GL_FLOAT, 2, &texCoords[0]));
+        renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
 	}
 
 	// Set the normals
@@ -144,7 +147,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 			0, 0, 1,
 			0, 0, 1
 		};
-        renderable->addRenderState(new NormalBufferState(4, GL_FLOAT, &normals[0]));
+        renderable->addRenderState(BufferState::NormalBuffer(4, GL_FLOAT, &normals[0], shader));
 	}
 
 	// Set the indices
@@ -155,7 +158,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
 }
 
 Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material) {
-    Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z);
+    Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z, material);
     renderable->setMaterial(material);
     return renderable;
 }
@@ -166,6 +169,10 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
     unsigned int *indexBuffer;
     unsigned int size;
     unsigned int i;
+
+    // TODO - implement a line shader and use it here
+    Error("Line shader not yet implemented");
+    ASSERT(0);
 
     size = (unsigned int)verts.size();
 
@@ -182,7 +189,8 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
         indexBuffer[i] = i;
     }
 
-    renderable->addRenderState(new VertexBufferState(size, GL_FLOAT, 3, &vertexBuffer[0]));
+    // TODO - Make a special shader for drawing lines
+    //renderable->addRenderState(BufferState::VertexBuffer(size, GL_FLOAT, 3, &vertexBuffer[0], ShaderManager::Get("line_shader")));
     renderable->setIndexPointer(&indexBuffer[0], size);
     renderable->setDrawMode(GL_LINE_STRIP);
 
@@ -194,7 +202,7 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
 
 void Renderable::recreateTransformBuffer(Shader *shader) {
     if(_transformBuffer) { delete _transformBuffer; }
-    _transformBuffer = shader->createUniformBuffer("transform");
+    _transformBuffer = new UniformBuffer(shader, "transform");
     updateTransformBuffer(Matrix4::Identity, _viewMatrix);
 }
 

@@ -4,6 +4,8 @@
 #include <Base/Base.h>
 #include <Base/IndexPool.h>
 
+class Shader;
+
 class UniformBuffer {
 // STATIC
 // This section allows UniformBuffer to keep track of how many UBOs exist for each uniform block globally
@@ -16,7 +18,7 @@ private:
 
 // NON STATIC
 public:
-    UniformBuffer(GLuint program, const std::string &blockName);
+    UniformBuffer(Shader *shader, const std::string &blockName);
     ~UniformBuffer();
 
     bool setup();
@@ -26,27 +28,17 @@ public:
     void disable();
 
     void setParameter(const std::string &name, const void *data);
-    
-private:
-    struct UniformInfo {
-        GLuint index;
-        GLint offset;
-        GLint size;
-
-        UniformInfo();
-        UniformInfo(GLuint i, GLint o, GLint s);
-        UniformInfo(const UniformInfo &other);
-    };
 
 private:
-    void fetchUniformData();
-    const UniformInfo& getUniformData(const std::string &name);
+    //void fetchUniformData();
+    //const UniformInfo& getUniformData(const std::string &name);
 
     void uploadPartialBufferData(unsigned int offset, unsigned int size, const void *data);
     void uploadBufferData(const void *data);
 
 private:
-    GLuint _program;
+    Shader *_shader;
+
     std::string _blockName;
     GLuint _bindPoint;
 
@@ -54,7 +46,7 @@ private:
     GLint _blockSize;
     GLuint _bufferHandle;
 
-    std::map<std::string,UniformInfo> _uniformData;
+    //std::map<std::string,UniformInfo> _uniformData;
 };
 
 #endif

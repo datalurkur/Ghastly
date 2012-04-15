@@ -2,49 +2,42 @@
 #define BUFFERSTATE_H
 
 #include <Render/GenericRenderState.h>
+#include <Render/Shader.h>
 #include <Base/Base.h>
 #include <SDL/SDL_opengl.h>
 
 class BufferState: public GenericRenderState {
 public:
-    BufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer, GLenum bufferType);
+    BufferState(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, GLenum bufferType);
     ~BufferState();
 
     void preRender();
     void postRender();
 
+private:
+    void setupAttribState(GLuint attribBindPoint);
+
 protected:
-    unsigned int _numElements;
+    GLuint _numElements;
     GLenum _elementType;
-    unsigned int _elementSize;
+    GLuint _elementSize;
     void *_buffer;
 
 private:
     GLenum _bufferType;
-};
 
-class VertexBufferState: public BufferState {
-public:
-    VertexBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer);
-    void preRender();
-};
+    GLuint _attribBindPoint;
+    bool _useAttribs;
 
-class TexCoordBufferState: public BufferState {
 public:
-    TexCoordBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer);
-    void preRender();
-};
+    static bool AreAttribsEnabled();
 
-class ColorBufferState: public BufferState {
-public:
-    ColorBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer);
-    void preRender();
-};
-
-class NormalBufferState: public BufferState {
-public:
-    NormalBufferState(unsigned int numElements, GLenum elementType, void *buffer);
-    void preRender();
+    // Static factory methods
+    // These are used primarily as a point of branching from various buffer types into shader-enabled attribs or the default <buffer>Pointer behavior (deprecated)
+    static BufferState *VertexBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader);
+    static BufferState *NormalBuffer(GLuint numElements, GLenum elementType, void *buffer, Shader *shader);
+    static BufferState *TexCoordBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader);
+    static BufferState *ColorBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader);
 };
 
 #endif

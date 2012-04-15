@@ -27,8 +27,8 @@ public:
 	void render(const Matrix4 &projection, const Matrix4 &modelView);
 
 public:
-	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z = 0.0f);
-    static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals);
+	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material);
+    static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material);
     static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material);
     static Renderable* Lines(const std::vector<Vector2> &verts);
 

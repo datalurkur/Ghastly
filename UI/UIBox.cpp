@@ -23,11 +23,10 @@ void UIBox::resize(int width, int height) {
     // Add the center box
     if(_uiBorder > 0.0f) {
         // Subtract space for the border if there is a border that protrudes inwards
-        renderable = Renderable::OrthoBox(Vector3(bWidth, bHeight, 0.0f), Vector2(_dimensions.x - (bWidth * 2), _dimensions.y - (bHeight * 2)), false, false);
+        renderable = Renderable::OrthoBox(Vector3(bWidth, bHeight, 0.0f), Vector2(_dimensions.x - (bWidth * 2), _dimensions.y - (bHeight * 2)), false, false, _material);
     } else {
-        renderable = Renderable::OrthoBox(Vector3(0.0f, 0.0f, 0.0f), Vector2(_dimensions.x, _dimensions.y), false, false);
+        renderable = Renderable::OrthoBox(Vector3(0.0f, 0.0f, 0.0f), Vector2(_dimensions.x, _dimensions.y), false, false, _material);
     }
-    renderable->setMaterial(_material);
     addRenderable(renderable);
 
     if(_uiBorder != 0.0f) {
@@ -38,23 +37,15 @@ void UIBox::resize(int width, int height) {
         }
 		
         // Top border
-        renderable = Renderable::OrthoBox(Vector3(bWidth, _dimensions.h, 0.0f), Vector2(_dimensions.w - (bWidth * 2), -bHeight), false, false);
-        renderable->setMaterial(_borderMaterial);
-        addRenderable(renderable);
+        addRenderable(Renderable::OrthoBox(Vector3(bWidth, _dimensions.h, 0.0f), Vector2(_dimensions.w - (bWidth * 2), -bHeight), false, false, _borderMaterial));
 
         // Bottom border
-        renderable = Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(_dimensions.w - (bWidth * 2), bHeight), false, false);
-        renderable->setMaterial(_borderMaterial);
-        addRenderable(renderable);
+        addRenderable(Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(_dimensions.w - (bWidth * 2), bHeight), false, false, _borderMaterial));
 		
         // Left border
-        renderable = Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false);
-        renderable->setMaterial(_borderMaterial);
-        addRenderable(renderable);
+        addRenderable(Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false, _borderMaterial));
 
         // Right border
-        renderable = Renderable::OrthoBox(Vector3(_dimensions.w, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false);
-        renderable->setMaterial(_borderMaterial);
-        addRenderable(renderable);
+        addRenderable(Renderable::OrthoBox(Vector3(_dimensions.w, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false, _borderMaterial));
     }
 }

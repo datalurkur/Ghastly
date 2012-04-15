@@ -3,8 +3,8 @@
 
 // Buffer State
 // ============
-BufferState::BufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer, GLenum bufferType):
-    _numElements(numElements), _elementType(elementType), _elementSize(elementSize), _bufferType(bufferType)
+BufferState::BufferState(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, GLenum bufferType):
+    _numElements(numElements), _elementType(elementType), _elementSize(elementSize), _bufferType(bufferType), _useAttribs(false)
 {
     unsigned int totalByteSize;
 
@@ -27,49 +27,92 @@ BufferState::~BufferState() {
 }
 
 void BufferState::preRender() {
-    glEnableClientState(_bufferType);
+    if(_useAttribs) {
+        glEnableVertexAttribArray(_attribBindPoint);
+        glVertexAttribPointer(_attribBindPoint, _elementSize, _elementType, GL_FALSE, 0, _buffer);
+    } else {
+        glEnableClientState(_bufferType);
+
+        switch(_bufferType) {
+        case GL_VERTEX_ARRAY:        glVertexPointer(_elementSize, _elementType, 0, _buffer); break;
+        case GL_NORMAL_ARRAY:        glNormalPointer(_elementType, 0, _buffer); break;
+        case GL_TEXTURE_COORD_ARRAY: glTexCoordPointer(_elementSize, _elementType, 0, _buffer); break;
+        case GL_COLOR_ARRAY:         glColorPointer(_elementSize, _elementType, 0, _buffer); break;
+        default:                     ASSERT(0); break;
+        };
+    }
 }
 
 void BufferState::postRender() {
-    glDisableClientState(_bufferType);
+    if(!_useAttribs) {
+        glDisableClientState(_bufferType);
+    } else {
+        glDisableVertexAttribArray(_attribBindPoint);
+    }
 }
 
-// Vertex Buffer State
-// ===================
-VertexBufferState::VertexBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
-    BufferState(numElements, elementType, elementSize, buffer, GL_VERTEX_ARRAY) {}
-
-void VertexBufferState::preRender() {
-    BufferState::preRender();
-    glVertexPointer(_elementSize, _elementType, 0, _buffer);
+void BufferState::setupAttribState(GLuint attribBindPoint) {
+    _useAttribs = true;
+    _attribBindPoint = attribBindPoint;
 }
 
-// Tex Coord Buffer State
-// ======================
-TexCoordBufferState::TexCoordBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
-    BufferState(numElements, elementType, elementSize, buffer, GL_TEXTURE_COORD_ARRAY) {}
-
-void TexCoordBufferState::preRender() {
-    BufferState::preRender();
-    glTexCoordPointer(_elementSize, _elementType, 0, _buffer);
+bool BufferState::AreAttribsEnabled() {
+    // Actually check to see if shaders and shader attribs are enabled
+    return true;
 }
 
-// Color Buffer State
-// ==================
-ColorBufferState::ColorBufferState(unsigned int numElements, GLenum elementType, unsigned int elementSize, void *buffer):
-    BufferState(numElements, elementType, elementSize, buffer, GL_COLOR_ARRAY) {}
+BufferState *BufferState::VertexBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader) {
+    GLuint location;
+    BufferState *bufferState;
 
-void ColorBufferState::preRender() {
-    BufferState::preRender();
-    glColorPointer(_elementSize, _elementType, 0, _buffer);
+    location = shader->getAttribLocation("position");
+    bufferState = new BufferState(numElements, elementType, elementSize, buffer, GL_VERTEX_ARRAY);
+
+    if(AreAttribsEnabled()) {
+        bufferState->setupAttribState(location);
+    }
+
+    return bufferState;
 }
 
-// Normal Buffer State
-// ===================
-NormalBufferState::NormalBufferState(unsigned int numElements, GLenum elementType, void *buffer):
-    BufferState(numElements, elementType, 3, buffer, GL_NORMAL_ARRAY) {}
+BufferState *BufferState::NormalBuffer(GLuint numElements, GLenum elementType, void *buffer, Shader *shader) {
+    GLuint location;
+    BufferState *bufferState;
 
-void NormalBufferState::preRender() {
-    BufferState::preRender();
-    glNormalPointer(_elementType, 0, _buffer);
+    location = shader->getAttribLocation("normal");
+    bufferState = new BufferState(numElements, elementType, 2, buffer, GL_NORMAL_ARRAY);
+
+    if(AreAttribsEnabled()) {
+        bufferState->setupAttribState(location);
+    }
+
+    return bufferState;
+}
+
+BufferState *BufferState::TexCoordBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader) {
+    GLuint location;
+    BufferState *bufferState;
+
+    location = shader->getAttribLocation("texcoord");
+    bufferState = new BufferState(numElements, elementType, elementSize, buffer, GL_TEXTURE_COORD_ARRAY);
+
+    if(AreAttribsEnabled()) {
+        bufferState->setupAttribState(location);
+    }
+
+    return bufferState;
+}
+
+BufferState *BufferState::ColorBuffer(GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer, Shader *shader) {
+    GLuint location;
+    BufferState *bufferState;
+
+    location = shader->getAttribLocation("color");
+    bufferState = new BufferState(numElements, elementType, elementSize, buffer, GL_COLOR_ARRAY);
+
+    if(AreAttribsEnabled()) {
+        bufferState->setupAttribState(location);
+    }
+
+    return bufferState;
 }

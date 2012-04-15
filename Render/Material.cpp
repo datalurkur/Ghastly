@@ -19,7 +19,7 @@ void Material::setShader(Shader *shader) {
 
     // TODO - Only do this if UBOs are supported
     if(_ubo) { delete _ubo; }
-    _ubo = _shader->createUniformBuffer("input_block");
+    _ubo = new UniformBuffer(_shader, "input_block");
 
     ShaderParamMap::iterator itr;
     for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {

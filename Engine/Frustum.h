@@ -8,17 +8,17 @@ class Frustum {
 public:
     Frustum();
 
-	void setProjection(const Matrix4 &matrix);
+    void setProjection(const Matrix4 &matrix);
     const Matrix4 getProjection() const;
 
-	void setModelView(const Matrix4 &matrix);
-	const Matrix4 getModelView() const;
+    void setModelView(const Matrix4 &matrix);
+    const Matrix4 getModelView() const;
 
-	Frustum& operator=(const Frustum &other);
+    Frustum& operator=(const Frustum &other);
 
 private:
-	Matrix4 _projection;
-	Matrix4 _modelView;
+    Matrix4 _projection;
+    Matrix4 _modelView;
 };
 
 std::ostream& operator<<(std::ostream& lhs, const Frustum &rhs);

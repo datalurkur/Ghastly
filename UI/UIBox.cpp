@@ -11,7 +11,7 @@ UIBox::UIBox(const std::string &name, const Vector2 &pos, const Vector2 &dims, c
 
 void UIBox::resize(int width, int height) {
     Renderable *renderable;
-	float ratio = (width / (float)height);
+    float ratio = (width / (float)height);
 
     float bWidth  = (_uiBorder * width),
           bHeight = (_uiBorder * height * ratio);
@@ -35,13 +35,13 @@ void UIBox::resize(int width, int height) {
             bXOffset = bWidth;
             bYOffset = bHeight;
         }
-		
+        
         // Top border
         addRenderable(Renderable::OrthoBox(Vector3(bWidth, _dimensions.h, 0.0f), Vector2(_dimensions.w - (bWidth * 2), -bHeight), false, false, _borderMaterial));
 
         // Bottom border
         addRenderable(Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(_dimensions.w - (bWidth * 2), bHeight), false, false, _borderMaterial));
-		
+        
         // Left border
         addRenderable(Renderable::OrthoBox(Vector3(bWidth, 0.0f, 0.0f), Vector2(-bWidth, _dimensions.y), false, false, _borderMaterial));
 

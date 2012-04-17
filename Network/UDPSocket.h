@@ -16,7 +16,7 @@ public:
     void recv(char *data, int &size, unsigned int maxSize, NetAddress &addr);
 
 private:
-	unsigned short _port;
+    unsigned short _port;
 };
 
 #endif

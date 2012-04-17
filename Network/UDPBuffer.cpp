@@ -44,7 +44,7 @@ void UDPBuffer::doOutboundBuffering() {
     bool ret;
     Packet packet;
 
-	Debug("Entering UDP outbound packet buffering loop");
+    Debug("Entering UDP outbound packet buffering loop");
     while(true) {
         SDL_LockMutex(_outboundQueueLock);
         ret = _outbound.empty();

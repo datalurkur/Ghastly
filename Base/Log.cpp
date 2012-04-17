@@ -13,21 +13,21 @@ Log::~Log() {
 }
 
 void Log::Setup() {
-	logLock = SDL_CreateMutex();
-	EnableAllChannels();
+    logLock = SDL_CreateMutex();
+    EnableAllChannels();
 }
 
 void Log::Teardown() {
-	DisableAllChannels();
-	SDL_DestroyMutex(logLock);
+    DisableAllChannels();
+    SDL_DestroyMutex(logLock);
 }
 
 void Log::SetLock() {
-	SDL_LockMutex(logLock);
+    SDL_LockMutex(logLock);
 }
 
 void Log::ReleaseLock() {
-	SDL_UnlockMutex(logLock);
+    SDL_UnlockMutex(logLock);
 }
 
 void Log::EnableAllChannels() {

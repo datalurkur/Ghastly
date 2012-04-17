@@ -43,8 +43,8 @@ void PhysicsEngine::BeginContact(b2Contact *contact) {
         if(itr->first == a) {
             itr->second->contactBegins(a, b);
         } else if(itr->first == b) {
-			itr->second->contactBegins(b, a);
-		}
+            itr->second->contactBegins(b, a);
+        }
     }   
 }
 
@@ -57,8 +57,8 @@ void PhysicsEngine::EndContact(b2Contact *contact) {
         if(itr->first == a) {
             itr->second->contactEnds(a, b);
         } else if(itr->first == b) {
-			itr->second->contactEnds(b, a);
-		}
+            itr->second->contactEnds(b, a);
+        }
     }
 }
 
@@ -67,10 +67,10 @@ void PhysicsEngine::addFixtureContactListener(FixtureID *id, ContactListener *co
 }
 
 void PhysicsEngine::removeFixtureContactListener(FixtureID *id) {
-	FixtureContactMap::iterator itr = _fixtureContactListeners.find(id);
-	if(itr != _fixtureContactListeners.end()) {
-		_fixtureContactListeners.erase(itr);
-	}
+    FixtureContactMap::iterator itr = _fixtureContactListeners.find(id);
+    if(itr != _fixtureContactListeners.end()) {
+        _fixtureContactListeners.erase(itr);
+    }
 }
 
 b2Body *PhysicsEngine::createStaticBox(const Vector2 &pos, const Vector2 &dim) {
@@ -101,7 +101,7 @@ b2Body *PhysicsEngine::createStaticChain(const std::vector<Vector2> &verts, bool
     b2BodyDef def;
     b2ChainShape shape;
     b2Body *body;
-	b2Fixture *fixture;
+    b2Fixture *fixture;
     b2Vec2 *chainVectors;
     unsigned int i;
     unsigned int size;

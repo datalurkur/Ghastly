@@ -8,15 +8,15 @@
 class Camera: public ResizeListener, public Frustum, public SceneNode {
 public:
     Camera(const std::string &name);
-	void onResize(int w, int h);
+    void onResize(int w, int h);
 
-	virtual void setup() = 0;
-	virtual void recomputeMatrices() = 0;
+    virtual void setup() = 0;
+    virtual void recomputeMatrices() = 0;
 
-	virtual void setZoom(float zoom) = 0;
+    virtual void setZoom(float zoom) = 0;
 
 protected:
-	float _aspectRatio;
+    float _aspectRatio;
 };
 
 #endif

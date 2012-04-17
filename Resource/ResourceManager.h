@@ -14,27 +14,27 @@ public:
 
     static T* Get(const std::string &name);
     static bool GetName(std::string &name, const T* t);
-	static T* Load(const std::string &name, T* t = 0);
+    static T* Load(const std::string &name, T* t = 0);
 
-	static void LoadAllFromPath();
+    static void LoadAllFromPath();
     static unsigned int LoadNextFromPath_r(unsigned int &pos);
 
     static void Unload(T* t);
-	static void Unload(const std::string &name);
-	static void Reload(T* t);
-	static void Reload(const std::string &name);
+    static void Unload(const std::string &name);
+    static void Reload(T* t);
+    static void Reload(const std::string &name);
 
-	static void ReloadAll();
+    static void ReloadAll();
 
     static bool Register(const std::string &name, T* t);
     static T* Unregister(const std::string &name);
 
 protected:
-	static void DoLoad(const std::string &name, T* t);
-	static std::string LoadPath();
+    static void DoLoad(const std::string &name, T* t);
+    static std::string LoadPath();
 
 protected:
-	static const std::string LoadDirectory;
+    static const std::string LoadDirectory;
     static std::vector<std::string> AvailableResources;
 
     typedef std::map<std::string, T*> ContentMap;
@@ -52,11 +52,11 @@ typename ResourceManager<T,F>::ContentMap ResourceManager<T,F>::Resources;
 
 template <typename T, typename F>
 void ResourceManager<T,F>::Setup() {
-	FileSystem::GetDirectoryContents(LoadPath(), F::AvailableResources, false);
-	std::vector<std::string>::iterator itr = F::AvailableResources.begin();
-	/*for(; itr != F::AvailableResources.end(); itr++) {
-		Info(" - " << (*itr));
-	}*/
+    FileSystem::GetDirectoryContents(LoadPath(), F::AvailableResources, false);
+    std::vector<std::string>::iterator itr = F::AvailableResources.begin();
+    /*for(; itr != F::AvailableResources.end(); itr++) {
+        Info(" - " << (*itr));
+    }*/
 }
 
 template <typename T, typename F>
@@ -70,9 +70,9 @@ void ResourceManager<T,F>::Teardown() {
 
 template <typename T, typename F>
 T* ResourceManager<T,F>::Get(const std::string &name) {
-	typename ContentMap::iterator itr = F::Resources.find(name);
-	ASSERT(itr != F::Resources.end());
-	return itr->second;
+    typename ContentMap::iterator itr = F::Resources.find(name);
+    ASSERT(itr != F::Resources.end());
+    return itr->second;
 }
 
 template <typename T, typename F>
@@ -91,10 +91,10 @@ template <typename T, typename F>
 T* ResourceManager<T,F>::Load(const std::string &name, T* t) {
     Info("Loading " << name);
 
-	if(!t) { t = new T(); }
+    if(!t) { t = new T(); }
 
-	F::DoLoad(name, t);
-	F::Register(name, t);
+    F::DoLoad(name, t);
+    F::Register(name, t);
 
     return t;
 }
@@ -128,12 +128,12 @@ void ResourceManager<T,F>::Reload(T* t) {
     typename ContentMap::iterator itr = F::Resources.begin();
     for(; itr != F::Resources.end(); itr++) {
         if(itr->second == t) {
-			itr->second->teardown();
-			F::DoLoad(itr->first, itr->second);
-			return;
+            itr->second->teardown();
+            F::DoLoad(itr->first, itr->second);
+            return;
         }
     }
-	ASSERT(0);
+    ASSERT(0);
 }
 
 template <typename T, typename F>
@@ -141,20 +141,20 @@ void ResourceManager<T,F>::Reload(const std::string &name) {
     typename ContentMap::iterator itr = F::Resources.begin();
     for(; itr != F::Resources.end(); itr++) {
         if(itr->first == name) {
-			itr->second->teardown();
-			F::DoLoad(itr->first, itr->second);
-			return;
+            itr->second->teardown();
+            F::DoLoad(itr->first, itr->second);
+            return;
         }
     }
-	ASSERT(0);
+    ASSERT(0);
 }
 
 template <typename T, typename F>
 void ResourceManager<T,F>::ReloadAll() {
-	typename ContentMap::iterator itr = F::Resources.begin();
+    typename ContentMap::iterator itr = F::Resources.begin();
     for(; itr != F::Resources.end(); itr++) {
-		itr->second->teardown();
-		F::DoLoad(itr->first, itr->second);
+        itr->second->teardown();
+        F::DoLoad(itr->first, itr->second);
     }
 }
 
@@ -171,7 +171,7 @@ bool ResourceManager<T,F>::Register(const std::string &name, T* t) {
         F::Resources[name] = t;
         return true;
     } else {
-		Warn("Resource " << name << " is already registered.");
+        Warn("Resource " << name << " is already registered.");
         return false;
     }
 }
@@ -186,23 +186,23 @@ T* ResourceManager<T,F>::Unregister(const std::string &name) {
             break;
         }
     }
-	ASSERT(itr != F::Resources.end());
+    ASSERT(itr != F::Resources.end());
     F::Resources.erase(itr);
     return t;
 }
 
 template <typename T, typename F>
 std::string ResourceManager<T,F>::LoadPath() {
-	return (LoadDirectory + "/" + F::LoadDirectory + "/");
+    return (LoadDirectory + "/" + F::LoadDirectory + "/");
 }
 
 template <typename T, typename F>
 void ResourceManager<T,F>::LoadAllFromPath() {
-	std::vector<std::string>::iterator itr;
-	for(itr = F::AvailableResources.begin(); itr != F::AvailableResources.end(); itr++) {
+    std::vector<std::string>::iterator itr;
+    for(itr = F::AvailableResources.begin(); itr != F::AvailableResources.end(); itr++) {
         Info("Loading " << (*itr));
-		F::Load(*itr);
-	}
+        F::Load(*itr);
+    }
 }
 
 template <typename T, typename F>

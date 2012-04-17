@@ -6,23 +6,23 @@
 
 // TODO - Move drawmode into the material
 Renderable::Renderable():
-	_viewMatrix(Matrix4::Identity), _transformBuffer(0), _material(0), _indexPointer(0), _numIndices(0), _drawMode(GL_QUADS)
+    _viewMatrix(Matrix4::Identity), _transformBuffer(0), _material(0), _indexPointer(0), _numIndices(0), _drawMode(GL_QUADS)
 {
     setMaterial(MaterialManager::Get("default"));
 }
 
 Renderable::~Renderable() {
     if(_transformBuffer) { delete _transformBuffer; }
-	if(_indexPointer) { free(_indexPointer); }
+    if(_indexPointer) { free(_indexPointer); }
     clearRenderStates();
 }
 
 void Renderable::setViewMatrix(const Matrix4 &matrix) {
-	_viewMatrix = matrix;
+    _viewMatrix = matrix;
 }
 
 const Matrix4& Renderable::getViewMatrix() const {
-	return _viewMatrix;
+    return _viewMatrix;
 }
 
 void Renderable::addRenderState(GenericRenderState *renderState) {
@@ -38,14 +38,14 @@ void Renderable::clearRenderStates() {
 }
 
 void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int numIndices) {
-	size_t byteSize = numIndices * sizeof(unsigned int);
-	_indexPointer = (unsigned int *)malloc(byteSize);
-	memcpy(_indexPointer, indexPointer, byteSize);
-	_numIndices = numIndices;
+    size_t byteSize = numIndices * sizeof(unsigned int);
+    _indexPointer = (unsigned int *)malloc(byteSize);
+    memcpy(_indexPointer, indexPointer, byteSize);
+    _numIndices = numIndices;
 }
 
 void Renderable::setMaterial(Material *material) {
-	_material = material;
+    _material = material;
     recreateTransformBuffer(material->getShader());
 }
 
@@ -63,9 +63,9 @@ void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     updateTransformBuffer(projection, modelView);
     _transformBuffer->enable();
 
-	if(_material) {
-		_material->enable();
-	}
+    if(_material) {
+        _material->enable();
+    }
     for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
         (*itr)->preRender();
     }
@@ -76,9 +76,9 @@ void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
         (*itr)->postRender();
     }
-	if(_material) {
-		_material->disable();
-	}
+    if(_material) {
+        _material->disable();
+    }
 
     _transformBuffer->disable();
 
@@ -92,69 +92,69 @@ Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool t
 Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material) {
     Shader *shader = material->getShader();
 
-	Renderable *renderable = new Renderable();
-	renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
+    Renderable *renderable = new Renderable();
+    renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
     renderable->setMaterial(material);
 
-	Vector3 disp = pos + Vector3(dims.x, dims.y, 0.0f);
+    Vector3 disp = pos + Vector3(dims.x, dims.y, 0.0f);
 
-	// Determine if the vertex order needs to be flipped to preserve proper winding order
-	bool flipped = ((dims.x < 0) != (dims.y < 0));
+    // Determine if the vertex order needs to be flipped to preserve proper winding order
+    bool flipped = ((dims.x < 0) != (dims.y < 0));
 
-	// Set the verts
-	if(flipped) {
-		float verts[4 * 3] = {
-			pos.x,  disp.y, pos.z,
-			disp.x, disp.y, pos.z,
-			disp.x, pos.y,  pos.z,
-			pos.x,  pos.y,  pos.z
-		};
+    // Set the verts
+    if(flipped) {
+        float verts[4 * 3] = {
+            pos.x,  disp.y, pos.z,
+            disp.x, disp.y, pos.z,
+            disp.x, pos.y,  pos.z,
+            pos.x,  pos.y,  pos.z
+        };
         renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
-	} else {
-		float verts[4 * 3] = {
-			pos.x,  pos.y,  pos.z,
-			disp.x, pos.y,  pos.z,
-			disp.x, disp.y, pos.z,
-			pos.x,  disp.y, pos.z
-		};
+    } else {
+        float verts[4 * 3] = {
+            pos.x,  pos.y,  pos.z,
+            disp.x, pos.y,  pos.z,
+            disp.x, disp.y, pos.z,
+            pos.x,  disp.y, pos.z
+        };
         renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
-	}
+    }
 
-	// Set the texture coordinates
-	if(texCoords && flipped) {
-		float texCoords[4 * 2] = {
-			0, 1,
-			1, 1,
-			1, 0,
-			0, 0
-		};
+    // Set the texture coordinates
+    if(texCoords && flipped) {
+        float texCoords[4 * 2] = {
+            0, 1,
+            1, 1,
+            1, 0,
+            0, 0
+        };
         renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
-	} else if(texCoords) {
-		float texCoords[4 * 2] = {
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 1
-		};
+    } else if(texCoords) {
+        float texCoords[4 * 2] = {
+            0, 0,
+            1, 0,
+            1, 1,
+            0, 1
+        };
         renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
-	}
+    }
 
-	// Set the normals
-	if(normals) {
-		float normals[4 * 3] = {
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1
-		};
+    // Set the normals
+    if(normals) {
+        float normals[4 * 3] = {
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1
+        };
         renderable->addRenderState(BufferState::NormalBuffer(4, GL_FLOAT, &normals[0], shader));
-	}
+    }
 
-	// Set the indices
-	unsigned int indices[4] = { 0, 1, 2, 3 };
-	renderable->setIndexPointer(&indices[0], 4);
+    // Set the indices
+    unsigned int indices[4] = { 0, 1, 2, 3 };
+    renderable->setIndexPointer(&indices[0], 4);
 
-	return renderable;
+    return renderable;
 }
 
 Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material) {

@@ -5,11 +5,11 @@
 
 class QuadTreeSceneManager: public SceneManager {
 public:
-	QuadTreeSceneManager();
-	virtual ~QuadTreeSceneManager();
+    QuadTreeSceneManager();
+    virtual ~QuadTreeSceneManager();
 
 private:
-	int _maxDepth;
+    int _maxDepth;
 };
 
 #endif

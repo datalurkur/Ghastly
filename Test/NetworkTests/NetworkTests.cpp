@@ -11,29 +11,29 @@
 
 class SimpleConnectionListener: public SocketCreationListener {
 public:
-	SimpleConnectionListener(bool cleanup = true): socket(0), _cleanup(cleanup) {}
+    SimpleConnectionListener(bool cleanup = true): socket(0), _cleanup(cleanup) {}
 
-	~SimpleConnectionListener() {
-		if(_cleanup && socket) {
-			delete socket;
-		}
-	}
+    ~SimpleConnectionListener() {
+        if(_cleanup && socket) {
+            delete socket;
+        }
+    }
 
-	bool onSocketCreation(const NetAddress &client, TCPSocket *newSocket) {
-		if(socket) {
-			return false;
-		} else {
-			addr = client;
-			socket = newSocket;
-			return true;
-		}
-	}
+    bool onSocketCreation(const NetAddress &client, TCPSocket *newSocket) {
+        if(socket) {
+            return false;
+        } else {
+            addr = client;
+            socket = newSocket;
+            return true;
+        }
+    }
 
-	NetAddress addr;
-	TCPSocket *socket;
+    NetAddress addr;
+    TCPSocket *socket;
 
 private:
-	bool _cleanup;
+    bool _cleanup;
 };
 
 void testUDP(bool blocking) {
@@ -97,97 +97,97 @@ void testUDP(bool blocking) {
 }
 
 void testTCP(bool blocking) {
-	TCPSocket *clientSocket;
-	ListenSocket *listenSocket;
+    TCPSocket *clientSocket;
+    ListenSocket *listenSocket;
 
-	unsigned short clientPort,
-				   serverPort;
+    unsigned short clientPort,
+                   serverPort;
 
-	const char *stringA = "I'm the client! I'm connected and stuff!",
-			   *stringB = "Yeah, yeah, shut up already.";
+    const char *stringA = "I'm the client! I'm connected and stuff!",
+               *stringB = "Yeah, yeah, shut up already.";
 
-	char *buffer;
-	int size;
-	unsigned int bufferSize = 1024;
+    char *buffer;
+    int size;
+    unsigned int bufferSize = 1024;
 
-	Info("Running TCP socket tests");
+    Info("Running TCP socket tests");
 
-	SimpleConnectionListener connectionListener;
-	listenSocket = new ListenSocket(&connectionListener);
-	listenSocket->startListening();
+    SimpleConnectionListener connectionListener;
+    listenSocket = new ListenSocket(&connectionListener);
+    listenSocket->startListening();
 
-	serverPort = listenSocket->getLocalPort();
-	NetAddress serverAddr("127.0.0.1", serverPort);
+    serverPort = listenSocket->getLocalPort();
+    NetAddress serverAddr("127.0.0.1", serverPort);
 
-	clientSocket = new TCPSocket(blocking);
-	clientSocket->connectSocket(serverAddr);
+    clientSocket = new TCPSocket(blocking);
+    clientSocket->connectSocket(serverAddr);
 
-	clientPort = clientSocket->getLocalPort();
+    clientPort = clientSocket->getLocalPort();
 
-	if(!blocking) {
-		int secondsToWait = 5, c;
-		bool connected = false;
-		for(c = 0; c < secondsToWait; c++) {
-			sleep(1);
-			if(clientSocket->isConnected()) {
-				connected = true;
-				break;
-			}
-		}
-		ASSERT(connected);
-	} else {
-		ASSERT(clientSocket->isConnected());
-	}
+    if(!blocking) {
+        int secondsToWait = 5, c;
+        bool connected = false;
+        for(c = 0; c < secondsToWait; c++) {
+            sleep(1);
+            if(clientSocket->isConnected()) {
+                connected = true;
+                break;
+            }
+        }
+        ASSERT(connected);
+    } else {
+        ASSERT(clientSocket->isConnected());
+    }
 
-	sleep(1);
-	ASSERT(connectionListener.socket);
+    sleep(1);
+    ASSERT(connectionListener.socket);
 
-	buffer = (char*)calloc(bufferSize, sizeof(char));
-	clientSocket->send(stringA, (unsigned int)strlen(stringA));
-	(connectionListener.socket)->recv(buffer, size, bufferSize);
-	ASSERT(size == (int)strlen(stringA));
-	ASSERT(strncmp(stringA, buffer, size) == 0);
+    buffer = (char*)calloc(bufferSize, sizeof(char));
+    clientSocket->send(stringA, (unsigned int)strlen(stringA));
+    (connectionListener.socket)->recv(buffer, size, bufferSize);
+    ASSERT(size == (int)strlen(stringA));
+    ASSERT(strncmp(stringA, buffer, size) == 0);
 
-	(connectionListener.socket)->send(stringB, (unsigned int)strlen(stringB));
-	clientSocket->recv(buffer, size, bufferSize);
-	ASSERT(size == (int)strlen(stringB));
-	ASSERT(strncmp(stringB, buffer, size) == 0);
-	free(buffer);
+    (connectionListener.socket)->send(stringB, (unsigned int)strlen(stringB));
+    clientSocket->recv(buffer, size, bufferSize);
+    ASSERT(size == (int)strlen(stringB));
+    ASSERT(strncmp(stringB, buffer, size) == 0);
+    free(buffer);
 
-	delete clientSocket;
-	delete listenSocket;
+    delete clientSocket;
+    delete listenSocket;
 }
 
 void testTCPBuffer(unsigned int maxPackets) {
-	ListenSocket *listenSocket;
-	TCPBuffer *clientBuffer, *serverBuffer;
+    ListenSocket *listenSocket;
+    TCPBuffer *clientBuffer, *serverBuffer;
 
-	unsigned short clientPort,
-				   serverPort;
+    unsigned short clientPort,
+                   serverPort;
 
-	unsigned int maxCliPacketSize, maxSrvPacketSize, clientCounter, serverCounter, stringLength, c;
+    unsigned int maxCliPacketSize, maxSrvPacketSize, clientCounter, serverCounter, stringLength, c;
 
-	Info("Running TCP buffer tests");
+    Info("Running TCP buffer tests");
 
-	SimpleConnectionListener connectionListener(false);
-	listenSocket = new ListenSocket(&connectionListener);
-	listenSocket->startListening();
+    SimpleConnectionListener connectionListener(false);
+    listenSocket = new ListenSocket(&connectionListener);
+    listenSocket->startListening();
 
-	serverPort = listenSocket->getLocalPort();
-	NetAddress serverAddr("127.0.0.1", serverPort);
+    serverPort = listenSocket->getLocalPort();
+    NetAddress serverAddr("127.0.0.1", serverPort);
 
-	clientBuffer = new TCPBuffer(serverAddr);
-	clientPort = clientBuffer->getLocalPort();
-	NetAddress clientAddr("127.0.0.1", clientPort);
-	sleep(1);
-	ASSERT(connectionListener.socket);
+    clientBuffer = new TCPBuffer(serverAddr);
+    clientPort = clientBuffer->getLocalPort();
+    NetAddress clientAddr("127.0.0.1", clientPort);
+    sleep(1);
+    ASSERT(connectionListener.socket);
 
-	serverBuffer = new TCPBuffer(connectionListener.addr, connectionListener.socket);
+    serverBuffer = new TCPBuffer(connectionListener.addr, connectionListener.socket);
 
-	serverBuffer->stopBuffering();
-	clientBuffer->stopBuffering();
-	serverBuffer->startBuffering();
-	clientBuffer->startBuffering();
+    serverBuffer->stopBuffering();
+    clientBuffer->stopBuffering();
+    serverBuffer->startBuffering();
+    clientBuffer->startBuffering();
 
     maxCliPacketSize = clientBuffer->getMaxPacketSize();
     maxSrvPacketSize = serverBuffer->getMaxPacketSize();
@@ -210,10 +210,10 @@ void testTCPBuffer(unsigned int maxPackets) {
     }
     free(data);
 
-	// Give the buffers some time to catch up
-	sleep(1);
-	clientBuffer->logStatistics();
-	serverBuffer->logStatistics();
+    // Give the buffers some time to catch up
+    sleep(1);
+    clientBuffer->logStatistics();
+    serverBuffer->logStatistics();
 
     data = (char*)calloc(maxSrvPacketSize, sizeof(char));
     for(c=0; c<clientCounter; c++) {
@@ -279,12 +279,12 @@ void testTCPBuffer(unsigned int maxPackets) {
     }
     free(data);
 
-	serverBuffer->stopBuffering();
-	clientBuffer->stopBuffering();
+    serverBuffer->stopBuffering();
+    clientBuffer->stopBuffering();
 
-	delete clientBuffer;
-	delete serverBuffer;
-	delete listenSocket;
+    delete clientBuffer;
+    delete serverBuffer;
+    delete listenSocket;
 }
 
 void testPacketBuffering(unsigned int maxPackets) {
@@ -292,9 +292,9 @@ void testPacketBuffering(unsigned int maxPackets) {
     unsigned int c, size, bufferSize;
     Packet packet;
 
-	Info("Running packet buffering tests");
+    Info("Running packet buffering tests");
 
-	bufferSize = 1024;
+    bufferSize = 1024;
     char *dataBuffer = (char*)calloc(bufferSize, sizeof(char));
 
     for(c=0; c<maxPackets; c++) {
@@ -313,7 +313,7 @@ void testPacketBuffering(unsigned int maxPackets) {
         ASSERT(packet.addr == NetAddress("127.0.0.1", c));
     }
 
-	free(dataBuffer);
+    free(dataBuffer);
 }
 
 void testUDPBuffer(unsigned int maxPackets) {
@@ -356,10 +356,10 @@ void testUDPBuffer(unsigned int maxPackets) {
     }
     free(data);
 
-	// Give the buffers some time to catch up
-	sleep(1);
-	client->logStatistics();
-	server->logStatistics();
+    // Give the buffers some time to catch up
+    sleep(1);
+    client->logStatistics();
+    server->logStatistics();
 
     data = (char*)calloc(maxSrvPacketSize, sizeof(char));
     for(c=0; c<clientCounter; c++) {
@@ -380,8 +380,8 @@ void testUDPBuffer(unsigned int maxPackets) {
     }
     free(data);
 
-	client->stopBuffering();
-	server->stopBuffering();
+    client->stopBuffering();
+    server->stopBuffering();
 
     delete client;
     delete server;
@@ -412,73 +412,73 @@ void testTCPConnectionProviders() {
 }
 
 void testUDPConnectionProviders() {
-	Info("Running UDPConnectionProvider tests");
+    Info("Running UDPConnectionProvider tests");
 
-	SimpleUDPProvider client, server;
+    SimpleUDPProvider client, server;
 
-	NetAddress clientAddr("127.0.0.1", client.getLocalPort()),
-			   serverAddr("127.0.0.1", server.getLocalPort());
+    NetAddress clientAddr("127.0.0.1", client.getLocalPort()),
+               serverAddr("127.0.0.1", server.getLocalPort());
 
-	const char *messageA = "Hiya server",
-			   *messageB = "Why hello, client";
-	Packet bufferPacket;
+    const char *messageA = "Hiya server",
+               *messageB = "Why hello, client";
+    Packet bufferPacket;
 
-	ASSERT(client.sendPacket(Packet(serverAddr, messageA, strlen(messageA))));
-	sleep(1);
-	ASSERT(server.recvPacket(bufferPacket));
-	ASSERT(strncmp(bufferPacket.data, messageA, bufferPacket.size) == 0);
+    ASSERT(client.sendPacket(Packet(serverAddr, messageA, strlen(messageA))));
+    sleep(1);
+    ASSERT(server.recvPacket(bufferPacket));
+    ASSERT(strncmp(bufferPacket.data, messageA, bufferPacket.size) == 0);
 
-	ASSERT(server.sendPacket(Packet(clientAddr, messageB, strlen(messageB))));
-	sleep(1);
-	ASSERT(client.recvPacket(bufferPacket));
-	ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
+    ASSERT(server.sendPacket(Packet(clientAddr, messageB, strlen(messageB))));
+    sleep(1);
+    ASSERT(client.recvPacket(bufferPacket));
+    ASSERT(strncmp(bufferPacket.data, messageB, bufferPacket.size) == 0);
 }
 
 void testGhastlyProtocolSetup() {
-	Info("Running Ghastly protocol setup tests");
+    Info("Running Ghastly protocol setup tests");
 
-	GhastlyClient *client_1, *client_2;
-	GhastlyServer *server;
+    GhastlyClient *client_1, *client_2;
+    GhastlyServer *server;
 
-	server = new GhastlyServer(1);
-	client_1 = new GhastlyClient();
-	client_2 = new GhastlyClient();
+    server = new GhastlyServer(1);
+    client_1 = new GhastlyClient();
+    client_2 = new GhastlyClient();
 
-	NetAddress serverAddr("127.0.0.1", server->getLocalPort());
+    NetAddress serverAddr("127.0.0.1", server->getLocalPort());
 
- 	client_1->connect(serverAddr);
-	sleep(1);
-	server->update(1);
-	sleep(1);
-	client_1->update(1);
-	ASSERT(client_1->getState() == GhastlyClient::READY);
+     client_1->connect(serverAddr);
+    sleep(1);
+    server->update(1);
+    sleep(1);
+    client_1->update(1);
+    ASSERT(client_1->getState() == GhastlyClient::READY);
 
-	client_2->connect(serverAddr);
-	sleep(1);
-	server->update(1);
-	sleep(1);
-	client_2->update(1);
-	ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
+    client_2->connect(serverAddr);
+    sleep(1);
+    server->update(1);
+    sleep(1);
+    client_2->update(1);
+    ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
 
-	client_1->disconnect();
-	sleep(1);
-	server->update(1);
-	ASSERT(client_1->getState() == GhastlyClient::NOT_CONNECTED);
-	delete client_1;
+    client_1->disconnect();
+    sleep(1);
+    server->update(1);
+    ASSERT(client_1->getState() == GhastlyClient::NOT_CONNECTED);
+    delete client_1;
 
-	client_2->connect(serverAddr);
-	sleep(1);
-	server->update(1);
-	sleep(1);
-	client_2->update(1);
-	ASSERT(client_2->getState() == GhastlyClient::READY);
+    client_2->connect(serverAddr);
+    sleep(1);
+    server->update(1);
+    sleep(1);
+    client_2->update(1);
+    ASSERT(client_2->getState() == GhastlyClient::READY);
 
-	delete server;
-	sleep(1);
-	client_2->update(1);
-	ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
+    delete server;
+    sleep(1);
+    client_2->update(1);
+    ASSERT(client_2->getState() == GhastlyClient::NOT_CONNECTED);
 
-	delete client_2;
+    delete client_2;
 }
 
 int main(int argc, char *argv[]) {
@@ -487,17 +487,17 @@ int main(int argc, char *argv[]) {
 
     testUDP(true);
     testUDP(false);
-	testTCP(true);
-	testTCP(false);
+    testTCP(true);
+    testTCP(false);
     testPacketBuffering(2^16);
     testUDPBuffer(2^16);
-	testTCPBuffer(2^16);
-	testTCPConnectionProviders();
-	testUDPConnectionProviders();
-	testGhastlyProtocolSetup();
+    testTCPBuffer(2^16);
+    testTCPConnectionProviders();
+    testUDPConnectionProviders();
+    testGhastlyProtocolSetup();
 
     Socket::ShutdownSocketLayer();
-	Log::Teardown();
+    Log::Teardown();
     return 1;
 }
 

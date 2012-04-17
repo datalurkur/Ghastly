@@ -37,7 +37,7 @@ public:
     void logStatistics();
 
 protected:
-	Socket *_socket;
+    Socket *_socket;
 
     static unsigned int DefaultMaxBufferSize;
     static unsigned int DefaultMaxPacketSize;

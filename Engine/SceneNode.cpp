@@ -4,20 +4,20 @@
 const std::string SceneNode::NodeType = "SceneNode";
 
 SceneNode::SceneNode(const std::string &name):
-	_name(name), _type(NodeType), _parent(0), _dirty(true)
+    _name(name), _type(NodeType), _parent(0), _dirty(true)
 {}
 
 SceneNode::SceneNode(const std::string &name, const std::string &type):
-	_name(name), _type(type), _parent(0), _dirty(true)
+    _name(name), _type(type), _parent(0), _dirty(true)
 {}
 
 SceneNode::~SceneNode() {
-	clearRenderables(true);
-	NodeMap::iterator itr = _children.begin();
-	for(; itr != _children.end(); itr++) {
-		delete (itr->second);
-	}
-	_children.clear();
+    clearRenderables(true);
+    NodeMap::iterator itr = _children.begin();
+    for(; itr != _children.end(); itr++) {
+        delete (itr->second);
+    }
+    _children.clear();
 }
 
 Vector3 SceneNode::getAbsolutePosition() const {
@@ -44,7 +44,7 @@ void SceneNode::setPosition(float x, float y, float z) {
 }
 
 void SceneNode::setPosition(const Vector3 &pos) {
-	setPosition(pos.x, pos.y, pos.z);
+    setPosition(pos.x, pos.y, pos.z);
 }
 
 Vector3 SceneNode::getDimensions() const {
@@ -58,11 +58,11 @@ void SceneNode::setDimensions(float x, float y, float z) {
 
     // Parents will need to update their AABBs
     flagDirty(Upward);
-	recreateRenderables();
+    recreateRenderables();
 }
 
 void SceneNode::setDimensions(const Vector3 &dim) {
-	setDimensions(dim.x, dim.y, dim.z);
+    setDimensions(dim.x, dim.y, dim.z);
 }
 
 const AABB3& SceneNode::getAbsoluteBounds() const {
@@ -74,12 +74,12 @@ void SceneNode::moveRelative(const Vector3 &pos) {
     setPosition(_position + pos);
 }
 
-const std::string &SceneNode::getName() const {	return _name; }
-const std::string &SceneNode::getType() const {	return NodeType; }
+const std::string &SceneNode::getName() const {    return _name; }
+const std::string &SceneNode::getType() const {    return NodeType; }
 
 void SceneNode::addChild(SceneNode *child) {
-	_children[child->getName()] = child;
-	child->_parent = this;
+    _children[child->getName()] = child;
+    child->_parent = this;
 
     // Bounding boxes need to be recomputed
     flagDirty(Upward);
@@ -96,45 +96,45 @@ void SceneNode::deleteChild(const std::string &childName) {
 void SceneNode::getNodes(NodeList &list, Frustum *frustum) {
     ASSERT(!_dirty);
 
-	if(frustum) {
-		// Do bounds checking and return early if this node is not within the view frustum
-		// FIXME - Actually implement frustum culling
-	}
-	list.push_back(this);
-	NodeMap::iterator itr = _children.begin();
-	for(; itr != _children.end(); itr++) {
-		itr->second->getNodes(list, frustum);
-	}
+    if(frustum) {
+        // Do bounds checking and return early if this node is not within the view frustum
+        // FIXME - Actually implement frustum culling
+    }
+    list.push_back(this);
+    NodeMap::iterator itr = _children.begin();
+    for(; itr != _children.end(); itr++) {
+        itr->second->getNodes(list, frustum);
+    }
 }
 
 void SceneNode::getRenderables(RenderableList &list) {
     ASSERT(!_dirty);
 
-	//Info("SceneNode " << _name << " adding " << _renderables.size() << " renderables to list.");
-	list.insert(list.end(), _renderables.begin(), _renderables.end());
+    //Info("SceneNode " << _name << " adding " << _renderables.size() << " renderables to list.");
+    list.insert(list.end(), _renderables.begin(), _renderables.end());
 }
 
 void SceneNode::addRenderable(Renderable *renderable) {
-	_renderables.push_back(renderable);
+    _renderables.push_back(renderable);
 }
 
 void SceneNode::clearRenderables(bool deleteOnClear) {
-	if(deleteOnClear) {
-		RenderableList::iterator itr = _renderables.begin();
-		for(; itr != _renderables.end(); itr++) {
-			delete *itr;
-		}
-	}
-	_renderables.clear();
+    if(deleteOnClear) {
+        RenderableList::iterator itr = _renderables.begin();
+        for(; itr != _renderables.end(); itr++) {
+            delete *itr;
+        }
+    }
+    _renderables.clear();
 }
 
 void SceneNode::updateCachedValues() {
-	bool needsUpdate = _dirty;
+    bool needsUpdate = _dirty;
 
-	if(needsUpdate) {
+    if(needsUpdate) {
         _dirty = false;
 
-		// Update any values dependent on the parent state
+        // Update any values dependent on the parent state
         if(_parent) {
             _absolutePosition = _position + _parent->getAbsolutePosition();
         }
@@ -151,10 +151,10 @@ void SceneNode::updateCachedValues() {
         }
     }
 
-	NodeMap::iterator itr = _children.begin();
-	for(; itr != _children.end(); itr++) {
-		itr->second->updateCachedValues();
-	}
+    NodeMap::iterator itr = _children.begin();
+    for(; itr != _children.end(); itr++) {
+        itr->second->updateCachedValues();
+    }
     
     if(needsUpdate) {
         // Update any values dependend on child states
@@ -174,13 +174,13 @@ void SceneNode::updateCachedValues() {
 }
 
 void SceneNode::flagDirty(DirtyPropagation direction) {
-	_dirty = true;
-	if(direction == Upward) {
+    _dirty = true;
+    if(direction == Upward) {
         if(_parent) { _parent->flagDirty(direction); }
-	} else {
-		NodeMap::iterator itr = _children.begin();
-		for(; itr != _children.end(); itr++) {
-			itr->second->flagDirty(direction);
-		}
-	}
+    } else {
+        NodeMap::iterator itr = _children.begin();
+        for(; itr != _children.end(); itr++) {
+            itr->second->flagDirty(direction);
+        }
+    }
 }

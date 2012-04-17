@@ -1,7 +1,7 @@
 #include <Base/Timestamp.h>
 
 time_t GetTimestamp() {
-	return time(NULL);
+    return time(NULL);
 }
 
 clock_t GetClock() {
@@ -9,5 +9,5 @@ clock_t GetClock() {
 }
 
 double ClocksToSeconds(clock_t clocks) {
-	return static_cast<double>(clocks / CLOCKS_PER_SEC);
+    return static_cast<double>(clocks / CLOCKS_PER_SEC);
 }

@@ -13,19 +13,19 @@ class WorldManager;
 
 class World {
 public:
-	World();
-	virtual ~World();
+    World();
+    virtual ~World();
 
-	virtual void load(const std::string &name) {}
+    virtual void load(const std::string &name) {}
 
     // Update the world objects
     void update(int elapsed);
 
-	// Render the world
-	void render(Camera *camera, RenderContext *context);
+    // Render the world
+    void render(Camera *camera, RenderContext *context);
 
-	// Return the scene manager
-	SceneManager *getScene();
+    // Return the scene manager
+    SceneManager *getScene();
     
     // Designed to generically add objects to the scene
     template <typename T>
@@ -40,7 +40,7 @@ public:
     void addEntity(T* t);
 
 protected:
-	QuadTreeSceneManager *_scene;
+    QuadTreeSceneManager *_scene;
 
     typedef std::map<std::string, Entity*> EntityList;
     EntityList _entities;
@@ -63,7 +63,7 @@ template <typename T>
 T* World::createEntity(const std::string &name) {
     T *t;
     t = new T(name);
-	addEntity(t);
+    addEntity(t);
     return t;
 }
 

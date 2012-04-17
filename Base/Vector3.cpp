@@ -24,5 +24,5 @@ std::ostream& operator<<(std::ostream &lhs, const Vector3 &rhs) {
 }
 
 Vector3 operator*(const float lhs, const Vector3& rhs) {
-	return rhs * lhs;
+    return rhs * lhs;
 }

@@ -31,7 +31,7 @@ void PhysicsController::setBody(b2Body *body) {
 }
 
 b2Body *PhysicsController::getBody() {
-	return _body;
+    return _body;
 }
 
 void PhysicsController::disallowUpdates() { _updates = false; }

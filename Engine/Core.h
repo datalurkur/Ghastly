@@ -39,7 +39,7 @@ private:
     Window *_window;
     Viewport *_viewport;
     RenderContext *_renderContext;
-	
+    
     int _elapsedSamples[FPS_WINDOW_SIZE];
     int _elapsedIndex;
 };

@@ -1,23 +1,35 @@
 #include <Engine/EventHandler.h>
 
-EventHandler::EventHandler(int windowID): _windowID) {}
+EventHandler::EventHandler(int windowID): _windowID(windowID) {}
 
 void EventHandler::handleEvents() {
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		switch(event.type) {
+    SDL_Event event;
+    while(SDL_PollEvent(&event)) {
+        switch(event.type) {
             case SDL_WINDOWEVENT: {
-				WindowListenerList::iterator itr = _windowListeners.begin();
-				for(; itr != _windowListeners.end(); itr++) {
-					(*itr)->resizeWindow(event.resize.w, event.resize.h);
-				}
-			} break;
-			case SDL_QUIT: {
-				WindowListenerList::iterator itr = _windowListeners.begin();
-				for(; itr != _windowListeners.end(); itr++) {
-					(*itr)->closeWindow();
-				}
-			} break;
+                if(event.window.windowID == _windowID) {
+                    switch(event.window.event) {
+                        case SDL_WINDOWEVENT_RESIZED:
+                        case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                            WindowListenerList::iterator itr = _windowListeners.begin();
+                            for(; itr != _windowListeners.end(); itr++) {
+                                (*itr)->resizeWindow(event.window.data1, event.window.data2);
+                            }
+                        } break;
+                        case SDL_WINDOWEVENT_CLOSE: {
+                            event.type = SDL_QUIT;
+                            SDL_PushEvent(&event);
+                        } break;
+                    }
+                }
+
+            } break;
+            case SDL_QUIT: {
+                WindowListenerList::iterator itr = _windowListeners.begin();
+                for(; itr != _windowListeners.end(); itr++) {
+                    (*itr)->closeWindow();
+                }
+            } break;
             case SDL_KEYDOWN: {
                 KeyboardEvent keyEvent(event.key.keysym.sym, event.key.keysym.mod);
                 KeyboardListenerList::iterator itr = _keyboardListeners.begin();
@@ -32,14 +44,14 @@ void EventHandler::handleEvents() {
                     (*itr)->keyUp(&keyEvent);
                 }
             } break;
-		}
-	}
+        }
+    }
 }
 
 void EventHandler::addWindowListener(WindowListener *listener) {
-	_windowListeners.push_back(listener);
+    _windowListeners.push_back(listener);
 }
 
 void EventHandler::addKeyboardListener(KeyboardListener *listener) {
-	_keyboardListeners.push_back(listener);
+    _keyboardListeners.push_back(listener);
 }

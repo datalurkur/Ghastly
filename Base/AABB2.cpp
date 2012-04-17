@@ -57,8 +57,8 @@ void AABB2::expand(const AABB2& other) {
 }
 
 void AABB2::expand(const Vector2& border) {
-	_lower -= border;
-	_upper += border;
+    _lower -= border;
+    _upper += border;
 }
 
 AABB2 AABB2::Combine(const AABB2& b1, const AABB2& b2) {

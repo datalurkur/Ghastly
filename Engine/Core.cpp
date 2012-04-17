@@ -15,7 +15,7 @@ void Core::setup() {
     for(int i = 0; i < FPS_WINDOW_SIZE; i++) {
         _elapsedSamples[i] = 0;
     }
-	
+    
     _core = this;
     
     Log::EnableAllChannels();
@@ -23,7 +23,7 @@ void Core::setup() {
     _window = new Window();
     _viewport = new Viewport();
     
-    _eventHandler = new EventHandler();
+    _eventHandler = new EventHandler(_window->getID());
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
 
@@ -64,13 +64,13 @@ void Core::start() {
     while(_running) {
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
-		
-		//Info("FPS: " << trackFPS(elapsedTime) << "(" << elapsedTime << ")");
+        
+        //Info("FPS: " << trackFPS(elapsedTime) << "(" << elapsedTime << ")");
 
         _eventHandler->handleEvents();
 
         update(elapsedTime);
-		_renderContext->clear();
+        _renderContext->clear();
         render(_renderContext);
         _window->swapBuffers();
 
@@ -93,7 +93,7 @@ void Core::resizeWindow(const int w, const int h) {
 }
 
 void Core::closeWindow() {
-	stop();
+    stop();
     flushStates();
 }
 
@@ -106,19 +106,19 @@ Viewport* Core::getViewport() const {
 }
 
 float Core::trackFPS(int elapsed) {
-	int sum;
-	int i;
-	
-	_elapsedSamples[_elapsedIndex] = elapsed;
-	_elapsedIndex++;
-	if(_elapsedIndex > FPS_WINDOW_SIZE) {
-		_elapsedIndex = 0;
-	}
-	
-	sum = 0;
-	for(i = 0; i < FPS_WINDOW_SIZE; i++) {
-		sum += _elapsedSamples[i];
-	}
+    int sum;
+    int i;
+    
+    _elapsedSamples[_elapsedIndex] = elapsed;
+    _elapsedIndex++;
+    if(_elapsedIndex > FPS_WINDOW_SIZE) {
+        _elapsedIndex = 0;
+    }
+    
+    sum = 0;
+    for(i = 0; i < FPS_WINDOW_SIZE; i++) {
+        sum += _elapsedSamples[i];
+    }
 
-	return (1000 * FPS_WINDOW_SIZE) / (float)sum;
+    return (1000 * FPS_WINDOW_SIZE) / (float)sum;
 }

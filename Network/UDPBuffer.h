@@ -13,8 +13,8 @@ public:
     void doOutboundBuffering();
 
 private:
-	// Make sure the Socket* is properly cast so the correct functions get called
-	inline UDPSocket* getSocket() { return (UDPSocket*)_socket; }
+    // Make sure the Socket* is properly cast so the correct functions get called
+    inline UDPSocket* getSocket() { return (UDPSocket*)_socket; }
 };
 
 #endif

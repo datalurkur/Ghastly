@@ -3,10 +3,10 @@
 
 class WindowListener {
 public:
-	WindowListener();
+    WindowListener();
 
-	virtual void resizeWindow(const int w, const int h) = 0;
-	virtual void closeWindow() = 0;
+    virtual void resizeWindow(const int w, const int h) = 0;
+    virtual void closeWindow() = 0;
 };
 
 #endif

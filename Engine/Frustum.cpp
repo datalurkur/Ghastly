@@ -5,7 +5,7 @@ Frustum::Frustum(): _projection(Matrix4::Identity), _modelView(Matrix4::Identity
 }
 
 void Frustum::setProjection(const Matrix4 &matrix) {
-	_projection = matrix;
+    _projection = matrix;
 }
 
 const Matrix4 Frustum::getProjection() const {
@@ -13,20 +13,20 @@ const Matrix4 Frustum::getProjection() const {
 }
 
 void Frustum::setModelView(const Matrix4  &matrix) {
-	_modelView = matrix;
+    _modelView = matrix;
 }
 
 const Matrix4 Frustum::getModelView() const {
-	return _modelView;
+    return _modelView;
 }
 
 Frustum& Frustum::operator=(const Frustum &other) {
-	_projection = other.getProjection();
-	return *this;
+    _projection = other.getProjection();
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream &lhs, const Frustum &rhs) {
-	lhs << "Frustum";
-	lhs << " Projection: " << rhs.getProjection();
-	return lhs;
+    lhs << "Frustum";
+    lhs << " Projection: " << rhs.getProjection();
+    return lhs;
 }

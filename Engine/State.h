@@ -27,7 +27,7 @@ protected:
     void setCore(Core *core);
 
 protected:
-	friend class ParentState;
+    friend class ParentState;
     ParentState *_parent;
     Core *_core;
 };

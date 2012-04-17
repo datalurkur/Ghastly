@@ -11,10 +11,10 @@ public:
 
     void setup();
 
-	void render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables);
-	void clear();
+    void render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables);
+    void clear();
 
-	void setViewport(Viewport *viewport);
+    void setViewport(Viewport *viewport);
 };
 
 #endif

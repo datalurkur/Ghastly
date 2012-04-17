@@ -52,7 +52,7 @@ void UIManager::update() {
 void UIManager::onResize(int w, int h) {
     _width = w;
     _height = h;
-	_camera->clampEdges(Vector2(-(w/2.0f),-(h/2.0f)), Vector2((w/2.0f),(h/2.0f)));
+    _camera->clampEdges(Vector2(-(w/2.0f),-(h/2.0f)), Vector2((w/2.0f),(h/2.0f)));
 
     LayerList::iterator itr;
     for(itr = _layers.begin(); itr != _layers.end(); itr++) {

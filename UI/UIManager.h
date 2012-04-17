@@ -15,7 +15,7 @@ public:
     void render(RenderContext *context);
     void update();
 
-	void onResize(int w, int h);
+    void onResize(int w, int h);
 
     int getWidth() const;
     int getHeight() const;

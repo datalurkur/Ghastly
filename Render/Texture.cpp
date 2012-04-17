@@ -59,37 +59,37 @@ void Texture::SavePixelDataToDisk(GLenum format, unsigned int w, unsigned int h,
 }
 
 Texture::Texture():
-	_ids(0), _frames(1)
+    _ids(0), _frames(1)
 {
 }
 
 Texture::~Texture() {
-	teardown();
+    teardown();
 }
 
 void Texture::setup(const unsigned int frames) {
-	_frames = frames;
+    _frames = frames;
 
-	_ids = new GLuint[_frames];
-	glGenTextures(_frames, _ids);
+    _ids = new GLuint[_frames];
+    glGenTextures(_frames, _ids);
 
-	for(unsigned int i=0; i<_frames; i++) {
-		enable(i);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    for(unsigned int i=0; i<_frames; i++) {
+        enable(i);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
         CheckGLErrors();
-		disable();
-	}
+        disable();
+    }
 }
 
 void Texture::teardown() {
-	if(_ids) {
-		glDeleteTextures(_frames, _ids);
-		delete [] _ids;
-	}
+    if(_ids) {
+        glDeleteTextures(_frames, _ids);
+        delete [] _ids;
+    }
 }
 
 void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w, unsigned int h, unsigned char *pixelData, bool genMipMaps, unsigned int frame) {
@@ -120,15 +120,15 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w,
 
 void Texture::enable(const unsigned int frame) {
     CheckGLErrors();
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-	glBindTexture(GL_TEXTURE_2D, _ids[frame]);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, _ids[frame]);
     CheckGLErrors();
 }
 
 void Texture::disable() {
-	glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);
     CheckGLErrors();
 }

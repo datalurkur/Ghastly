@@ -7,17 +7,17 @@
 
 class ServerProvider: public MultiConnectionProvider, public SocketCreationListener {
 public:
-	ServerProvider(unsigned short localPort = 0);
-	virtual ~ServerProvider();
+    ServerProvider(unsigned short localPort = 0);
+    virtual ~ServerProvider();
 
     bool sendPacket(const Packet &packet);
 
-	unsigned short getLocalPort();
+    unsigned short getLocalPort();
 
-	bool onSocketCreation(const NetAddress &client, TCPSocket *socket);
+    bool onSocketCreation(const NetAddress &client, TCPSocket *socket);
 
 private:
-	ListenSocket *_listenSocket;
+    ListenSocket *_listenSocket;
 };
 
 #endif

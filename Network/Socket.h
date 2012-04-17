@@ -27,21 +27,21 @@ class Socket {
 public:
     static bool InitializeSocketLayer();
     static void ShutdownSocketLayer();
-	static bool IsSocketLayerReady();
+    static bool IsSocketLayerReady();
 
-	static int LastSocketError();
+    static int LastSocketError();
 
 private:
-	static bool SocketLayerInitialized;
+    static bool SocketLayerInitialized;
 
 public:
     Socket(bool blocking);
     virtual ~Socket();
-	
+    
     bool isOpen();
 
     unsigned short getLocalPort();
-	bool setBlockingFlag(bool value = true);
+    bool setBlockingFlag(bool value = true);
 
     bool send(const char *data, unsigned int size, const sockaddr *addr, int addrSize);
     void recv(char *data, int &size, unsigned int maxSize, sockaddr *addr, int &addrSize);
@@ -58,7 +58,7 @@ protected:
         Created,
         Bound,
         Listening,
-		Connecting,
+        Connecting,
         Connected
     };
 

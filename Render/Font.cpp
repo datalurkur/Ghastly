@@ -68,7 +68,7 @@ Renderable* Font::createRenderable(const std::string &text, const Vector2 &maxDi
 
 Renderable* Font::createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment) {
     float *vertexPointer, *texCoordPointer;
-	unsigned int *indexPointer;
+    unsigned int *indexPointer;
     Renderable *textBox;
 
     int numCharacters;
@@ -83,10 +83,10 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
     // Allocate memory for our vertex and texcoord buffers
     vertexPointer   = (float*)calloc(numCharacters * 4 * 2, sizeof(float));
     texCoordPointer = (float*)calloc(numCharacters * 4 * 2, sizeof(float));
-	indexPointer    = (unsigned int*)calloc(numCharacters * 4, sizeof(unsigned int));
+    indexPointer    = (unsigned int*)calloc(numCharacters * 4, sizeof(unsigned int));
 
     // Now set the actual vertex and texcoords
-	characterIndex = 0;
+    characterIndex = 0;
     yPos = getAlignedY((int)subStrings.size(), maxDims, textAlignment);
     for(ritr = subStrings.rbegin(); ritr != subStrings.rend(); ritr++) {
         xPos = getAlignedX((*ritr), maxDims, textAlignment);
@@ -97,8 +97,8 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
             currentCharacter = (*ritr)[i];
             if(currentCharacter > 32) {
                 populateBuffers(currentCharacter, characterIndex, xPos, yPos, vertexPointer, texCoordPointer, indexPointer);
-			    characterIndex++;
-		    }
+                characterIndex++;
+            }
 
             xPos += _characterWidth[(int)currentCharacter];
         }
@@ -111,12 +111,12 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
     textBox->setMaterial(_material);
     textBox->addRenderState(BufferState::VertexBuffer(numCharacters * 4, GL_FLOAT, 2, vertexPointer, _material->getShader()));
     textBox->addRenderState(BufferState::TexCoordBuffer(numCharacters * 4, GL_FLOAT, 2, texCoordPointer, _material->getShader()));
-	textBox->setIndexPointer(indexPointer, numCharacters * 4);
+    textBox->setIndexPointer(indexPointer, numCharacters * 4);
 
-	// Free pointers
-	free(vertexPointer);
-	free(texCoordPointer);
-	free(indexPointer);
+    // Free pointers
+    free(vertexPointer);
+    free(texCoordPointer);
+    free(indexPointer);
 
     return textBox;
 }
@@ -161,26 +161,26 @@ void Font::populateBuffers(char currentCharacter, unsigned int characterIndex, i
     texCoordPointer[(characterIndex*8) + 6] = textureXMax;
     texCoordPointer[(characterIndex*8) + 7] = textureYMax;
 
-	// Set up the indices
-	indexPointer[(characterIndex*4) + 0] = (characterIndex*4);
-	indexPointer[(characterIndex*4) + 1] = (characterIndex*4) + 1;
-	indexPointer[(characterIndex*4) + 2] = (characterIndex*4) + 2;
+    // Set up the indices
+    indexPointer[(characterIndex*4) + 0] = (characterIndex*4);
+    indexPointer[(characterIndex*4) + 1] = (characterIndex*4) + 1;
+    indexPointer[(characterIndex*4) + 2] = (characterIndex*4) + 2;
     indexPointer[(characterIndex*4) + 3] = (characterIndex*4) + 3;
 }
 
 int Font::textWidth(const std::string &text) {
-	int totalWidth = 0;
-	int i;
-	for(i = 0; i < (int)text.length(); i++) {
+    int totalWidth = 0;
+    int i;
+    for(i = 0; i < (int)text.length(); i++) {
         if(text[i] >= 32) {
-			totalWidth += _characterWidth[(int)text[i]];
-		}
+            totalWidth += _characterWidth[(int)text[i]];
+        }
     }
-	return totalWidth;
+    return totalWidth;
 }
 
 int Font::textHeight() {
-	return _characterHeight;
+    return _characterHeight;
 }
 
 Material* Font::getMaterial() const {
@@ -201,7 +201,7 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
         lastIndex  = 0;
         totalWidth = 0;
         widthSinceSpace = 0;
-	    for(i = 0; i < (int)(*itr).length(); i++) {
+        for(i = 0; i < (int)(*itr).length(); i++) {
             if((*itr)[i] >= 32) {
                 int cWidth;
  
@@ -225,8 +225,8 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
                         totalWidth = widthSinceSpace;
                     }
                 }
-			    totalWidth += cWidth;
-		    }
+                totalWidth += cWidth;
+            }
         }
         if(lastIndex < (int)(*itr).length()) {
             subStrings.push_back((*itr).substr(lastIndex));

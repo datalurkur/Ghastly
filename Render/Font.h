@@ -22,8 +22,8 @@ public:
     };
 
 public:
-	Font();
-	virtual ~Font();
+    Font();
+    virtual ~Font();
 
     void setup();
     void teardown();
@@ -32,10 +32,10 @@ public:
     Renderable* createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment);
     void populateBuffers(char currentCharacter, unsigned int characterIndex, int xOffset, int yOffset, float *vertexPointer, float *texCoordPointer, unsigned int *indexPointer);
 
-	int textWidth(const std::string &text);
-	int textHeight();
+    int textWidth(const std::string &text);
+    int textHeight();
 
-	Material *getMaterial() const;
+    Material *getMaterial() const;
 
     void splitAtWidth(const std::string &text, int maxWidth, std::list<std::string> &subStrings, bool clobberWords = false);
     int getSizeInPrintableChars(const std::list<std::string> &strings);
@@ -45,20 +45,20 @@ protected:
     int getAlignedY(int numSubStrings, const Vector2 &maxDims, Alignment alignment);
  
 protected:
-	int _fontWidth;
-	int _fontHeight;
+    int _fontWidth;
+    int _fontHeight;
 
-	int _textureWidth;
-	int _textureHeight;
+    int _textureWidth;
+    int _textureHeight;
 
-	int _characterWidth[256];
-	int _characterHeight;
+    int _characterWidth[256];
+    int _characterHeight;
 
-	int _fontAscent;
-	int _fontDescent;
-	int _fontLineSkip;
+    int _fontAscent;
+    int _fontDescent;
+    int _fontLineSkip;
 
-	Material *_material;
+    Material *_material;
     Texture *_glyph;
 
     friend class TTFManager;

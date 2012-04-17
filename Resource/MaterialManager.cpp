@@ -9,15 +9,15 @@
 const std::string MaterialManager::LoadDirectory = "Material";
 
 void MaterialManager::DoLoad(const std::string &name, Material *material) {
-	char *fileData;
-	unsigned int fileSize;
+    char *fileData;
+    unsigned int fileSize;
 
     PropertyMap *pMap;
     std::list<std::string> keys;
     std::list<std::string>::iterator itr;
     
     // Load the PMap
-	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
+    fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
     if(fileSize == 0) {
         Error("Failed to load " << name);
         return;

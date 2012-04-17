@@ -28,11 +28,11 @@ struct ThreadInfo {
 };
 
 struct ResourceThreadParams {
-	std::string name;
-	void *ptr;
+    std::string name;
+    void *ptr;
     SDL_mutex *mutex;
 
-	ResourceThreadParams(const std::string &nName, void* nPtr, SDL_mutex *nMutex);
+    ResourceThreadParams(const std::string &nName, void* nPtr, SDL_mutex *nMutex);
 };
 
 template <typename T, typename F>
@@ -44,11 +44,11 @@ public:
     static T* Get(const std::string &name);
     static T* Load(const std::string &name, T* t = 0);
     static void Unload(T* t);
-	static void Unload(const std::string &name);
-	static void Reload(T* t);
-	static void Reload(const std::string &name);
+    static void Unload(const std::string &name);
+    static void Reload(T* t);
+    static void Reload(const std::string &name);
 
-	static void ReloadAll();
+    static void ReloadAll();
 
     static bool Register(const std::string &name, T* t);
     static T* Unregister(const std::string &name);
@@ -68,13 +68,13 @@ protected:
     static ThreadInfo* GetThreadInfo(T* t);
 
 private:
-	static void Report();
+    static void Report();
 
 protected:
     typedef std::map<T*,ThreadInfo> ThreadMap;
     typedef typename ThreadMap::iterator ThreadMapIterator;
 
-	static SDL_mutex* Lock;
+    static SDL_mutex* Lock;
     static ThreadMap Threads;
 };
 
@@ -87,7 +87,7 @@ typename ThreadedResourceManager<T,F>::ThreadMap ThreadedResourceManager<T,F>::T
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Setup() {
     F::Lock = SDL_CreateMutex();
-	ResourceManager<T,F>::Setup();
+    ResourceManager<T,F>::Setup();
 }
 
 template <typename T, typename F>
@@ -112,7 +112,7 @@ void ThreadedResourceManager<T,F>::Teardown() {
         }
         
         // Tear down the resources
-		ResourceManager<T,F>::Teardown();
+        ResourceManager<T,F>::Teardown();
 
         // Destroy the mutex
         SDL_DestroyMutex(F::Lock);
@@ -124,8 +124,8 @@ template <typename T, typename F>
 T* ThreadedResourceManager<T,F>::Get(const std::string &name) {
     T* t = 0;
 
-	LOCK_MUTEX;
-	t = ResourceManager<T,F>::Get(name);
+    LOCK_MUTEX;
+    t = ResourceManager<T,F>::Get(name);
     UNLOCK_MUTEX;
 
     return t;
@@ -133,9 +133,9 @@ T* ThreadedResourceManager<T,F>::Get(const std::string &name) {
 
 template <typename T, typename F>
 T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t) {
-	LOCK_MUTEX;
-	if(!t) { t = new T(); }
-	ResourceThreadParams params(name, (void*)t, F::Lock);
+    LOCK_MUTEX;
+    if(!t) { t = new T(); }
+    ResourceThreadParams params(name, (void*)t, F::Lock);
     SDL_Thread *thread = SDL_CreateThread(F::ThreadedLoad, ("LoadingThread:" + name).c_str(), (void*)&params);
     F::Threads[t] = ThreadInfo(thread);
     F::Resources[name] = t;
@@ -147,45 +147,45 @@ T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t) {
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Unload(T* t) {
     LOCK_MUTEX;
-	ResourceManager<T,F>::Unload(t);
-	UNLOCK_MUTEX;
+    ResourceManager<T,F>::Unload(t);
+    UNLOCK_MUTEX;
 }
 
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Unload(const std::string &name) {
     LOCK_MUTEX;
-	ResourceManager<T,F>::Unload(name);
-	UNLOCK_MUTEX;
+    ResourceManager<T,F>::Unload(name);
+    UNLOCK_MUTEX;
 }
 
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Reload(T* t) {
     LOCK_MUTEX;
-	ResourceManager<T,F>::Reload(t);
-	UNLOCK_MUTEX;
+    ResourceManager<T,F>::Reload(t);
+    UNLOCK_MUTEX;
 }
 
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Reload(const std::string &name) {
     LOCK_MUTEX;
-	ResourceManager<T,F>::Reload(name);
-	UNLOCK_MUTEX;
+    ResourceManager<T,F>::Reload(name);
+    UNLOCK_MUTEX;
 }
 
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::ReloadAll() {
     LOCK_MUTEX;
-	ResourceManager<T,F>::ReloadAll();
-	UNLOCK_MUTEX;
+    ResourceManager<T,F>::ReloadAll();
+    UNLOCK_MUTEX;
 }
 
 template <typename T, typename F>
 bool ThreadedResourceManager<T,F>::Register(const std::string &name, T* t) {
-	bool ret;
-	LOCK_MUTEX;
-	ret = ResourceManager<T,F>::Register(name, t);
-	UNLOCK_MUTEX;
-	return ret;
+    bool ret;
+    LOCK_MUTEX;
+    ret = ResourceManager<T,F>::Register(name, t);
+    UNLOCK_MUTEX;
+    return ret;
 }
 
 template <typename T, typename F>
@@ -193,7 +193,7 @@ T* ThreadedResourceManager<T,F>::Unregister(const std::string &name) {
     T* t = 0;
 
     LOCK_MUTEX;
-	t = ResourceManager<T,F>::Unregister(name);
+    t = ResourceManager<T,F>::Unregister(name);
     UNLOCK_MUTEX;
 
     return t;
@@ -259,8 +259,8 @@ bool ThreadedResourceManager<T,F>::IsWorking() {
 template <typename T, typename F>
 int ThreadedResourceManager<T,F>::ThreadedLoad(void* data) {
     ResourceThreadParams *params = (ResourceThreadParams*)data;
-	T* t = (T*)params->ptr;
-	F::DoLoad(params->name, t);
+    T* t = (T*)params->ptr;
+    F::DoLoad(params->name, t);
     F::Finish(t);
 
     return 0;
@@ -294,16 +294,16 @@ ThreadInfo* ThreadedResourceManager<T,F>::GetThreadInfo(T *t) {
 
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Report() {
-	Info("ThreadedResourceManager Threads contains:");
-	ThreadMapIterator itr = Threads.begin();
-	for(; itr != Threads.end(); itr++) {
-		Info(" - " << itr->first);
-	}
-	Info("F::Threads contains:");
-	itr = F::Threads.begin();
-	for(; itr != F::Threads.end(); itr++) {
-		Info(" - " << itr->first);
-	}
+    Info("ThreadedResourceManager Threads contains:");
+    ThreadMapIterator itr = Threads.begin();
+    for(; itr != Threads.end(); itr++) {
+        Info(" - " << itr->first);
+    }
+    Info("F::Threads contains:");
+    itr = F::Threads.begin();
+    for(; itr != F::Threads.end(); itr++) {
+        Info(" - " << itr->first);
+    }
 }
 
 #undef LOCK_MUTEX

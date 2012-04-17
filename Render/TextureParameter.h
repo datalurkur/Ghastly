@@ -13,7 +13,7 @@ public:
 
 private:
     Texture *_texture;
-	GLuint _frame;
+    GLuint _frame;
     GLuint _channel;
 };
 

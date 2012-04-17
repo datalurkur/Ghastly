@@ -56,8 +56,8 @@ void AABB3::expand(const AABB3& other) {
 }
 
 void AABB3::expand(const Vector3& border) {
-	_lower -= border;
-	_upper += border;
+    _lower -= border;
+    _upper += border;
 }
 
 AABB3 AABB3::Combine(const AABB3& b1, const AABB3& b2) {

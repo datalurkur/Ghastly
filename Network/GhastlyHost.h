@@ -8,22 +8,22 @@ using namespace GhastlyProtocol;
 
 class GhastlyHost {
 public:
-	enum {
-		ID_UNASSIGNED = 0,
-		ID_SERVER,
-		ID_CLIENT
-	};
+    enum {
+        ID_UNASSIGNED = 0,
+        ID_SERVER,
+        ID_CLIENT
+    };
 
 public:
-	GhastlyHost(HostID id = ID_UNASSIGNED);
+    GhastlyHost(HostID id = ID_UNASSIGNED);
 
-	virtual void update(int elapsed) = 0;
-
-protected:
-	void handleCustomPayload(Payload *payload);
+    virtual void update(int elapsed) = 0;
 
 protected:
-	HostID _id;
+    void handleCustomPayload(Payload *payload);
+
+protected:
+    HostID _id;
 };
 
 #endif

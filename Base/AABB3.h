@@ -19,13 +19,13 @@ public:
     bool overlaps(const AABB3& other) const;
 
     void expand(const AABB3& other);
-	void expand(const Vector3& border);
+    void expand(const Vector3& border);
 
-	inline AABB3 operator+(const Vector3& rhs) {
-		AABB3 ret(*this);
-		ret.expand(rhs);
-		return ret;
-	}
+    inline AABB3 operator+(const Vector3& rhs) {
+        AABB3 ret(*this);
+        ret.expand(rhs);
+        return ret;
+    }
 
     inline AABB3& operator=(const AABB3& rhs) {
         _lower = rhs._lower;
@@ -33,9 +33,9 @@ public:
         return *this;
     }
 
-	inline bool operator==(const AABB3& rhs) {
-		return (_lower == rhs._lower && _upper == rhs._upper);
-	}
+    inline bool operator==(const AABB3& rhs) {
+        return (_lower == rhs._lower && _upper == rhs._upper);
+    }
 
 public:
     static AABB3 Combine(const AABB3& b1, const AABB3& b2);

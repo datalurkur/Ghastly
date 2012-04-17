@@ -4,45 +4,45 @@
 
 bool Socket::InitializeSocketLayer() {
 #if SYS_PLATFORM == PLATFORM_WIN32
-	WSADATA wsaData;
+    WSADATA wsaData;
 
     if(SocketLayerInitialized) { return true; }
-	else if(WSAStartup(MAKEWORD(2,2), &wsaData) == NO_ERROR) {
-		SocketLayerInitialized = true;
-	}
+    else if(WSAStartup(MAKEWORD(2,2), &wsaData) == NO_ERROR) {
+        SocketLayerInitialized = true;
+    }
 #endif
-	return IsSocketLayerReady();
+    return IsSocketLayerReady();
 }
 
 void Socket::ShutdownSocketLayer() {
 #if SYS_PLATFORM == PLATFORM_WIN32
     WSACleanup();
-	SocketLayerInitialized = false;
+    SocketLayerInitialized = false;
 #endif
 }
 
 bool Socket::IsSocketLayerReady() {
 #if SYS_PLATFORM == PLATFORM_WIN32
-	return SocketLayerInitialized;
+    return SocketLayerInitialized;
 #else
-	return true;
+    return true;
 #endif
 }
 
 int Socket::LastSocketError() {
 #if SYS_PLATFORM == PLATFORM_WIN32
-	return WSAGetLastError();
+    return WSAGetLastError();
 #else
-	return errno;
+    return errno;
 #endif
 }
 
 bool Socket::SocketLayerInitialized = false;
 
 Socket::Socket(bool blocking): _state(Uninitialized), _blocking(blocking), _socketHandle(0) {
-	if(!IsSocketLayerReady()) {
-		Warn("Socket layer not yet initialized! Please call InitializeSocketLayer if you expect your sockets to send data.");
-	}
+    if(!IsSocketLayerReady()) {
+        Warn("Socket layer not yet initialized! Please call InitializeSocketLayer if you expect your sockets to send data.");
+    }
     _lock = SDL_CreateMutex();
 }
 
@@ -74,7 +74,7 @@ bool Socket::createSocket(int type, int proto) {
     }
     SDL_UnlockMutex(_lock);
 
-	setBlockingFlag(_blocking);
+    setBlockingFlag(_blocking);
 
     return ret;
 }
@@ -110,18 +110,18 @@ bool Socket::bindSocket(unsigned short localPort) {
 
 bool Socket::setBlockingFlag(bool value) {
 #if SYS_PLATFORM == PLATFORM_WIN32
-	DWORD nonBlock = (value ? 0 : 1);
+    DWORD nonBlock = (value ? 0 : 1);
     if(ioctlsocket(_socketHandle, FIONBIO, &nonBlock) != 0) {
 #else
-	int nonBlock = (value ? 0 : 1);
-	if(fcntl(_socketHandle, F_SETFL, O_NONBLOCK, nonBlock) == -1) {
+    int nonBlock = (value ? 0 : 1);
+    if(fcntl(_socketHandle, F_SETFL, O_NONBLOCK, nonBlock) == -1) {
 #endif
-		Error("Failed to set socket non-blocking!");
-		closeSocket();
-		return false;
-	} else {
-		return true;
-	}
+        Error("Failed to set socket non-blocking!");
+        closeSocket();
+        return false;
+    } else {
+        return true;
+    }
 }
 
 void Socket::closeSocket() {
@@ -170,23 +170,23 @@ unsigned short Socket::getLocalPort() {
 }
 
 bool Socket::send(const char *data, unsigned int size, const sockaddr *addr, int addrSize) {
-	int bytesSent;
+    int bytesSent;
 
     ASSERT(isOpen());
 
     SDL_LockMutex(_lock);
-	bytesSent = (int)sendto(_socketHandle, data, size, 0, addr, addrSize);
+    bytesSent = (int)sendto(_socketHandle, data, size, 0, addr, addrSize);
     SDL_UnlockMutex(_lock);
 
-	if(bytesSent < 0) {
-		Error("Failed to write to socket");
-		return false;
-	} else if(bytesSent != (int)size) {
-		Error("Bytes sent does not match bytes given: " << bytesSent << "/" << size);
-		return false;
-	} else {
-		return true;
-	}
+    if(bytesSent < 0) {
+        Error("Failed to write to socket");
+        return false;
+    } else if(bytesSent != (int)size) {
+        Error("Bytes sent does not match bytes given: " << bytesSent << "/" << size);
+        return false;
+    } else {
+        return true;
+    }
 }
 
 // WARNING: Any packets received that are larger than maxSize are SILENTLY discarded
@@ -195,6 +195,6 @@ void Socket::recv(char *data, int &size, unsigned int maxSize, sockaddr *addr, i
     ASSERT(isOpen());
 
     SDL_LockMutex(_lock);
-	size = (int)recvfrom(_socketHandle, data, maxSize, 0, addr, (socklen_t*)&addrSize);
+    size = (int)recvfrom(_socketHandle, data, maxSize, 0, addr, (socklen_t*)&addrSize);
     SDL_UnlockMutex(_lock);
 }

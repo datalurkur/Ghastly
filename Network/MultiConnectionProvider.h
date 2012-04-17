@@ -6,7 +6,7 @@
 
 class MultiConnectionProvider: public ConnectionProvider {
 public:
-	bool recvPacket(Packet &packet);
+    bool recvPacket(Packet &packet);
 
 protected:
     void getAndPrioritizePackets();

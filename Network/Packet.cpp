@@ -29,7 +29,7 @@ const Packet& Packet::operator=(const Packet &rhs) {
 }
 
 bool Packet::operator<(const Packet &rhs) const {
-	// We want the packet with the oldest (lowest) timestamp to have the greatest (highest) priority
+    // We want the packet with the oldest (lowest) timestamp to have the greatest (highest) priority
     return (clockStamp > rhs.clockStamp);
 }
 

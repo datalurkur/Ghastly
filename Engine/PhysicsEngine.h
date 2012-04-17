@@ -30,7 +30,7 @@ public:
     void EndContact(b2Contact *contact);
 
     void addFixtureContactListener(FixtureID *id, ContactListener *controller);
-	void removeFixtureContactListener(FixtureID *id);
+    void removeFixtureContactListener(FixtureID *id);
 
 private:
     b2Vec2 _gravity;
@@ -38,8 +38,8 @@ private:
 
     int _stepSize, _velocityIterations, _positionIterations;
 
-	typedef std::map<FixtureID*,ContactListener*> FixtureContactMap;
-	FixtureContactMap _fixtureContactListeners;
+    typedef std::map<FixtureID*,ContactListener*> FixtureContactMap;
+    FixtureContactMap _fixtureContactListeners;
 };
 
 #endif

@@ -9,8 +9,8 @@
 
 class SocketedUDPProvider: public MultiConnectionProvider {
 public:
-	SocketedUDPProvider(unsigned short port = 0);
-	virtual ~SocketedUDPProvider();
+    SocketedUDPProvider(unsigned short port = 0);
+    virtual ~SocketedUDPProvider();
 };
 
 #endif

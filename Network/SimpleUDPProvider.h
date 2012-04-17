@@ -6,16 +6,16 @@
 
 class SimpleUDPProvider: public ConnectionProvider {
 public:
-	SimpleUDPProvider(unsigned short localPort = 0);
-	virtual ~SimpleUDPProvider();
+    SimpleUDPProvider(unsigned short localPort = 0);
+    virtual ~SimpleUDPProvider();
 
-	bool sendPacket(const Packet &packet);
-	bool recvPacket(Packet &packet);
+    bool sendPacket(const Packet &packet);
+    bool recvPacket(Packet &packet);
 
-	unsigned short getLocalPort();
+    unsigned short getLocalPort();
 
 private:
-	UDPBuffer *_buffer;
+    UDPBuffer *_buffer;
 };
 
 #endif

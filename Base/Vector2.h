@@ -15,25 +15,25 @@ public:
 public:
     inline Vector2(): x(0), y(0) {}
     inline Vector2(const Vector2 &other): x(other.x), y(other.y) {}
-	inline Vector2(const float nX, const float nY): x(nX), y(nY) {}
+    inline Vector2(const float nX, const float nY): x(nX), y(nY) {}
 
-	inline Vector2& operator=(const Vector2 &rhs) {
-		x = rhs.x;
-		y = rhs.y;
-		return *this;
-	}
+    inline Vector2& operator=(const Vector2 &rhs) {
+        x = rhs.x;
+        y = rhs.y;
+        return *this;
+    }
 
     inline Vector2 operator+(const Vector2 &rhs) const {
-		Vector2 ret(*this);
-		ret += rhs;
-		return ret;
-	}
+        Vector2 ret(*this);
+        ret += rhs;
+        return ret;
+    }
 
     inline Vector2 operator-(const Vector2 &rhs) const {
-		Vector2 ret(*this);
-		ret -= rhs;
-		return ret;
-	}
+        Vector2 ret(*this);
+        ret -= rhs;
+        return ret;
+    }
 
     inline Vector2 operator*(const float scalar) const {
         Vector2 ret(*this);
@@ -48,16 +48,16 @@ public:
     }
 
     inline Vector2& operator+=(const Vector2 &rhs) {
-		x += rhs.x;
-		y += rhs.y;
-		return *this;
-	}
+        x += rhs.x;
+        y += rhs.y;
+        return *this;
+    }
 
     inline Vector2& operator-=(const Vector2 &rhs) {
-		x -= rhs.x;
-		y -= rhs.y;
-		return *this;
-	}
+        x -= rhs.x;
+        y -= rhs.y;
+        return *this;
+    }
 
     inline Vector2& operator*=(const float scalar) {
         x *= scalar;
@@ -70,40 +70,40 @@ public:
         y /= scalar;
         return *this;
     }
-	inline Vector2 operator-() const {
-		return Vector2(-x, -y);
-	}
+    inline Vector2 operator-() const {
+        return Vector2(-x, -y);
+    }
 
-	inline bool operator==(const Vector2 &rhs) const {
-		return (x == rhs.x && y == rhs.y);
-	}
+    inline bool operator==(const Vector2 &rhs) const {
+        return (x == rhs.x && y == rhs.y);
+    }
 
-	inline bool operator!=(const Vector2 &rhs) const {
-		return (x != rhs.x || y != rhs.y);
-	}
+    inline bool operator!=(const Vector2 &rhs) const {
+        return (x != rhs.x || y != rhs.y);
+    }
 
     inline float& operator[](const size_t i) {
-		ASSERT(i<2);
-		return *(&x+i);
-	}
+        ASSERT(i<2);
+        return *(&x+i);
+    }
 
     inline float operator[](const size_t i) const {
-		ASSERT(i<2);
-		return *(&x+i);
-	}
+        ASSERT(i<2);
+        return *(&x+i);
+    }
 
-	inline float *ptr() {
-		return &x;
-	}
+    inline float *ptr() {
+        return &x;
+    }
 
-	inline const float *ptr() const {
-		return &x;
-	}
+    inline const float *ptr() const {
+        return &x;
+    }
 
     float length() const;
     float lengthSquared() const;
 
-	int arraySize() const;
+    int arraySize() const;
 
     void normalize();
 };

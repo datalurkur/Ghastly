@@ -18,7 +18,7 @@ public:
     const int h() const;
 
 private:
-	typedef std::list<ResizeListener*> ResizeListenerList;
+    typedef std::list<ResizeListener*> ResizeListenerList;
 
     int _x, _y, _w, _h;
     ResizeListenerList _resizeListeners;

@@ -24,8 +24,8 @@ public:
     virtual bool render(RenderContext *renderContext);
 
 protected:
-	virtual void setup(va_list args);
-	virtual void teardown();
+    virtual void setup(va_list args);
+    virtual void teardown();
 
 private:
     std::stack <State*> _stateStack;

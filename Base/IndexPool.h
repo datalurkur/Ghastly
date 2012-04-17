@@ -5,15 +5,15 @@
 
 class IndexPool {
 public:
-	IndexPool(int size);
+    IndexPool(int size);
 
-	int allocate();
-	void free(int index);
+    int allocate();
+    void free(int index);
 
 private:
-	std::stack<int> _freeIndices;
-	std::vector<bool> _indexState;
-	int _size;
+    std::stack<int> _freeIndices;
+    std::vector<bool> _indexState;
+    int _size;
 };
 
 #endif

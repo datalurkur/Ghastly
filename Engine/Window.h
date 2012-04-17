@@ -5,20 +5,24 @@
 
 class Window {
 public:
-	Window();
-	Window(int w, int h);
-	virtual ~Window();
+    Window();
+    Window(int w, int h);
+    virtual ~Window();
 
-	void setup();
+    void setup();
 
-	void resize(int w, int h);
+    void resize(int w, int h);
 
-	void swapBuffers() const;
+    void swapBuffers() const;
+    
+    int getID() const;
 
 private:
-	int _w, _h;
-	int _videoFlags;
-	SDL_Surface *_frameBuffer;
+    int _w, _h;
+    int _videoFlags;
+    SDL_Surface *_frameBuffer;
+    
+    int _id;
 };
 
 #endif

@@ -11,23 +11,23 @@
 
 class Renderable {
 public:
-	Renderable();
-	virtual ~Renderable();
+    Renderable();
+    virtual ~Renderable();
 
-	void setViewMatrix(const Matrix4 &matrix);
-	const Matrix4& getViewMatrix() const;
+    void setViewMatrix(const Matrix4 &matrix);
+    const Matrix4& getViewMatrix() const;
 
     void addRenderState(GenericRenderState *renderState);
     void clearRenderStates();
-	void setIndexPointer(unsigned int *indices, const unsigned int numIndices);
+    void setIndexPointer(unsigned int *indices, const unsigned int numIndices);
 
-	void setMaterial(Material *material);
+    void setMaterial(Material *material);
     void setDrawMode(GLenum mode);
 
-	void render(const Matrix4 &projection, const Matrix4 &modelView);
+    void render(const Matrix4 &projection, const Matrix4 &modelView);
 
 public:
-	static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material);
+    static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material);
     static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material);
     static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material);
     static Renderable* Lines(const std::vector<Vector2> &verts);
@@ -40,16 +40,16 @@ private:
     void updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView);
 
 private:
-	Matrix4 _viewMatrix;
+    Matrix4 _viewMatrix;
     // TODO - This seems like a really cludgey way of doing this
     UniformBuffer *_transformBuffer;
 
-	Material *_material;
+    Material *_material;
     RenderStateList _renderStates;
-	unsigned int *_indexPointer;
-	unsigned int _numIndices;
+    unsigned int *_indexPointer;
+    unsigned int _numIndices;
 
-	GLenum _drawMode;
+    GLenum _drawMode;
 };
 
 typedef std::list<Renderable*> RenderableList;

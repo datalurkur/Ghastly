@@ -8,11 +8,11 @@
 
 class Mob: public Entity {
 public:
-	static const std::string NodeType;
+    static const std::string NodeType;
     
 public:
     Mob(const std::string &name);
-	virtual ~Mob();
+    virtual ~Mob();
 
 protected:
     Mob(const std::string &name, const std::string &type);

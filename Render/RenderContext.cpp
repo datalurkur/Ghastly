@@ -25,24 +25,24 @@ void RenderContext::setup() {
 }
 
 void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables) {
-	//Info("Rendering " << renderables.size() << " renderables");
+    //Info("Rendering " << renderables.size() << " renderables");
 
     // Deprecated by inclusion of the projection and modelview matrices in the shader
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadMatrixf(projection.ptr());
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadMatrixf(projection.ptr());
 
-	//glMatrixMode(GL_MODELVIEW);
+    //glMatrixMode(GL_MODELVIEW);
     //glLoadMatrixf(modelView.ptr());
 
-	RenderableList::iterator itr = renderables.begin();
-	for(; itr != renderables.end(); itr++) {
+    RenderableList::iterator itr = renderables.begin();
+    for(; itr != renderables.end(); itr++) {
         (*itr)->render(projection, modelView);
-	}
-	// FIXME - Add the render queue and group rendering by material
+    }
+    // FIXME - Add the render queue and group rendering by material
 }
 
 void RenderContext::clear() { 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderContext::setViewport(Viewport *viewport) {

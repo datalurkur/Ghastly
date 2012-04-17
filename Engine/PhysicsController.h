@@ -15,7 +15,7 @@ public:
     void updatePosition(const Vector2 &pos);
     
     void setBody(b2Body *body);
-	b2Body *getBody();
+    b2Body *getBody();
     
     void disallowUpdates();
     void allowUpdates();

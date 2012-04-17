@@ -9,7 +9,7 @@ class PhysicsEngine;
 
 class Entity: public SceneNode {
 public:
-	static const std::string NodeType;
+    static const std::string NodeType;
 
 public:
     Entity(const std::string &name);

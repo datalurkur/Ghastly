@@ -15,7 +15,7 @@ void Vector2::normalize() {
 }
 
 int Vector2::arraySize() const {
-	return (int)(x*y);
+    return (int)(x*y);
 }
 
 std::ostream& operator<<(std::ostream &lhs, const Vector2 &rhs) {
@@ -26,5 +26,5 @@ std::ostream& operator<<(std::ostream &lhs, const Vector2 &rhs) {
 }
 
 Vector2 operator*(const float lhs, const Vector2& rhs) {
-	return rhs * lhs;
+    return rhs * lhs;
 }

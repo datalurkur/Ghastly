@@ -7,7 +7,7 @@ TCPBuffer::TCPBuffer(const NetAddress &dest, unsigned short localPort): _seriali
 }
 
 TCPBuffer::TCPBuffer(const NetAddress &dest, TCPSocket *establishedSocket): _serializationBuffer(0), _dest(dest) {
-	_socket = establishedSocket;
+    _socket = establishedSocket;
 }
 
 TCPBuffer::~TCPBuffer() {
@@ -15,28 +15,28 @@ TCPBuffer::~TCPBuffer() {
 }
 
 void TCPBuffer::startBuffering() {
-	if(!_serializationBuffer) {
-		_serializationBuffer = (char*)calloc(_maxPacketSize, sizeof(char));
-	}
-	ConnectionBuffer::startBuffering();
+    if(!_serializationBuffer) {
+        _serializationBuffer = (char*)calloc(_maxPacketSize, sizeof(char));
+    }
+    ConnectionBuffer::startBuffering();
 }
 
 void TCPBuffer::stopBuffering() {
-	ConnectionBuffer::stopBuffering();
-	if(_serializationBuffer) {
-		free(_serializationBuffer);
-	}
+    ConnectionBuffer::stopBuffering();
+    if(_serializationBuffer) {
+        free(_serializationBuffer);
+    }
 }
 
 void TCPBuffer::doInboundBuffering() {
     int totalBufferSize, currentOffset,
-		packetSize;
-	unsigned int dataSize;
-	char *dataBuffer;
-	char *currentPacket;
+        packetSize;
+    unsigned int dataSize;
+    char *dataBuffer;
+    char *currentPacket;
 
-	Debug("Waiting for TCPSocket to connect before starting inbound buffering");
-	while(!getSocket()->isConnected()) { sleep(1); }
+    Debug("Waiting for TCPSocket to connect before starting inbound buffering");
+    while(!getSocket()->isConnected()) { sleep(1); }
 
     Debug("Entering TCPBuffer inbound packet buffering loop");
     while(true) {
@@ -44,11 +44,11 @@ void TCPBuffer::doInboundBuffering() {
 
         // Get the next packet from the socket
         getSocket()->recv(_packetBuffer, totalBufferSize, _maxBufferSize);
-		currentOffset = 0;
-		dataBuffer = 0;
-		while(currentOffset < totalBufferSize) {
-			currentPacket = _packetBuffer + currentOffset;
-			packetSize = tcpDeserialize(currentPacket, &dataBuffer, dataSize);
+        currentOffset = 0;
+        dataBuffer = 0;
+        while(currentOffset < totalBufferSize) {
+            currentPacket = _packetBuffer + currentOffset;
+            packetSize = tcpDeserialize(currentPacket, &dataBuffer, dataSize);
 
             // Update received stats
             _receivedPackets++;
@@ -64,7 +64,7 @@ void TCPBuffer::doInboundBuffering() {
                 _inboundPackets++;
             }
 
-			currentOffset += packetSize;
+            currentOffset += packetSize;
         }
         SDL_UnlockMutex(_inboundQueueLock);
     }
@@ -72,12 +72,12 @@ void TCPBuffer::doInboundBuffering() {
 
 void TCPBuffer::doOutboundBuffering() {
     Packet packet;
-	int serializedSize;
+    int serializedSize;
 
-	Debug("Waiting for TCPSocket to connect before starting outbound buffering");
-	while(!getSocket()->isConnected()) { sleep(1); }
+    Debug("Waiting for TCPSocket to connect before starting outbound buffering");
+    while(!getSocket()->isConnected()) { sleep(1); }
 
-	Debug("Entering TCPBuffer outbound packet buffering loop");
+    Debug("Entering TCPBuffer outbound packet buffering loop");
     while(true) {
         SDL_LockMutex(_outboundQueueLock);
         if(!_outbound.empty()) {
@@ -89,7 +89,7 @@ void TCPBuffer::doOutboundBuffering() {
             // TODO - This is where we'd sleep the thread when throttling bandwidth
 
             // Send the next outgoing packet to the socket
-			serializedSize = tcpSerialize(_serializationBuffer, packet.data, (unsigned int)packet.size, _maxPacketSize);
+            serializedSize = tcpSerialize(_serializationBuffer, packet.data, (unsigned int)packet.size, _maxPacketSize);
             getSocket()->send(_serializationBuffer, serializedSize);
             _sentPackets++;
         }
@@ -98,19 +98,19 @@ void TCPBuffer::doOutboundBuffering() {
 }
 
 int TCPBuffer::tcpSerialize(char *dest, const char *src, unsigned int size, unsigned int maxSize) {
-	uint32_t totalSize = sizeof(uint32_t) + size;
+    uint32_t totalSize = sizeof(uint32_t) + size;
 
-	ASSERT(totalSize <= maxSize);
-	((uint32_t*)dest)[0] = totalSize;
+    ASSERT(totalSize <= maxSize);
+    ((uint32_t*)dest)[0] = totalSize;
 
-	memcpy((void*)(dest + sizeof(uint32_t)), (void*)src, size);
+    memcpy((void*)(dest + sizeof(uint32_t)), (void*)src, size);
 
-	return totalSize;
+    return totalSize;
 }
 
 int TCPBuffer::tcpDeserialize(const char *srcData, char **data, unsigned int &size) {
-	size = ((uint32_t*)srcData)[0] - sizeof(uint32_t);
-	*data = (char*)(srcData + sizeof(uint32_t));
+    size = ((uint32_t*)srcData)[0] - sizeof(uint32_t);
+    *data = (char*)(srcData + sizeof(uint32_t));
 
-	return sizeof(int) + size;
+    return sizeof(int) + size;
 }

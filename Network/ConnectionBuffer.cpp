@@ -28,7 +28,7 @@ ConnectionBuffer::ConnectionBuffer():
 }
 
 ConnectionBuffer::~ConnectionBuffer() {
-	ASSERT(!_inboundThread && !_outboundThread);
+    ASSERT(!_inboundThread && !_outboundThread);
     SDL_DestroyMutex(_inboundQueueLock);
     SDL_DestroyMutex(_outboundQueueLock);
 }

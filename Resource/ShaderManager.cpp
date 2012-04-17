@@ -4,8 +4,8 @@
 const std::string ShaderManager::LoadDirectory = "Shader";
 
 void ShaderManager::DoLoad(const std::string &name, Shader *shader) {
-	char *fileData;
-	unsigned int fileSize;
+    char *fileData;
+    unsigned int fileSize;
 
     PropertyMap *pMap;
     std::list<std::string> keys;
@@ -14,7 +14,7 @@ void ShaderManager::DoLoad(const std::string &name, Shader *shader) {
     GLuint vShader, gShader, fShader;
 
     // Load the PMap
-	fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
+    fileSize = FileSystem::GetFileData(LoadPath() + name, &fileData);
     if(fileSize == 0) {
         Error("Failed to load " << name);
         return;

@@ -6,8 +6,8 @@
 
 class SocketCreationListener {
 public:
-	// Returns true if the connection should be left active, false if it should be refused
-	virtual bool onSocketCreation(const NetAddress &client, TCPSocket *socket) { return false; }
+    // Returns true if the connection should be left active, false if it should be refused
+    virtual bool onSocketCreation(const NetAddress &client, TCPSocket *socket) { return false; }
 };
 
 class ListenSocket: public Socket {
@@ -16,18 +16,18 @@ public:
     virtual ~ListenSocket();
 
     bool startListening(unsigned short localPort = 0);
-	void stopListening();
+    void stopListening();
 
-	void doListening();
-
-private:
-	static unsigned int DefaultMaxClients;
+    void doListening();
 
 private:
-	SocketCreationListener *_acceptListener;
+    static unsigned int DefaultMaxClients;
 
-	SDL_Thread *_listenThread;
-	unsigned int _maxClients;
+private:
+    SocketCreationListener *_acceptListener;
+
+    SDL_Thread *_listenThread;
+    unsigned int _maxClients;
 };
 
 #endif

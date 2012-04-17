@@ -11,20 +11,20 @@ Core::~Core() {
 }
 
 void Core::setup() {
-	// Set up FPS sampling
-	for(int i = 0; i < FPS_WINDOW_SIZE; i++) {
-		_elapsedSamples[i] = 0;
-	}
+    // Set up FPS sampling
+    for(int i = 0; i < FPS_WINDOW_SIZE; i++) {
+        _elapsedSamples[i] = 0;
+    }
 	
     _core = this;
     
     Log::EnableAllChannels();
 
-	_window = new Window();
+    _window = new Window();
     _viewport = new Viewport();
     
-	_eventHandler = new EventHandler();
-	_eventHandler->addWindowListener(this);
+    _eventHandler = new EventHandler();
+    _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
 
     _renderContext = new RenderContext();

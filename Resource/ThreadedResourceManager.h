@@ -21,6 +21,7 @@ struct ThreadInfo {
     SDL_Thread *thread;
     float progress;
     std::string status;
+    bool threadShouldDie;
     
     ThreadInfo();
     ThreadInfo(SDL_Thread *nThread);
@@ -92,17 +93,28 @@ void ThreadedResourceManager<T,F>::Setup() {
 template <typename T, typename F>
 void ThreadedResourceManager<T,F>::Teardown() {
     if(F::Lock) {
+        std::list<SDL_Thread*> threadList;
+        std::list<SDL_Thread*>::iterator threadItr;
+        ThreadMapIterator mapItr;
+        
+        // Get a list of active threads and set a flag that tells those threads to cut it out
         SDL_mutexP(F::Lock);
-
-        ThreadMapIterator itr = F::Threads.begin();
-        for(; itr != F::Threads.end(); itr++) {
-            SDL_KillThread(itr->second.thread);
+        for(mapItr = F::Threads.begin(); mapItr != F::Threads.end(); mapItr++) {
+            threadList.push_back(mapItr->second.thread);
+            mapItr->second.threadShouldDie = true;
         }
-        F::Threads.clear();
-
+        SDL_mutexV(F::Lock);
+        
+        // Wait for the threads to finish
+        for(threadItr = threadList.begin(); threadItr != threadList.end(); threadItr++) {
+            int status;
+            SDL_WaitThread(*threadItr, &status);
+        }
+        
+        // Tear down the resources
 		ResourceManager<T,F>::Teardown();
 
-        SDL_mutexV(F::Lock);
+        // Destroy the mutex
         SDL_DestroyMutex(F::Lock);
         F::Lock = 0;
     }
@@ -124,7 +136,7 @@ T* ThreadedResourceManager<T,F>::Load(const std::string &name, T* t) {
 	LOCK_MUTEX;
 	if(!t) { t = new T(); }
 	ResourceThreadParams params(name, (void*)t, F::Lock);
-    SDL_Thread *thread = SDL_CreateThread(F::ThreadedLoad, (void*)&params);
+    SDL_Thread *thread = SDL_CreateThread(F::ThreadedLoad, ("LoadingThread:" + name).c_str(), (void*)&params);
     F::Threads[t] = ThreadInfo(thread);
     F::Resources[name] = t;
     UNLOCK_MUTEX;

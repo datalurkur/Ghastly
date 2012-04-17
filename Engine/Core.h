@@ -21,7 +21,7 @@ public:
     void teardown();
 
     void resizeWindow(const int w, const int h);
-	void closeWindow();
+    void closeWindow();
 
     Viewport *getViewport() const;
 
@@ -29,19 +29,19 @@ protected:
     int getTime();
 
 private:
-	float trackFPS(int elapsed);
+    float trackFPS(int elapsed);
 
 private:
     bool _running;
 
-	EventHandler *_eventHandler;
+    EventHandler *_eventHandler;
 
-	Window *_window;
+    Window *_window;
     Viewport *_viewport;
-	RenderContext *_renderContext;
+    RenderContext *_renderContext;
 	
-	int _elapsedSamples[FPS_WINDOW_SIZE];
-	int _elapsedIndex;
+    int _elapsedSamples[FPS_WINDOW_SIZE];
+    int _elapsedIndex;
 };
 
 #endif

@@ -39,11 +39,12 @@ void Window::resize(int w, int h) {
 	if(_frameBuffer) {
 		SDL_FreeSurface(_frameBuffer);
 	}
-    	
-	// Turn on vertical sync
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+    
+    // Set the OpenGL context version
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-	// Turn on vertical sync
+    // Turn on vertical sync
 	// Note: Must be called *before* SDL_SetVideoMode
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 

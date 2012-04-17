@@ -40,7 +40,7 @@
 # define SYS_PLATFORM PLATFORM_LINUX
 #endif
 
-#include <GL/glew.h>
+#include <GLEW/GL/glew.h>
 
 // SDL
 // Turn off GL extensions so we can enable GLSL shaders ourselves

@@ -1,13 +1,12 @@
 #include <Engine/EventHandler.h>
 
-EventHandler::EventHandler() {
-}
+EventHandler::EventHandler(int windowID): _windowID) {}
 
 void EventHandler::handleEvents() {
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
 		switch(event.type) {
-			case SDL_VIDEORESIZE: {
+            case SDL_WINDOWEVENT: {
 				WindowListenerList::iterator itr = _windowListeners.begin();
 				for(; itr != _windowListeners.end(); itr++) {
 					(*itr)->resizeWindow(event.resize.w, event.resize.h);

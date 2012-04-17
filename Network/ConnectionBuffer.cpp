@@ -23,41 +23,57 @@ ConnectionBuffer::ConnectionBuffer():
     _packetBuffer(0), _maxBufferSize(DefaultMaxBufferSize), _maxPacketSize(DefaultMaxPacketSize),
     _droppedPackets(0), _receivedPackets(0), _sentPackets(0), _inboundPackets(0), _outboundPackets(0)
 {
-    _inboundQueueLock  = SDL_CreateMutex();
-    _outboundQueueLock = SDL_CreateMutex();
 }
 
 ConnectionBuffer::~ConnectionBuffer() {
     ASSERT(!_inboundThread && !_outboundThread);
-    SDL_DestroyMutex(_inboundQueueLock);
-    SDL_DestroyMutex(_outboundQueueLock);
 }
 
 void ConnectionBuffer::startBuffering() {
     if(!_inboundThread) {
+        _inboundQueueLock  = SDL_CreateMutex();
+        _inboundLock = SDL_CreateMutex();
+        _inboundShouldDie = false;
+
         _packetBuffer = (char*)calloc(_maxPacketSize, sizeof(char));
-        _inboundThread = SDL_CreateThread(InvokeInboundConnectionBufferThreadFunction, (void*)this);
+        _inboundThread = SDL_CreateThread(InvokeInboundConnectionBufferThreadFunction, "InboundConnectionBufferThread", (void*)this);
     }
     if(!_outboundThread) {
-        _outboundThread = SDL_CreateThread(InvokeOutboundConnectionBufferThreadFunction, (void*)this);
+        _outboundQueueLock = SDL_CreateMutex();
+        _outboundLock = SDL_CreateMutex();
+        _outboundShouldDie = false;
+
+        _outboundThread = SDL_CreateThread(InvokeOutboundConnectionBufferThreadFunction, "OutboundConnectionBufferThread", (void*)this);
     }
 }
 
 void ConnectionBuffer::stopBuffering() {
     if(_inboundThread) {
-        SDL_LockMutex(_inboundQueueLock);
-        SDL_KillThread(_inboundThread);
-        SDL_UnlockMutex(_inboundQueueLock);
+        int status;
+    
+        SDL_LockMutex(_inboundLock);
+        _inboundShouldDie = true;
+        SDL_UnlockMutex(_inboundLock);
+        SDL_WaitThread(_inboundThread, &status);
         _inboundThread = 0;
 
         free(_packetBuffer);
         _packetBuffer = 0;
+        
+        SDL_DestroyMutex(_inboundQueueLock);
+        SDL_DestroyMutex(_inboundLock);
     }
     if(_outboundThread) {
-        SDL_LockMutex(_outboundQueueLock);
-        SDL_KillThread(_outboundThread);
-        SDL_UnlockMutex(_outboundQueueLock);
+        int status;
+
+        SDL_LockMutex(_outboundLock);
+        _outboundShouldDie = true;
+        SDL_UnlockMutex(_outboundLock);
+        SDL_WaitThread(_outboundThread, &status);
         _outboundThread = 0;
+        
+        SDL_DestroyMutex(_outboundQueueLock);
+        SDL_DestroyMutex(_outboundLock);
     }
 }
 

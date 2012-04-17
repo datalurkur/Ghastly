@@ -8,7 +8,7 @@ int InvokeListenSocketLoop(void *params) {
     return 1;
 }
 
-ListenSocket::ListenSocket(SocketCreationListener *acceptListener): Socket(true), _acceptListener(acceptListener), _listenThread(0) {
+ListenSocket::ListenSocket(SocketCreationListener *acceptListener): Socket(true), _acceptListener(acceptListener), _listenThread(0), _listenMutex(0), _shouldDie(false) {
 }
 
 ListenSocket::~ListenSocket() {
@@ -26,7 +26,8 @@ bool ListenSocket::startListening(unsigned short localPort) {
         SDL_UnlockMutex(_lock);
 
         // Start looping to accept connections
-        _listenThread = SDL_CreateThread(InvokeListenSocketLoop, (void*)this);
+        _listenMutex = SDL_CreateMutex();
+        _listenThread = SDL_CreateThread(InvokeListenSocketLoop, "ListenSocketThread", (void*)this);
 
         Info("Listening for connections on port " << localPort);
 
@@ -36,7 +37,18 @@ bool ListenSocket::startListening(unsigned short localPort) {
 
 void ListenSocket::stopListening() {
     if(_listenThread) {
-        SDL_KillThread(_listenThread);
+        int status;
+        
+        // Tell the thread to die
+        SDL_mutexP(_listenMutex);
+        _shouldDie = true;
+        SDL_mutexV(_listenMutex);
+        
+        // Wait for the thread to die
+        SDL_WaitThread(_listenThread, &status);
+        
+        // Teardown
+        SDL_DestroyMutex(_listenMutex);
         _listenThread = 0;
         closeSocket();
 
@@ -49,6 +61,14 @@ void ListenSocket::doListening() {
         sockaddr_in clientAddr;
         socklen_t clientAddrLength;
         int newSocketHandle;
+        
+        SDL_mutexP(_listenMutex);
+        if(_shouldDie) {
+            SDL_mutexV(_listenMutex);
+            break;
+        } else {
+            SDL_mutexV(_listenMutex);
+        }
 
         clientAddrLength = sizeof(clientAddr);
         newSocketHandle = accept(_socketHandle, (sockaddr*)&clientAddr, &clientAddrLength);

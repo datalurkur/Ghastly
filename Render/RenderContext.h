@@ -7,14 +7,16 @@
 
 class RenderContext {
 public:
-    RenderContext();
-
-    void setup();
+    RenderContext(SDL_Window *window);
+    ~RenderContext();
 
     void render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables);
     void clear();
 
     void setViewport(Viewport *viewport);
+    
+private:
+    SDL_GLContext _context;
 };
 
 #endif

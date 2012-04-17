@@ -43,8 +43,9 @@ protected:
     static unsigned int DefaultMaxPacketSize;
 
     // Why SDL decided to capitalize Thread and not mutex escapes me
-    SDL_mutex *_inboundQueueLock, *_outboundQueueLock;
+    SDL_mutex *_inboundQueueLock, *_outboundQueueLock, *_inboundLock, *_outboundLock;
     SDL_Thread *_inboundThread, *_outboundThread;
+    bool _inboundShouldDie, _outboundShouldDie;
 
     char *_packetBuffer;
 

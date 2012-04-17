@@ -2,26 +2,43 @@
 #include <SDL/SDL_opengl.h>
 #include <Render/GLHelper.h>
 
-RenderContext::RenderContext() {}
+RenderContext::RenderContext(SDL_Window *window) {
+    GLenum glewStatus;
 
-void RenderContext::setup() {
+    // Use SDL to create the RenderContext
+    _context = SDL_GL_CreateContext(window);
+    
+    // Setup GLEW
+    glewStatus = glewInit();
+    if(glewStatus != GLEW_OK) {
+        Error("Error during extension wrangling: " << glewStatus);
+        ASSERT(0);
+    }
+    
+    // TODO - This is where we ought to check extensions to make sure all good things are supported
+    
+    // Set up GL state
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
-
+    
     glShadeModel(GL_SMOOTH);
     glDepthFunc(GL_LEQUAL);
     
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
+    
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_ALPHA_TEST);
-
+    
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+RenderContext::~RenderContext() {
+    SDL_GL_DeleteContext(_context);
 }
 
 void RenderContext::render(const Matrix4 &projection, const Matrix4 &modelView, RenderableList &renderables) {

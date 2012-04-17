@@ -29,6 +29,7 @@ void EventHandler::handleEvents() {
                 for(; itr != _windowListeners.end(); itr++) {
                     (*itr)->closeWindow();
                 }
+                SDL_Quit();
             } break;
             case SDL_KEYDOWN: {
                 KeyboardEvent keyEvent(event.key.keysym.sym, event.key.keysym.mod);

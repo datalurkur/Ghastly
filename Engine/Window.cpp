@@ -2,15 +2,12 @@
 #include <Base/Log.h>
 #include <Base/Assertion.h>
 
-Window::Window(): _w(0), _h(0), _videoFlags(0), _frameBuffer(0), _id(0) { setup(); }
-Window::Window(int w, int h): _w(w), _h(h), _videoFlags(0), _frameBuffer(0), _id(0) { setup(); }
-
-Window::~Window() {
-    if(_frameBuffer) {
-        SDL_FreeSurface(_frameBuffer);
-    }
-    SDL_Quit();
+Window::Window(const std::string &name, int w, int h): _name(name), _windowFlags(0), _window(0) {
+    setup();
+    resize(w, h);
 }
+
+Window::~Window() { teardown(); }
 
 void Window::setup() {
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -18,55 +15,38 @@ void Window::setup() {
         ASSERT(0);
     }
 
-    _videoFlags  = 0;
-    _videoFlags |= SDL_GL_DOUBLEBUFFER;
-    _videoFlags |= SDL_HWSURFACE;
-    _videoFlags |= SDL_OPENGL;
-    _videoFlags |= SDL_RESIZABLE;
-    _videoFlags |= SDL_HWACCEL;
-    _videoFlags |= SDL_HWPALETTE;
+    _windowFlags  = 0;
+    _windowFlags |= SDL_WINDOW_OPENGL;
+    _windowFlags |= SDL_WINDOW_SHOWN;
 
-    resize(_w, _h);
-    swapBuffers();
-}
-
-void Window::resize(int w, int h) {
-    GLenum glewStatus;
-
-    _w = w;
-    _h = h;
-
-    if(_frameBuffer) {
-        SDL_FreeSurface(_frameBuffer);
-    }
-    
     // Set the OpenGL context version
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+}
 
-    // Turn on vertical sync
-    // Note: Must be called *before* SDL_SetVideoMode
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+void Window::teardown() {
+    if(_window) {
+        SDL_DestroyWindow(_window);
+        _window = 0;
+    }
+}
 
-    if(!(_frameBuffer = SDL_SetVideoMode(_w, _h, 32, _videoFlags))) {
-        Error("Failed to create frame buffer.");
-        ASSERT(0);
-    } else {
-        Info("Framebuffer setup complete.");
-    }
+void Window::resize(int w, int h) {
+    // Destroy the old window
+    teardown();
     
-    // Setup GLEW
-    glewStatus = glewInit();
-    if(glewStatus != GLEW_OK) {
-        Error("Error during extension wrangling: " << glewStatus);
-        ASSERT(0);
-    }
-    
-    // TODO - This is where we ought to check extensions to make sure all good things are supported
+    // Create the new window
+    _window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, _windowFlags);
 }
 
 void Window::swapBuffers() const {
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(_window);
 }
 
-int Window::getID() const { return _id; }
+int Window::getID() const {
+    return SDL_GetWindowID(_window);
+}
+
+SDL_Window *Window::getSDLWindow() {
+    return _window;
+}

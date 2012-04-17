@@ -27,7 +27,10 @@ private:
     SocketCreationListener *_acceptListener;
 
     SDL_Thread *_listenThread;
+    SDL_mutex *_listenMutex;
     unsigned int _maxClients;
+    
+    bool _shouldDie;
 };
 
 #endif

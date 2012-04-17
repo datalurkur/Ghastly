@@ -16,6 +16,14 @@ void UDPBuffer::doInboundBuffering() {
 
     Debug("Entering UDPBuffer inbound packet buffering loop");
     while(true) {
+        SDL_LockMutex(_inboundLock);
+        if(_inboundShouldDie) {
+            SDL_UnlockMutex(_inboundLock);
+            break;
+        } else {
+            SDL_UnlockMutex(_inboundLock);
+        }
+
         SDL_LockMutex(_inboundQueueLock);
 
         // Get the next packet from the socket
@@ -45,7 +53,15 @@ void UDPBuffer::doOutboundBuffering() {
     Packet packet;
 
     Debug("Entering UDP outbound packet buffering loop");
-    while(true) {
+    while(true) {       
+        SDL_LockMutex(_outboundLock);
+        if(_outboundShouldDie) {
+            SDL_UnlockMutex(_outboundLock);
+            break;
+        } else {
+            SDL_UnlockMutex(_outboundLock);
+        }
+
         SDL_LockMutex(_outboundQueueLock);
         ret = _outbound.empty();
         if(!ret) {

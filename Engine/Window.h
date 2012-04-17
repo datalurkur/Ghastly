@@ -5,24 +5,23 @@
 
 class Window {
 public:
-    Window();
-    Window(int w, int h);
+    Window(const std::string &name, int w = 0, int h = 0);
     virtual ~Window();
 
     void setup();
+    void teardown();
 
     void resize(int w, int h);
 
     void swapBuffers() const;
     
     int getID() const;
+    SDL_Window *getSDLWindow();
 
 private:
-    int _w, _h;
-    int _videoFlags;
-    SDL_Surface *_frameBuffer;
-    
-    int _id;
+    std::string _name;
+    int _windowFlags;
+    SDL_Window *_window;
 };
 
 #endif

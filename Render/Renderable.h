@@ -6,7 +6,6 @@
 #include <Base/Matrix4.h>
 #include <Render/Material.h>
 #include <Render/UniformBuffer.h>
-#include <SDL/SDL_opengl.h>
 
 class Renderable {
 public:

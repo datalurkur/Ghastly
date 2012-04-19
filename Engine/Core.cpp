@@ -26,8 +26,11 @@ void Core::setup() {
     _window = new Window("GhastlyWindow");
     
     _viewport = new Viewport();
+	
+	_renderContext = new RenderContext(_window->getSDLWindow());
+	_renderContext->setViewport(_viewport);
     
-    _eventHandler = new EventHandler();
+    _eventHandler = new EventHandler(_window->getID());
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
 
@@ -93,18 +96,11 @@ void Core::stop() {
 }
 
 void Core::resizeWindow(const int w, const int h) {
+	// Resize the window
     _window->resize(w, h);
-    
-    // Recreate the RenderContext
-    if(_renderContext) { delete _renderContext; }
-    _renderContext = new RenderContext(_window->getSDLWindow());
     
     // Resize the viewport
     _viewport->resize(0, 0, w, h);
-    _renderContext->setViewport(_viewport);
-    
-    // Refresh the event handler
-    _eventHandler->setWindowID(_window->getID());
 }
 
 void Core::closeWindow() {

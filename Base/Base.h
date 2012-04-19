@@ -43,23 +43,11 @@
 #include <GLEW/GL/glew.h>
 
 // SDL
-// Turn off GL extensions so we can enable GLSL shaders ourselves
-//#define NO_SDL_GLEXT
 #include <SDL2/SDL.h>
-
-#if SYS_PLATFORM != PLATFORM_WIN32
-//# include <SDL/SDL_opengl.h>
-#endif
 
 #if SYS_PLATFORM == PLATFORM_WIN32
 # define WIN32_LEAN_AND_MEAN
 # define sleep(seconds) Sleep(seconds*1000)
-#elif SYS_PLATFORM == PLATFORM_LINUX
-# include <GL/gl.h>
-# include <GL/glu.h>
-# include <GL/glext.h>
-#elif SYS_PLATFORM == PLATFORM_APPLE
-//# include <OpenGL/glext.h>
 #endif
 
 #if SYS_PLATFORM != PLATFORM_WIN32

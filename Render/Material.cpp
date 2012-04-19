@@ -1,5 +1,4 @@
 #include <Render/Material.h>
-#include <SDL/SDL_opengl.h>
 
 Material::Material(): _shader(0) {
 }

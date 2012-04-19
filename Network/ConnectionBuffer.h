@@ -1,8 +1,8 @@
 #ifndef CONNECTIONBUFFER_H
 #define CONNECTIONBUFFER_H
 
-#include <SDL/SDL_mutex.h>
-#include <SDL/SDL_thread.h>
+#include <SDL2/SDL_mutex.h>
+#include <SDL2/SDL_thread.h>
 
 #include <Network/Packet.h>
 

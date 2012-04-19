@@ -1,7 +1,7 @@
 #include <Engine/EventHandler.h>
 #include <Base/Log.h>
 
-EventHandler::EventHandler() {}
+EventHandler::EventHandler(unsigned int windowID): _windowID(windowID) {}
 
 void EventHandler::handleEvents() {
     SDL_Event event;
@@ -56,9 +56,4 @@ void EventHandler::addWindowListener(WindowListener *listener) {
 
 void EventHandler::addKeyboardListener(KeyboardListener *listener) {
     _keyboardListeners.push_back(listener);
-}
-
-void EventHandler::setWindowID(int windowID) {
-    _windowID = windowID;
-    Info("Setting window id to " << windowID);
 }

@@ -7,14 +7,12 @@
 
 class EventHandler {
 public:
-    EventHandler();
+    EventHandler(unsigned int windowID);
 
     void handleEvents();
 
     void addWindowListener(WindowListener *listener);
     void addKeyboardListener(KeyboardListener *listener);
-    
-    void setWindowID(int windowID);
 
 private:
     typedef std::list<WindowListener*> WindowListenerList;
@@ -22,7 +20,7 @@ private:
     typedef std::list<KeyboardListener*> KeyboardListenerList;
     KeyboardListenerList _keyboardListeners;
 
-    int _windowID;
+    unsigned int _windowID;
 };
 
 #endif

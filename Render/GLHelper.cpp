@@ -1,5 +1,4 @@
 #include <Base/Assertion.h>
-#include <SDL/SDL_opengl.h>
 
 void CheckGLErrorsFL(const char* file, int line) {
     GLenum errCode;

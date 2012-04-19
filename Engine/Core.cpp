@@ -24,18 +24,18 @@ void Core::setup() {
     Log::EnableAllChannels();
 
     _window = new Window("GhastlyWindow");
-    
+    _window->swapBuffers();
+    // TODO - Set this with an option
+    _window->resize(640, 480);
+
     _viewport = new Viewport();
-	
+    
 	_renderContext = new RenderContext(_window->getSDLWindow());
 	_renderContext->setViewport(_viewport);
     
     _eventHandler = new EventHandler(_window->getID());
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
-
-    // FIXME - Set this with an options class
-    resizeWindow(640, 480);
 }
 
 void Core::teardown() {
@@ -96,11 +96,9 @@ void Core::stop() {
 }
 
 void Core::resizeWindow(const int w, const int h) {
-	// Resize the window
-    _window->resize(w, h);
-    
-    // Resize the viewport
+	// Resize the viewport
     _viewport->resize(0, 0, w, h);
+    _renderContext->setViewport(_viewport);
 }
 
 void Core::closeWindow() {

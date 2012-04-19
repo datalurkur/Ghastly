@@ -39,10 +39,10 @@ public:
     Log& operator<<(const T &rhs);
 
 private:
-    static Log *outputStream;
-    static LogChannel channelState;
+    static Log *OutputStream;
+    static LogChannel ChannelState;
 
-    static SDL_mutex *logLock;
+    static SDL_mutex *LogLock;
 
 private:
     std::ostream *_outputStream;

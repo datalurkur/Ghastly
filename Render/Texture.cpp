@@ -1,9 +1,8 @@
 #include <Base/Base.h>
 #include <Base/Log.h>
+#include <Base/Assertion.h>
 #include <Base/FileSystem.h>
 #include <Render/Texture.h>
-#include <Base/Assertion.h>
-#include <Render/GLHelper.h>
 #include <Resource/TextureManager.h>
 
 void Texture::SavePixelDataToDisk(GLenum format, unsigned int w, unsigned int h, unsigned char *pixelData, const std::string &name) {
@@ -80,7 +79,6 @@ void Texture::setup(const unsigned int frames) {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
-        CheckGLErrors();
         disable();
     }
 }
@@ -96,8 +94,6 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w,
     GLenum target = GL_TEXTURE_2D,
            dataType = GL_UNSIGNED_BYTE;
 
-    enable(frame);
-
     /*// DEBUG
     static int counter = 0;
     std::string name;
@@ -108,27 +104,19 @@ void Texture::setPixelData(GLenum internalFormat, GLenum format, unsigned int w,
     counter++;
     Texture::SavePixelDataToDisk(format, w, h, pixelData, name);*/
 
+    enable(frame);
     if(genMipMaps) {
         gluBuild2DMipmaps(target, internalFormat, w, h, format, dataType, (void*)pixelData);
     } else {
         glTexImage2D(target, 0, internalFormat, w, h, 0, format, dataType, pixelData);
     }
-    CheckGLErrors();
-
     disable();
 }
 
 void Texture::enable(const unsigned int frame) {
-    CheckGLErrors();
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, _ids[frame]);
-    CheckGLErrors();
 }
 
 void Texture::disable() {
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_BLEND);
-    glDisable(GL_TEXTURE_2D);
-    CheckGLErrors();
 }

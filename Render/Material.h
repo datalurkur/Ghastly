@@ -10,21 +10,27 @@ class Material {
 public:
     Material();
     virtual ~Material();
-
-    Shader *getShader();
+    
+    void teardown();
     
     void setShader(Shader *shader);
-    void setParameter(const std::string &name, ShaderParameter *param);
+    Shader *getShader();
+
+    void setParameter(ShaderParameter *param);
 
     void enable();
     void disable();
 
 private:
     Shader *_shader;
-    UniformBuffer *_ubo;
+    
+    typedef std::map<std::string,UniformBuffer*> UniformBufferMap;
+    UniformBufferMap _ubos;
 
     typedef std::map<std::string,ShaderParameter*> ShaderParamMap;
     ShaderParamMap _shaderParams;
+    
+    friend class MaterialManager;
 };
 
 #endif

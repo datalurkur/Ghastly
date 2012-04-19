@@ -1,5 +1,5 @@
-#include <UI/UIManager.h>
 #include <Engine/OrthoCamera.h>
+#include <UI/UIManager.h>
 
 UIManager::UIManager(): _camera(0) {
     _camera = new OrthoCamera("UIManagerCamera");

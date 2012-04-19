@@ -62,7 +62,7 @@ void UniformBuffer::disable() {
 }
 
 void UniformBuffer::setParameter(const std::string &name, const void *data) {
-    Shader::UniformInfo info = _shader->getUniformInfo(_blockName, name);
+    Shader::UniformInfo info = _shader->getUniformInfo(name);
 
     uploadPartialBufferData(info.offset, info.size, data);
 }

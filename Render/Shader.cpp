@@ -96,16 +96,13 @@ void Shader::setup(GLuint vertexShader, GLuint geometryShader, GLuint fragmentSh
     glLinkProgram(_program);
     glGetProgramiv(_program, GL_LINK_STATUS, &linkStatus);
     ASSERT(linkStatus);
+    
+    // Get a list of uniforms and their data
+    fetchUniformInformation();
 }
 
 void Shader::teardown() {
-    UniformBlockInfoMap::iterator itr;
-
-    // Clear out the UBO information
-    for(itr = _uniformBlockData.begin(); itr != _uniformBlockData.end(); itr++) {
-        delete itr->second;
-    }
-    _uniformBlockData.clear();
+    _uniformData.clear();
 
     // Detach and delete the shaders
     if(_vertexShader) {
@@ -138,23 +135,13 @@ GLuint Shader::getProgramHandle() {
     return _program;
 }
 
-const Shader::UniformInfo& Shader::getUniformInfo(const std::string &uniformBlockName, const std::string &uniformName) {
-    UniformBlockInfoMap::iterator block_itr;
-    UniformInfoMap::iterator info_itr;
+const Shader::UniformInfo& Shader::getUniformInfo(const std::string &uniformName) {
+    UniformInfoMap::iterator itr;
 
-    block_itr = _uniformBlockData.find(uniformBlockName);
-    if(block_itr == _uniformBlockData.end()) {
-        _uniformBlockData[uniformBlockName] = new UniformInfoMap();
-        ASSERT(fetchUniformBlockInformation(uniformBlockName));
-    }
+    itr = _uniformData.find(uniformName);
+    ASSERT(itr != _uniformData.end());
 
-    info_itr = _uniformBlockData[uniformBlockName]->find(uniformName);
-    if(info_itr == _uniformBlockData[uniformBlockName]->end()) {
-        Error("Uniform " << uniformName << " not found in uniform block " << uniformBlockName);
-        ASSERT(0);
-    }
-
-    return info_itr->second;
+    return itr->second;
 }
 
 void Shader::enable() {
@@ -166,70 +153,58 @@ void Shader::disable() {
     glUseProgram(0);
 }
 
-bool Shader::fetchUniformBlockInformation(const std::string &uniformBlockName) {
-    int i;
-
-    GLuint blockIndex;
-
+bool Shader::fetchUniformInformation() {
+    int i, bufferSize;
     GLint numUniforms;
+    
     GLuint *uniformIndices;
     GLint *uniformOffsets, *uniformSizes, *uniformTypes;
-    unsigned int bufferSize;
     
-    UniformBlockInfoMap::iterator itr;
-    UniformInfoMap* uniformBlockInfo;
+    GLchar *buffer;
 
-    // Make sure we can an info map allocated
-    itr = _uniformBlockData.find(uniformBlockName);
-    ASSERT(itr != _uniformBlockData.end());
-    uniformBlockInfo = itr->second;
+    // Find out how many uniforms there are
+    glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numUniforms);
 
-    // Find the block index
-    blockIndex = glGetUniformBlockIndex(_program, uniformBlockName.c_str());
-    if(blockIndex == -1) {
-        Error("Uniform block " << uniformBlockName << " not found for shader.");
-        return false;
-    }
-
-    glGetActiveUniformBlockiv(_program, blockIndex, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &numUniforms);
-    ASSERT(numUniforms > 0);
-
+    // Allocate buffers
     uniformIndices = (GLuint*)malloc(sizeof(GLint) * numUniforms);
     uniformOffsets = (GLint*)malloc(sizeof(GLint) * numUniforms);
-    uniformSizes = (GLint*)malloc(sizeof(GLint) * numUniforms);
-    uniformTypes = (GLint*)malloc(sizeof(GLint) * numUniforms);
-
-    glGetActiveUniformBlockiv(_program, blockIndex, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, (GLint*)uniformIndices);
+    uniformSizes   = (GLint*)malloc(sizeof(GLint) * numUniforms);
+    uniformTypes   = (GLint*)malloc(sizeof(GLint) * numUniforms);
+    
+    // Construct our array of uniforms (get information about all of them)
+    for(i = 0; i < numUniforms; i++) { uniformIndices[i] = i; }
+    
+    // Get information about the uniforms
     glGetActiveUniformsiv(_program, numUniforms, uniformIndices, GL_UNIFORM_OFFSET, uniformOffsets);
     glGetActiveUniformsiv(_program, numUniforms, uniformIndices, GL_UNIFORM_SIZE, uniformSizes);
     glGetActiveUniformsiv(_program, numUniforms, uniformIndices, GL_UNIFORM_TYPE, uniformTypes);
-
-    bufferSize = 128;
+    
+    // Get the names of each uniform and map it
+    bufferSize = 256;
+    buffer = (GLchar*)calloc(sizeof(GLchar), bufferSize);
     for(i = 0; i < numUniforms; i++) {
-        GLchar *buffer;
         GLsizei nameSize;
-        GLint uByteSize;
-
-        // Get the uniform name for this index and set it appropriately
-        buffer = (GLchar*)calloc(sizeof(GLchar), bufferSize);
+        GLuint uniformByteSize;
         glGetActiveUniformName(_program, uniformIndices[i], bufferSize, &nameSize, buffer);
-
+        
         // Figure out the uniform size in bytes
         switch(uniformTypes[i]) {
-        case GL_FLOAT_VEC3:   uByteSize = sizeof(float) * 3; break;
-        case GL_FLOAT_VEC4:   uByteSize = sizeof(float) * 4; break;
-        case GL_FLOAT_MAT4:   uByteSize = sizeof(float) * 16; break;
-        case GL_SAMPLER_2D:   uByteSize = 1; break;
-        default:
-            Error("Uniform type " << uniformTypes[i] << " not supported.");
-            ASSERT(0);
-            break;
+            case GL_FLOAT_VEC3:   uniformByteSize = sizeof(float) * 3; break;
+            case GL_FLOAT_VEC4:   uniformByteSize = sizeof(float) * 4; break;
+            case GL_FLOAT_MAT4:   uniformByteSize = sizeof(float) * 16; break;
+            case GL_SAMPLER_2D:   uniformByteSize = 1; break;
+            default:
+                Error("Uniform type " << uniformTypes[i] << " not supported.");
+                ASSERT(0);
+                break;
         };
-
-        (*uniformBlockInfo)[std::string(buffer)] = UniformInfo(uniformIndices[i], uniformOffsets[i], uByteSize);
-        free(buffer);
+        
+        Info("Found uniform " << buffer << " (" << i << ") with offset " << uniformOffsets[i] << " and bytesize " << uniformByteSize);
+        _uniformData[std::string(buffer)] = UniformInfo(i, uniformOffsets[i], uniformByteSize);
     }
+    free(buffer);
 
+    // Clean up
     free(uniformIndices);
     free(uniformOffsets);
     free(uniformSizes);

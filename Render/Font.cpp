@@ -20,9 +20,7 @@ Font::~Font() {
 
 void Font::setup() {
     _glyph->setup();
-
-    // TODO - Create a font shader
-    _material->setShader(ShaderManager::Get("textured"));
+    _material->setShader(ShaderManager::Get("font"));
 }
 
 void Font::teardown() {
@@ -83,7 +81,7 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
     // Allocate memory for our vertex and texcoord buffers
     vertexPointer   = (float*)calloc(numCharacters * 4 * 2, sizeof(float));
     texCoordPointer = (float*)calloc(numCharacters * 4 * 2, sizeof(float));
-    indexPointer    = (unsigned int*)calloc(numCharacters * 4, sizeof(unsigned int));
+    indexPointer    = (unsigned int*)calloc(numCharacters * 6, sizeof(unsigned int));
 
     // Now set the actual vertex and texcoords
     characterIndex = 0;
@@ -109,9 +107,10 @@ Renderable* Font::createRenderable(const std::list<std::string> &subStrings, con
     // Set up our renderable
     textBox = new Renderable();
     textBox->setMaterial(_material);
-    textBox->addRenderState(BufferState::VertexBuffer(numCharacters * 4, GL_FLOAT, 2, vertexPointer, _material->getShader()));
-    textBox->addRenderState(BufferState::TexCoordBuffer(numCharacters * 4, GL_FLOAT, 2, texCoordPointer, _material->getShader()));
-    textBox->setIndexPointer(indexPointer, numCharacters * 4);
+    textBox->setAttribBuffer("position", numCharacters * 4, GL_FLOAT, 2, vertexPointer);
+    textBox->setAttribBuffer("texcoord", numCharacters * 4, GL_FLOAT, 2, texCoordPointer);
+    textBox->setIndexBuffer(numCharacters * 6, indexPointer);
+    textBox->setDrawMode(GL_TRIANGLES);
 
     // Free pointers
     free(vertexPointer);
@@ -162,10 +161,13 @@ void Font::populateBuffers(char currentCharacter, unsigned int characterIndex, i
     texCoordPointer[(characterIndex*8) + 7] = textureYMax;
 
     // Set up the indices
-    indexPointer[(characterIndex*4) + 0] = (characterIndex*4);
-    indexPointer[(characterIndex*4) + 1] = (characterIndex*4) + 1;
-    indexPointer[(characterIndex*4) + 2] = (characterIndex*4) + 2;
-    indexPointer[(characterIndex*4) + 3] = (characterIndex*4) + 3;
+    indexPointer[(characterIndex*6) + 0] = (characterIndex*4);
+    indexPointer[(characterIndex*6) + 1] = (characterIndex*4) + 1;
+    indexPointer[(characterIndex*6) + 2] = (characterIndex*4) + 3;
+
+    indexPointer[(characterIndex*6) + 3] = (characterIndex*4) + 3;
+    indexPointer[(characterIndex*6) + 4] = (characterIndex*4) + 1;
+    indexPointer[(characterIndex*6) + 5] = (characterIndex*4) + 2;
 }
 
 int Font::textWidth(const std::string &text) {

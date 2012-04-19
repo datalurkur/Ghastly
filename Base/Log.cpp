@@ -1,9 +1,9 @@
 #include <Base/Log.h>
 
-Log* Log::outputStream = 0;
-LogChannel Log::channelState = 0;
+Log* Log::OutputStream = 0;
+LogChannel Log::ChannelState = 0;
 
-SDL_mutex *Log::logLock = 0;
+SDL_mutex *Log::LogLock = 0;
 
 Log::Log(): _outputStream(&std::cout) {
 }
@@ -13,52 +13,61 @@ Log::~Log() {
 }
 
 void Log::Setup() {
-    logLock = SDL_CreateMutex();
+    if(!LogLock) {
+        LogLock = SDL_CreateMutex();
+    }
+    if(!OutputStream) {
+        OutputStream = new Log();
+    }
     EnableAllChannels();
 }
 
 void Log::Teardown() {
     DisableAllChannels();
-    SDL_DestroyMutex(logLock);
+    if(LogLock) {
+        SDL_DestroyMutex(LogLock);
+        LogLock = 0;
+    }
+    if(OutputStream) {
+        delete OutputStream;
+        OutputStream = 0;
+    }
 }
 
 void Log::SetLock() {
-    SDL_LockMutex(logLock);
+    SDL_LockMutex(LogLock);
 }
 
 void Log::ReleaseLock() {
-    SDL_UnlockMutex(logLock);
+    SDL_UnlockMutex(LogLock);
 }
 
 void Log::EnableAllChannels() {
-    channelState = ~0x00;
+    ChannelState = ~0x00;
 }
 
 void Log::DisableAllChannels() {
-    channelState = 0x00;
+    ChannelState = 0x00;
 }
 
 void Log::EnableChannel(LogChannel channel) {
-    channelState |= channel;
+    ChannelState |= channel;
 }
 
 void Log::DisableChannel(LogChannel channel) {
-    channelState &= ~channel;
+    ChannelState &= ~channel;
 }
 
 bool Log::IsChannelEnabled(LogChannel channel) {
-    return (channelState & channel) != 0;
+    return (ChannelState & channel) != 0;
 }
 
 Log& Log::GetLogStream(LogChannel channel) {
-    if(!outputStream) {
-        outputStream = new Log();
-    }
-    return *outputStream;
+    return *OutputStream;
 }
 
 void Log::Flush() {
-    outputStream->flush();
+    OutputStream->flush();
 }
 
 void Log::flush() {

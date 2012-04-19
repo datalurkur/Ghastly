@@ -145,9 +145,10 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
     }
 
     // Populate the texture with data
-    font->_glyph->setPixelData(GL_ALPHA, GL_ALPHA, font->_textureWidth, font->_textureHeight, texels, false);
-    font->_material->setParameter("texture0", new TextureParameter(font->_glyph));
-    font->_material->setParameter("color", new ColorParameter(fontColor));
+    font->_glyph->setPixelData(GL_RED, GL_RED, font->_textureWidth, font->_textureHeight, texels, false);
+    // TODO - Don't hardcode this
+    font->_material->setParameter(new TextureParameter("texture0", font->_glyph));
+    font->_material->setParameter(new ColorParameter("input_block", "input_block.color", fontColor));
 
     free(texels);
 }

@@ -1,20 +1,23 @@
-#include <Render/Renderable.h>
-#include <Render/GLHelper.h>
 #include <Base/Log.h>
 #include <Base/Matrix4.h>
+#include <Render/Renderable.h>
 #include <Resource/MaterialManager.h>
 
 // TODO - Move drawmode into the material
 Renderable::Renderable():
-    _viewMatrix(Matrix4::Identity), _transformBuffer(0), _material(0), _indexPointer(0), _numIndices(0), _drawMode(GL_QUADS)
+    _numIndices(0), _viewMatrix(Matrix4::Identity), _transformBuffer(0), _material(0), _drawMode(GL_TRIANGLE_STRIP)
 {
     setMaterial(MaterialManager::Get("default"));
+
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_indexBufferID);
 }
 
 Renderable::~Renderable() {
+    glDeleteBuffers(1, &_indexBufferID);
+    glDeleteVertexArrays(1, &_vao);
+    
     if(_transformBuffer) { delete _transformBuffer; }
-    if(_indexPointer) { free(_indexPointer); }
-    clearRenderStates();
 }
 
 void Renderable::setViewMatrix(const Matrix4 &matrix) {
@@ -25,23 +28,45 @@ const Matrix4& Renderable::getViewMatrix() const {
     return _viewMatrix;
 }
 
-void Renderable::addRenderState(GenericRenderState *renderState) {
-    _renderStates.push_back(renderState);
-}
-
-void Renderable::clearRenderStates() {
-    RenderStateList::iterator itr;
-    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
-        delete (*itr);
-    }
-    _renderStates.clear();
-}
-
-void Renderable::setIndexPointer(unsigned int *indexPointer, const unsigned int numIndices) {
-    size_t byteSize = numIndices * sizeof(unsigned int);
-    _indexPointer = (unsigned int *)malloc(byteSize);
-    memcpy(_indexPointer, indexPointer, byteSize);
+void Renderable::setIndexBuffer(const unsigned int numIndices, unsigned int *indices) {
+    GLuint byteSize;
+    
     _numIndices = numIndices;
+    byteSize = _numIndices * sizeof(unsigned int);
+   
+    enterRenderScope();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, byteSize, indices, GL_STATIC_DRAW);
+    exitRenderScope();
+}
+
+void Renderable::setAttribBuffer(const std::string &name, GLuint numElements, GLenum elementType, GLuint elementSize, void *buffer) 
+{
+    GLuint byteSize;
+    GLint bindPoint;
+    VertexAttribMap::iterator itr;
+
+    switch(elementType) {
+        case GL_FLOAT:          byteSize = sizeof(GLfloat) * numElements * elementSize; break;
+        case GL_UNSIGNED_INT:   byteSize = sizeof(GLuint) * numElements * elementSize;  break;
+        default:                ASSERT(0);                                              break;
+    }
+    
+    itr = _vertexAttribBuffers.find(name);
+    if(itr == _vertexAttribBuffers.end()) {
+        GLuint newBuffer;
+        glGenBuffers(1, &newBuffer);
+        _vertexAttribBuffers[name] = newBuffer;
+    }
+    
+    enterRenderScope();
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexAttribBuffers[name]);
+    glBufferData(GL_ARRAY_BUFFER, byteSize, buffer, GL_STATIC_DRAW);
+    
+    bindPoint = _material->getShader()->getAttribLocation(name);
+    glVertexAttribPointer(bindPoint, elementSize, elementType, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(bindPoint);
+    exitRenderScope();
 }
 
 void Renderable::setMaterial(Material *material) {
@@ -53,36 +78,31 @@ void Renderable::setDrawMode(GLenum mode) {
     _drawMode = mode;
 }
 
+void Renderable::enterRenderScope() {
+    glBindVertexArray(_vao);
+}
+
+void Renderable::exitRenderScope() {
+    glBindVertexArray(0);
+}
+
 void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
-    RenderStateList::iterator itr;
-
-    // This functionality deprecated by projection and modelview matrices being included in the shader uniforms
-    //glPushMatrix();
-    //glMultMatrixf(_viewMatrix.ptr());
-
     updateTransformBuffer(projection, modelView);
     _transformBuffer->enable();
 
     if(_material) {
         _material->enable();
     }
-    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
-        (*itr)->preRender();
-    }
 
-    ASSERT(_indexPointer);
-    glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, _indexPointer);
+    enterRenderScope();
+    glDrawElements(_drawMode, _numIndices, GL_UNSIGNED_INT, 0);
+    exitRenderScope();
 
-    for(itr = _renderStates.begin(); itr != _renderStates.end(); itr++) {
-        (*itr)->postRender();
-    }
     if(_material) {
         _material->disable();
     }
 
     _transformBuffer->disable();
-
-    //glPopMatrix();
 }
 
 Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material) {
@@ -90,8 +110,6 @@ Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool t
 }
 
 Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material) {
-    Shader *shader = material->getShader();
-
     Renderable *renderable = new Renderable();
     renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
     renderable->setMaterial(material);
@@ -109,7 +127,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
             disp.x, pos.y,  pos.z,
             pos.x,  pos.y,  pos.z
         };
-        renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
+        renderable->setAttribBuffer("position", 4, GL_FLOAT, 3, &verts[0]);
     } else {
         float verts[4 * 3] = {
             pos.x,  pos.y,  pos.z,
@@ -117,7 +135,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
             disp.x, disp.y, pos.z,
             pos.x,  disp.y, pos.z
         };
-        renderable->addRenderState(BufferState::VertexBuffer(4, GL_FLOAT, 3, &verts[0], shader));
+        renderable->setAttribBuffer("position", 4, GL_FLOAT, 3, &verts[0]);
     }
 
     // Set the texture coordinates
@@ -128,7 +146,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
             1, 0,
             0, 0
         };
-        renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
+        renderable->setAttribBuffer("texcoord", 4, GL_FLOAT, 2, &texCoords[0]);
     } else if(texCoords) {
         float texCoords[4 * 2] = {
             0, 0,
@@ -136,7 +154,7 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
             1, 1,
             0, 1
         };
-        renderable->addRenderState(BufferState::TexCoordBuffer(4, GL_FLOAT, 2, &texCoords[0], shader));
+        renderable->setAttribBuffer("texcoord", 4, GL_FLOAT, 2, &texCoords[0]);
     }
 
     // Set the normals
@@ -147,12 +165,12 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
             0, 0, 1,
             0, 0, 1
         };
-        renderable->addRenderState(BufferState::NormalBuffer(4, GL_FLOAT, &normals[0], shader));
+        renderable->setAttribBuffer("normal", 4, GL_FLOAT, 2, &normals[0]);
     }
 
     // Set the indices
-    unsigned int indices[4] = { 0, 1, 2, 3 };
-    renderable->setIndexPointer(&indices[0], 4);
+    unsigned int indices[4] = { 0, 1, 3, 2 };
+    renderable->setIndexBuffer(4, &indices[0]);
 
     return renderable;
 }
@@ -170,10 +188,6 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
     unsigned int size;
     unsigned int i;
 
-    // TODO - implement a line shader and use it here
-    Error("Line shader not yet implemented");
-    ASSERT(0);
-
     size = (unsigned int)verts.size();
 
     renderable = new Renderable();
@@ -189,9 +203,7 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
         indexBuffer[i] = i;
     }
 
-    // TODO - Make a special shader for drawing lines
-    //renderable->addRenderState(BufferState::VertexBuffer(size, GL_FLOAT, 3, &vertexBuffer[0], ShaderManager::Get("line_shader")));
-    renderable->setIndexPointer(&indexBuffer[0], size);
+    renderable->setIndexBuffer(size, &indexBuffer[0]);
     renderable->setDrawMode(GL_LINE_STRIP);
 
     delete vertexBuffer;
@@ -207,6 +219,6 @@ void Renderable::recreateTransformBuffer(Shader *shader) {
 }
 
 void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView) {
-    _transformBuffer->setParameter("projection_matrix", projection.ptr());
-    _transformBuffer->setParameter("modelview_matrix", (modelView * _viewMatrix).ptr());
+    _transformBuffer->setParameter("transform.projection_matrix", projection.ptr());
+    _transformBuffer->setParameter("transform.modelview_matrix", (modelView * _viewMatrix).ptr());
 }

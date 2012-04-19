@@ -1,6 +1,8 @@
-#include <Engine/Core.h>
 #include <Base/Log.h>
 #include <Base/Debug.h>
+#include <Base/SDLHelper.h>
+#include <Render/GLHelper.h>
+#include <Engine/Core.h>
 
 Core::Core(): _running(false), _renderContext(0), _elapsedIndex(0) {
     setup();
@@ -18,16 +20,16 @@ void Core::setup() {
     
     _core = this;
     
+    Log::Setup();
     Log::EnableAllChannels();
 
     _window = new Window("GhastlyWindow");
+    
     _viewport = new Viewport();
     
-    _eventHandler = new EventHandler(_window->getID());
+    _eventHandler = new EventHandler();
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
-
-    _renderContext = new RenderContext(_window->getSDLWindow());
 
     // FIXME - Set this with an options class
     resizeWindow(640, 480);
@@ -52,6 +54,8 @@ void Core::teardown() {
         delete _window;
         _window = 0;
     }
+    
+    Log::Teardown();
 }
 
 void Core::start() {
@@ -64,9 +68,9 @@ void Core::start() {
     while(_running) {
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
-        
-        //Info("FPS: " << trackFPS(elapsedTime) << "(" << elapsedTime << ")");
 
+        //Info("FPS: " << trackFPS(elapsedTime) << "(" << elapsedTime << ")");
+        
         _eventHandler->handleEvents();
 
         update(elapsedTime);
@@ -74,6 +78,9 @@ void Core::start() {
         render(_renderContext);
         _window->swapBuffers();
 
+        CheckSDLErrors();
+        CheckGLErrors();
+        
         lastTime = currentTime;
     }
 
@@ -87,7 +94,17 @@ void Core::stop() {
 
 void Core::resizeWindow(const int w, const int h) {
     _window->resize(w, h);
+    
+    // Recreate the RenderContext
+    if(_renderContext) { delete _renderContext; }
+    _renderContext = new RenderContext(_window->getSDLWindow());
+    
+    // Resize the viewport
     _viewport->resize(0, 0, w, h);
+    _renderContext->setViewport(_viewport);
+    
+    // Refresh the event handler
+    _eventHandler->setWindowID(_window->getID());
 }
 
 void Core::closeWindow() {

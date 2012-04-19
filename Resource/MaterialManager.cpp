@@ -36,16 +36,28 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
 
     pMap->getKeys(keys);
     for(itr = keys.begin(); itr != keys.end(); itr++) {
-        if(*itr == "color4") {
+        bool blockParam;
+        std::string type, value, block, uniform;
+        
+        PropertyMap::SeparateTypedValue(pMap->getValue(*itr), type, value);
+        blockParam = PropertyMap::ExtractScope(*itr, block);
+
+        if(type == "color4") {
             Color4 color;
-            pMap->getValue(*itr, color);
-            material->setParameter("color", new ColorParameter(color));
-        } else if(*itr == "texture") {
+            PropertyMap::ExtractValue(value, color);
+            if(blockParam) {
+                material->setParameter(new ColorParameter(block, *itr, color));
+            } else {
+                material->setParameter(new ColorParameter(*itr, color));
+            }
+        } else if(type == "texture") {
             std::string textureName;
             Texture *texture;
-            pMap->getValue(*itr, textureName);
+            PropertyMap::ExtractValue(value, textureName);
             texture = TextureManager::Get(textureName);
-            material->setParameter("texture0", new TextureParameter(texture));
+            
+            // Textures can't be stored in UBOs
+            material->setParameter(new TextureParameter(*itr, texture));
         }
     }
     

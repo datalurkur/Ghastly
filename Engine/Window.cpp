@@ -1,6 +1,7 @@
 #include <Engine/Window.h>
 #include <Base/Log.h>
 #include <Base/Assertion.h>
+#include <Base/SDLHelper.h>
 
 Window::Window(const std::string &name, int w, int h): _name(name), _windowFlags(0), _window(0) {
     setup();
@@ -14,7 +15,8 @@ void Window::setup() {
         Error("SDL Failed to initialize");
         ASSERT(0);
     }
-
+    CheckSDLErrors();
+    
     _windowFlags  = 0;
     _windowFlags |= SDL_WINDOW_OPENGL;
     _windowFlags |= SDL_WINDOW_SHOWN;
@@ -22,12 +24,16 @@ void Window::setup() {
     // Set the OpenGL context version
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 }
 
 void Window::teardown() {
     if(_window) {
         SDL_DestroyWindow(_window);
         _window = 0;
+        CheckSDLErrors();
     }
 }
 
@@ -37,6 +43,7 @@ void Window::resize(int w, int h) {
     
     // Create the new window
     _window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, _windowFlags);
+    swapBuffers();
 }
 
 void Window::swapBuffers() const {

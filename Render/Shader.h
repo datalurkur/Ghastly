@@ -28,14 +28,14 @@ public:
     GLuint getUniformLocation(const std::string &uniformName);
     GLuint getAttribLocation(const std::string &attribName);
     GLuint getProgramHandle();
-    const UniformInfo& getUniformInfo(const std::string &uniformBlockName, const std::string &uniformName);
+    const UniformInfo& getUniformInfo(const std::string &uniformName);
 
     void enable();
     void disable();
 
 protected:   
     GLuint compile(const char *shaderProgramData, GLenum type);
-    bool fetchUniformBlockInformation(const std::string &uniformBlockName);
+    bool fetchUniformInformation();
 
 protected:
     GLuint _program;
@@ -43,10 +43,9 @@ protected:
 
 private:
     typedef std::map<std::string,UniformInfo> UniformInfoMap;
-    typedef std::map<std::string,UniformInfoMap*> UniformBlockInfoMap;
 
 private:
-    UniformBlockInfoMap _uniformBlockData;
+    UniformInfoMap _uniformData;
 
     friend class ShaderManager;
 };

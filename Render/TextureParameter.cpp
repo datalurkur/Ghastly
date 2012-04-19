@@ -1,14 +1,11 @@
 #include <Render/TextureParameter.h>
 #include <Base/Assertion.h>
 
-TextureParameter::TextureParameter(Texture *texture, GLuint frame, GLuint channel): _texture(texture), _frame(frame), _channel(channel) {
-    // TODO - Add multitexturing
-    // Multitexturing is not yet supported
-    ASSERT(_channel == 0);
+TextureParameter::TextureParameter(const std::string &name, Texture *texture, GLuint frame, GLuint channel):
+    ShaderParameter(name, true), _texture(texture), _frame(frame), _channel(channel) {}
 
-    // sampler2D types cannot be included in uniform buffer objects, so just pass it in manually
-    _hasState = true;
-}
+TextureParameter::TextureParameter(const std::string &blockName, const std::string &name, Texture *texture, GLuint frame, GLuint channel):
+    ShaderParameter(blockName, name, true), _texture(texture), _frame(frame), _channel(channel) {}
 
 void TextureParameter::enable(Shader *shader) {
     GLint location;

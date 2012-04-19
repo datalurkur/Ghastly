@@ -1,8 +1,8 @@
-#include <Resource/TextureManager.h>
-#include <SDL/SDL_opengl.h>
-#include <SDL/SDL_image.h>
 #include <Base/Log.h>
 #include <Base/Assertion.h>
+#include <Base/SDLHelper.h>
+#include <SDL/SDL_image.h>
+#include <Resource/TextureManager.h>
 
 const std::string TextureManager::LoadDirectory = "Texture";
 
@@ -21,8 +21,10 @@ void TextureManager::DoLoad(const std::string &name, Texture *texture) {
 
     switch(tSurf->format->BytesPerPixel) {
 #if SYS_PLATFORM == PLATFORM_APPLE
-        case 3: format = GL_BGR; break;
-        case 4: format = GL_BGRA; break;
+        //case 3: format = GL_BGR; break;
+        //case 4: format = GL_BGRA; break;
+        case 3: format = GL_RGB; break;
+        case 4: format = GL_RGBA; break;
 #else
         case 3: format = GL_RGB; break;
         case 4: format = GL_RGBA; break;

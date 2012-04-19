@@ -1,80 +1,90 @@
 #include <Render/Material.h>
 #include <SDL/SDL_opengl.h>
 
-Material::Material(): _shader(0), _ubo(0) {
+Material::Material(): _shader(0) {
 }
 
 Material::~Material() {
-    if(_ubo) { delete _ubo; }
+    teardown();
+}
 
-    ShaderParamMap::iterator itr;
-    for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++ ) {
-        delete itr->second;
+void Material::teardown() {
+    UniformBufferMap::iterator uboItr;
+    for(uboItr = _ubos.begin(); uboItr != _ubos.end(); uboItr++) {
+        delete uboItr->second;
+    }
+    _ubos.clear();
+    
+    ShaderParamMap::iterator paramItr;
+    for(paramItr = _shaderParams.begin(); paramItr != _shaderParams.end(); paramItr++ ) {
+        delete paramItr->second;
     }
     _shaderParams.clear();
 }
 
 void Material::setShader(Shader *shader) {
+    teardown();
     _shader = shader;
-
-    // TODO - Only do this if UBOs are supported
-    if(_ubo) { delete _ubo; }
-    _ubo = new UniformBuffer(_shader, "input_block");
-
-    ShaderParamMap::iterator itr;
-    for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
-        if(itr->second->hasUniform()) {
-            _ubo->setParameter(itr->first, itr->second->getUniformData());
-        }
-    }
 }
+Shader *Material::getShader() { return _shader; }
 
-Shader *Material::getShader() {
-    return _shader;
-}
-
-void Material::setParameter(const std::string &name, ShaderParameter *param) {
-    ShaderParamMap::iterator itr;
-    itr = _shaderParams.find(name);
-
-    if(itr != _shaderParams.end()) {
-        delete itr->second;
-    }
-
-    if(param) {
-        _shaderParams[name] = param;
-    } else if(itr != _shaderParams.end()) {
-        _shaderParams.erase(itr);
-    }
-
+void Material::setParameter(ShaderParameter *param) {
     if(param->hasUniform()) {
-        ASSERT(_ubo);
-        _ubo->setParameter(name, param->getUniformData());
+        ShaderParamMap::iterator paramItr;
+
+        paramItr = _shaderParams.find(param->getUniformName());
+        if(paramItr != _shaderParams.end()) {
+            delete paramItr->second;
+        }
+        
+        if(param) {
+            _shaderParams[param->getUniformName()] = param;
+        } else {
+            _shaderParams.erase(paramItr);
+        }
+
+        if(param->isBlockUniform()) {
+            UniformBufferMap::iterator uboItr;
+            
+            uboItr = _ubos.find(param->getBlockName());
+            if(uboItr == _ubos.end()) {
+                _ubos[param->getBlockName()] = new UniformBuffer(_shader, param->getBlockName());
+            }
+            
+            _ubos[param->getBlockName()]->setParameter(param->getUniformName(), param->getUniformData());
+        }
+    } else {
+        Info("Parameters must have names.");
+        ASSERT(0);
     }
 }
 
 void Material::enable() {
-    ShaderParamMap::iterator itr;
-
+    ShaderParamMap::iterator paramItr;
+    UniformBufferMap::iterator uboItr;
+    
     if(_shader) {
         _shader->enable();
     }
-    
-    if(_ubo) { _ubo->enable(); }
 
-    for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
-        if(itr->second->hasState()) { itr->second->enable(_shader); }
+    for(paramItr = _shaderParams.begin(); paramItr != _shaderParams.end(); paramItr++) {
+        if(paramItr->second->hasState()) { paramItr->second->enable(_shader); }
+    }
+    for(uboItr = _ubos.begin(); uboItr != _ubos.end(); uboItr++) {
+        uboItr->second->enable();
     }
 }
 
 void Material::disable() {
-    ShaderParamMap::iterator itr;
+    ShaderParamMap::iterator paramItr;
+    UniformBufferMap::iterator uboItr;
 
-    for(itr = _shaderParams.begin(); itr != _shaderParams.end(); itr++) {
-        if(itr->second->hasState()) { itr->second->disable(_shader); }
+    for(paramItr = _shaderParams.begin(); paramItr != _shaderParams.end(); paramItr++) {
+        if(paramItr->second->hasState()) { paramItr->second->disable(_shader); }
     }
-    
-    if(_ubo) { _ubo->disable(); }
+    for(uboItr = _ubos.begin(); uboItr != _ubos.end(); uboItr++) {
+        uboItr->second->disable();
+    }
 
     if(_shader) {
         _shader->disable();

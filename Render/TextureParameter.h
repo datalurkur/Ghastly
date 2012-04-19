@@ -6,7 +6,8 @@
 
 class TextureParameter: public ShaderParameter {
 public:
-    TextureParameter(Texture *texture, GLuint frame = 0, GLuint channel = 0);
+    TextureParameter(const std::string &name, Texture *texture, GLuint frame = 0, GLuint channel = 0);
+    TextureParameter(const std::string &blockName, const std::string &name, Texture *texture, GLuint frame = 0, GLuint channel = 0);
 
     void enable(Shader *shader);
     void disable(Shader *shader);

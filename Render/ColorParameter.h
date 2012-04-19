@@ -6,7 +6,8 @@
 
 class ColorParameter: public ShaderParameter {
 public:
-    ColorParameter(const Color4 &color);
+    ColorParameter(const std::string &name, const Color4 &color);
+    ColorParameter(const std::string &blockName, const std::string &name, const Color4 &color);
     const void* getUniformData() const;
 
 private:

@@ -44,11 +44,11 @@
 
 // SDL
 // Turn off GL extensions so we can enable GLSL shaders ourselves
-#define NO_SDL_GLEXT
-#include <SDL/SDL.h>
+//#define NO_SDL_GLEXT
+#include <SDL2/SDL.h>
 
 #if SYS_PLATFORM != PLATFORM_WIN32
-# include <SDL/SDL_opengl.h>
+//# include <SDL/SDL_opengl.h>
 #endif
 
 #if SYS_PLATFORM == PLATFORM_WIN32
@@ -59,7 +59,7 @@
 # include <GL/glu.h>
 # include <GL/glext.h>
 #elif SYS_PLATFORM == PLATFORM_APPLE
-# include <OpenGL/glext.h>
+//# include <OpenGL/glext.h>
 #endif
 
 #if SYS_PLATFORM != PLATFORM_WIN32

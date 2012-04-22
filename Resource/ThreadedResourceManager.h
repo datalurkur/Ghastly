@@ -3,8 +3,8 @@
 
 #include <Resource/ResourceManager.h>
 
-#include <SDL/SDL_mutex.h>
-#include <SDL/SDL_thread.h>
+#include <SDL2/SDL_mutex.h>
+#include <SDL2/SDL_thread.h>
 
 #define LOCK_MUTEX \
     do { \

@@ -1,5 +1,5 @@
 #include <Base/Assertion.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 void CheckSDLErrorsFL(const char* file, int line) {
     const char *error;

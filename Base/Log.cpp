@@ -5,11 +5,28 @@ LogChannel Log::ChannelState = 0;
 
 SDL_mutex *Log::LogLock = 0;
 
-Log::Log(): _outputStream(&std::cout) {
+Log::Log(): _cleanupStream(false), _outputStream(&std::cout), _logFile(0) {
+#if SYS_PLATFORM == PLATFORM_WIN32
+    _logFile = new filebuf;
+    _logFile->open("stdout", ios::out);
+    _outputStream = new std::ostream(_logFile);
+    _cleanupStream = true;
+#endif
 }
 
 Log::~Log() {
     _outputStream->flush();
+
+    if(_logFile) {
+        _logFile->close();
+        delete _logFile;
+        _logFile = 0;
+    }
+
+    if(_cleanupStream) {
+        delete _outputStream;
+        _cleanupStream = false;
+    }
 }
 
 void Log::Setup() {

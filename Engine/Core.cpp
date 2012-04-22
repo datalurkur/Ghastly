@@ -22,7 +22,6 @@ void Core::setup() {
     
     Log::Setup();
     Log::EnableAllChannels();
-
     _window = new Window("GhastlyWindow");
     _window->swapBuffers();
     // TODO - Set this with an option

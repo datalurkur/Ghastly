@@ -21,7 +21,7 @@
 # define E_IN_PROGRESS EINPROGRESS
 #endif
 
-#include <SDL/SDL_mutex.h>
+#include <SDL2/SDL_mutex.h>
 
 class Socket {
 public:

@@ -45,7 +45,9 @@ private:
     static SDL_mutex *LogLock;
 
 private:
+    bool _cleanupStream;
     std::ostream *_outputStream;
+    filebuf *_logFile;
 };
 
 template <typename T>

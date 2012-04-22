@@ -15,6 +15,7 @@
 
 // IO libs
 #include <iostream>
+#include <fstream>
 
 // Math libs
 #include <algorithm>
@@ -28,9 +29,9 @@
 #include <vector>
 
 // Platform-specific defines
-#define    PLATFORM_APPLE 0
+#define PLATFORM_APPLE 0
 #define PLATFORM_WIN32 1
-#define    PLATFORM_LINUX 2
+#define PLATFORM_LINUX 2
 
 #if defined(__APPLE__) && defined(__MACH__)
 # define SYS_PLATFORM PLATFORM_APPLE

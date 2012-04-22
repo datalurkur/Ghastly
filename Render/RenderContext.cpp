@@ -2,14 +2,18 @@
 
 RenderContext::RenderContext(SDL_Window *window) {
     GLenum glewStatus, frameBufferStatus;
+    const GLubyte *version;
 
     // Use SDL to create the RenderContext
     _context = SDL_GL_CreateContext(window);
-    
+
+    version = glGetString(GL_VERSION);
+    Info("GL Version: " << version);
+
     // Setup GLEW
     // Needed for certain functionality to work (glGenVertexArrays, for example)
     glewExperimental = true;
-    
+
     // Call GLEW setup
     glewStatus = glewInit();
     

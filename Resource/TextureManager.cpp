@@ -1,7 +1,7 @@
 #include <Base/Log.h>
 #include <Base/Assertion.h>
 #include <Base/SDLHelper.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <Resource/TextureManager.h>
 
 const std::string TextureManager::LoadDirectory = "Texture";
@@ -15,6 +15,7 @@ void TextureManager::DoLoad(const std::string &name, Texture *texture) {
     fullName = LoadPath() + name;
     tSurf = IMG_Load(fullName.c_str());
 
+    ASSERT(tSurf);
     ASSERT(SDL_LockSurface(tSurf)==0);
 
     internalFormat = GL_RGBA;

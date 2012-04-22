@@ -21,6 +21,7 @@ void Window::setup() {
     _windowFlags  = 0;
     _windowFlags |= SDL_WINDOW_OPENGL;
     _windowFlags |= SDL_WINDOW_SHOWN;
+    _windowFlags |= SDL_WINDOW_RESIZABLE;
 
     // Set the OpenGL context version
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

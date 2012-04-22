@@ -222,7 +222,7 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
                         lastIndex = i;
                         totalWidth = 0;
                     } else {
-                        subStrings.push_back((*itr).substr(lastIndex, lastSpace - lastIndex + 1));
+                        subStrings.push_back((*itr).substr(lastIndex, lastSpace - lastIndex));
                         lastIndex  = lastSpace + 1;
                         totalWidth = widthSinceSpace;
                     }

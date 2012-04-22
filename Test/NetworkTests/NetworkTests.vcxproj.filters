@@ -42,16 +42,10 @@
     <ClCompile Include="..\..\Network\GhastlyClient.cpp">
       <Filter>Ghastly\Network\Ghastly</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Network\GhastlyProtocol.cpp">
-      <Filter>Ghastly\Network\Ghastly</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Network\GhastlyServer.cpp">
       <Filter>Ghastly\Network\Ghastly</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Network\ClientProvider.cpp">
-      <Filter>Ghastly\Network\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Network\ConnectionProvider.cpp">
       <Filter>Ghastly\Network\Providers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Network\MultiConnectionProvider.cpp">

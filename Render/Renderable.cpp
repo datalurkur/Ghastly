@@ -219,6 +219,6 @@ void Renderable::recreateTransformBuffer(Shader *shader) {
 }
 
 void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView) {
-    _transformBuffer->setParameter("transform.projection_matrix", projection.ptr());
-    _transformBuffer->setParameter("transform.modelview_matrix", (modelView * _viewMatrix).ptr());
+    _transformBuffer->setParameter("projection_matrix", projection.ptr());
+    _transformBuffer->setParameter("modelview_matrix", (modelView * _viewMatrix).ptr());
 }

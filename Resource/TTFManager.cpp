@@ -148,7 +148,7 @@ void TTFManager::createFontTexture(TTF_Font *ttfFont, Font *font, const std::str
     font->_glyph->setPixelData(GL_RED, GL_RED, font->_textureWidth, font->_textureHeight, texels, false);
     // TODO - Don't hardcode this
     font->_material->setParameter(new TextureParameter("texture0", font->_glyph));
-    font->_material->setParameter(new ColorParameter("input_block", "input_block.color", fontColor));
+    font->_material->setParameter(new ColorParameter("frag_input", "color", fontColor));
 
     free(texels);
 }

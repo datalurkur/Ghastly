@@ -18,7 +18,7 @@ public:
 
 public:
     static void SeparateTypedValue(const std::string &source, std::string &type, std::string &value);
-    static bool ExtractScope(const std::string &source, std::string &parent);
+    static bool ExtractScope(const std::string &source, std::string &parent, std::string &child);
     
     template <typename T>
     static void ExtractValue(const std::string &source, T &value);

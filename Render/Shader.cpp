@@ -185,7 +185,15 @@ bool Shader::fetchUniformInformation() {
     for(i = 0; i < numUniforms; i++) {
         GLsizei nameSize;
         GLuint uniformByteSize;
+        std::string uniformName;
+        size_t dotIndex;
+
         glGetActiveUniformName(_program, uniformIndices[i], bufferSize, &nameSize, buffer);
+        uniformName = std::string(buffer);
+        dotIndex = uniformName.find_first_of('.');
+        if(dotIndex != std::string::npos) {
+            uniformName = uniformName.substr(dotIndex+1);
+        }
         
         // Figure out the uniform size in bytes
         switch(uniformTypes[i]) {
@@ -199,8 +207,8 @@ bool Shader::fetchUniformInformation() {
                 break;
         };
         
-        Info("Found uniform " << buffer << " (" << i << ") with offset " << uniformOffsets[i] << " and bytesize " << uniformByteSize);
-        _uniformData[std::string(buffer)] = UniformInfo(i, uniformOffsets[i], uniformByteSize);
+        Info("Found uniform " << uniformName << " (" << i << ") with offset " << uniformOffsets[i] << " and bytesize " << uniformByteSize);
+        _uniformData[uniformName] = UniformInfo(i, uniformOffsets[i], uniformByteSize);
     }
     free(buffer);
 

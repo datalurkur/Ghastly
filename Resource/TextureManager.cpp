@@ -1,7 +1,7 @@
 #include <Base/Log.h>
 #include <Base/Assertion.h>
 #include <Base/SDLHelper.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 #include <Resource/TextureManager.h>
 
 const std::string TextureManager::LoadDirectory = "Texture";

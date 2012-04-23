@@ -40,13 +40,13 @@ void MaterialManager::DoLoad(const std::string &name, Material *material) {
         std::string type, value, block, uniform;
         
         PropertyMap::SeparateTypedValue(pMap->getValue(*itr), type, value);
-        blockParam = PropertyMap::ExtractScope(*itr, block);
+        blockParam = PropertyMap::ExtractScope(*itr, block, uniform);
 
         if(type == "color4") {
             Color4 color;
             PropertyMap::ExtractValue(value, color);
             if(blockParam) {
-                material->setParameter(new ColorParameter(block, *itr, color));
+                material->setParameter(new ColorParameter(block, uniform, color));
             } else {
                 material->setParameter(new ColorParameter(*itr, color));
             }

@@ -54,7 +54,7 @@ void PropertyMap::SeparateTypedValue(const std::string &source, std::string &typ
     value = source.substr(value_begin);
 }
 
-bool PropertyMap::ExtractScope(const std::string &source, std::string &parent) {
+bool PropertyMap::ExtractScope(const std::string &source, std::string &parent, std::string &child) {
     size_t scope_end;
 
     scope_end = source.find_first_of(".");
@@ -62,6 +62,7 @@ bool PropertyMap::ExtractScope(const std::string &source, std::string &parent) {
         return false;
     } else {
         parent = source.substr(0, scope_end);
+        child = source.substr(scope_end + 1);
         return true;
     }
 }

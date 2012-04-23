@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <SDL2/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 #include <Base/Base.h>
 
 class TextureManager;

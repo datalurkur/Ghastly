@@ -3,7 +3,7 @@
 #include <Base/Assertion.h>
 #include <Base/SDLHelper.h>
 
-Window::Window(const std::string &name, int w, int h): _name(name), _windowFlags(0), _window(0) {
+Window::Window(const std::string &name): _name(name), _windowFlags(0), _window(0) {
 	if(SDL_Init(0) < 0) {
         Error("SDL Failed to initialize");
         ASSERT(0);
@@ -12,7 +12,7 @@ Window::Window(const std::string &name, int w, int h): _name(name), _windowFlags
 		Error("Failed to initialize SDL video subsystem.");
 		ASSERT(0);
 	}
-    setup(w, h);
+    setup();
 }
 
 Window::~Window() {
@@ -20,7 +20,7 @@ Window::~Window() {
 	SDL_Quit();
 }
 
-void Window::setup(int w, int h) {
+void Window::setup() {
     _windowFlags  = 0;
     _windowFlags |= SDL_WINDOW_OPENGL;
     _windowFlags |= SDL_WINDOW_SHOWN;
@@ -40,18 +40,11 @@ void Window::setup(int w, int h) {
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
-    _window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, _windowFlags);
+    _window = SDL_CreateWindow(_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 0, 0, _windowFlags);
 	if(!_window) {
 		Error("Window creation failed");
 		ASSERT(0);
 	}
-
-#if SYS_PLATFORM == PLATFORM_LINUX
-	// LINUX SDL HACK
-	// On Linux, SDL2 generates an "Invalid window" error due to attempting to call SDL_GL_MakeCurrent(NULL, NULL), which checks its first parameter to see if it's NULL.
-	SDL_ClearError();
-#endif
-
 	CheckSDLErrors();
 }
 

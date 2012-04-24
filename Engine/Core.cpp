@@ -22,9 +22,8 @@ void Core::setup() {
     
     Log::Setup();
     Log::EnableAllChannels();
-	// TODO - Set this with an option
-    _window = new Window("GhastlyWindow", 640, 480);
-    //_window->swapBuffers();
+
+    _window = new Window("GhastlyWindow");
 
     _viewport = new Viewport();
     
@@ -34,6 +33,10 @@ void Core::setup() {
     _eventHandler = new EventHandler(_window->getID());
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
+	
+	// TODO - Set this with an option
+	_window->resize(640, 480);
+	_window->swapBuffers();
 }
 
 void Core::teardown() {

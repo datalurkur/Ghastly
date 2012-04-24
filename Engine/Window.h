@@ -5,10 +5,10 @@
 
 class Window {
 public:
-    Window(const std::string &name, int w = 0, int h = 0);
+    Window(const std::string &name, int w = 1, int h = 1);
     virtual ~Window();
 
-    void setup();
+    void setup(int w, int h);
     void teardown();
 
     void resize(int w, int h);

@@ -22,10 +22,9 @@ void Core::setup() {
     
     Log::Setup();
     Log::EnableAllChannels();
-    _window = new Window("GhastlyWindow");
+	// TODO - Set this with an option
+    _window = new Window("GhastlyWindow", 640, 480);
     _window->swapBuffers();
-    // TODO - Set this with an option
-    _window->resize(640, 480);
 
     _viewport = new Viewport();
     

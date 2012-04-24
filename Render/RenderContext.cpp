@@ -6,6 +6,9 @@ RenderContext::RenderContext(SDL_Window *window) {
 
     // Use SDL to create the RenderContext
     _context = SDL_GL_CreateContext(window);
+	
+	// Set up vertical sync
+	SDL_GL_SetSwapInterval(1);
 
     version = glGetString(GL_VERSION);
     Info("GL Version: " << version);

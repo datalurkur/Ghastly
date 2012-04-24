@@ -24,7 +24,7 @@ void Core::setup() {
     Log::EnableAllChannels();
 	// TODO - Set this with an option
     _window = new Window("GhastlyWindow", 640, 480);
-    _window->swapBuffers();
+    //_window->swapBuffers();
 
     _viewport = new Viewport();
     

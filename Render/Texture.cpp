@@ -22,7 +22,6 @@ void Texture::SavePixelDataToDisk(GLenum format, unsigned int w, unsigned int h,
 
             switch(format) {
             case GL_ALPHA:
-            case GL_LUMINANCE:
                 fileData[18 + (offset*3) + 0] = pixelData[offset];
                 fileData[18 + (offset*3) + 1] = pixelData[offset];
                 fileData[18 + (offset*3) + 2] = pixelData[offset];

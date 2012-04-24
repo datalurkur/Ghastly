@@ -45,6 +45,13 @@ void Window::setup(int w, int h) {
 		Error("Window creation failed");
 		ASSERT(0);
 	}
+
+#if SYS_PLATFORM == PLATFORM_LINUX
+	// LINUX SDL HACK
+	// On Linux, SDL2 generates an "Invalid window" error due to attempting to call SDL_GL_MakeCurrent(NULL, NULL), which checks its first parameter to see if it's NULL.
+	SDL_ClearError();
+#endif
+
 	CheckSDLErrors();
 }
 

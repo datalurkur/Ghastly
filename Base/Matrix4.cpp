@@ -46,7 +46,7 @@ Matrix4 Matrix4::MakeTranslation(float x, float y, float z) {
     return ret;
 }
 
-Matrix4 Matrix4::MakeTranslation(const Vector3 &pos) {
+Matrix4 Matrix4::MakeTranslation(const Vec3f &pos) {
     Matrix4 ret = Matrix4::Identity;
     
     ret[3][0] = pos.x;

@@ -7,7 +7,7 @@
 
 class PhysicsEngine;
 
-class Entity: public SceneNode {
+class Entity: public SceneNode<float> {
 public:
     static const std::string NodeType;
 

@@ -27,7 +27,7 @@ void Font::teardown() {
     _glyph->teardown();
 }
 
-Renderable* Font::createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment) {
+Renderable* Font::createRenderable(const std::string &text, const Vec2i &maxDims, Alignment textAlignment) {
     std::list<std::string> subStrings;
 
     // Split the text into substrings based on the maximum width
@@ -64,7 +64,7 @@ Renderable* Font::createRenderable(const std::string &text, const Vector2 &maxDi
     return createRenderable(subStrings, maxDims, textAlignment);
 }
 
-Renderable* Font::createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment) {
+Renderable* Font::createRenderable(const std::list<std::string> &subStrings, const Vec2i &maxDims, Alignment textAlignment) {
     float *vertexPointer, *texCoordPointer;
     unsigned int *indexPointer;
     Renderable *textBox;
@@ -218,12 +218,13 @@ void Font::splitAtWidth(const std::string &text, int maxWidth, std::list<std::st
 
                 if(totalWidth + cWidth > maxWidth) {
                     if(lastSpace == -1 || clobberWords) {
-                        subStrings.push_back((*itr).substr(lastIndex, i - lastIndex + 1));
-                        lastIndex = i;
+                        subStrings.push_back((*itr).substr(lastIndex, i - lastIndex));
+                        lastIndex  = i;
                         totalWidth = 0;
                     } else {
                         subStrings.push_back((*itr).substr(lastIndex, lastSpace - lastIndex));
                         lastIndex  = lastSpace + 1;
+                        lastSpace  = -1;
                         totalWidth = widthSinceSpace;
                     }
                 }
@@ -251,7 +252,7 @@ int Font::getSizeInPrintableChars(const std::list<std::string> &strings) {
     return size;
 }
 
-int Font::getAlignedX(const std::string &text, const Vector2 &maxDims, Alignment alignment) {
+int Font::getAlignedX(const std::string &text, const Vec2i &maxDims, Alignment alignment) {
     switch(alignment) {
     case TOP:
     case CENTER:
@@ -266,7 +267,7 @@ int Font::getAlignedX(const std::string &text, const Vector2 &maxDims, Alignment
     };
 }
 
-int Font::getAlignedY(int numSubStrings, const Vector2 &maxDims, Alignment alignment) {
+int Font::getAlignedY(int numSubStrings, const Vec2i &maxDims, Alignment alignment) {
     switch(alignment) {
     case LEFT:
     case CENTER:

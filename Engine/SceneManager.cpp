@@ -3,7 +3,7 @@
 #include <Render/RenderContext.h>
 
 SceneManager::SceneManager() {
-    _root = new SceneNode("root");
+    _root = new SceneNode<float>("root");
 }
 
 SceneManager::~SceneManager() {
@@ -11,13 +11,13 @@ SceneManager::~SceneManager() {
 }
 
 void SceneManager::render(Camera *camera, RenderContext *context) {
-    NodeList visibleNodes;
+    SceneNode<float>::NodeList visibleNodes;
     RenderableList renderables;
 
     _root->getNodes(visibleNodes, camera);
 
 //    Info("Rendering " << visibleNodes.size() << " visible nodes");
-    NodeList::iterator itr = visibleNodes.begin();
+    SceneNode<float>::NodeList::iterator itr = visibleNodes.begin();
     for(; itr != visibleNodes.end(); itr++) {
 //        Info("Rendering " << (*itr)->getName());
         (*itr)->getRenderables(renderables);

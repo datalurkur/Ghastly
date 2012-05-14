@@ -4,7 +4,7 @@
 #include <Base/Vector3.h>
 #include <Base/Vector4.h>
 
-typedef Vector3 Color3;
-typedef Vector4 Color4;
+typedef Vector3<float> Color3;
+typedef Vector4<float> Color4;
 
 #endif

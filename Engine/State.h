@@ -3,12 +3,13 @@
 
 #include <Base/Log.h>
 #include <Engine/KeyboardListener.h>
+#include <Engine/MouseListener.h>
 #include <Render/RenderContext.h>
 
 class ParentState;
 class Core;
 
-class State: public KeyboardListener {
+class State: public KeyboardListener, public MouseListener {
 public:
     State();
     virtual ~State();
@@ -18,6 +19,9 @@ public:
 
     virtual bool keyDown(KeyboardEvent *event);
     virtual bool keyUp(KeyboardEvent *event);
+
+    virtual bool mouseMoved(MouseMovedEvent *event);
+    virtual bool mouseButton(MouseButtonEvent *event);
 
 protected:
     virtual void setup(va_list args) = 0;

@@ -24,8 +24,8 @@ public:
     void render(Camera *camera, RenderContext *context);
 
 private:
-    SceneNode *_root;
-    NodeMap _nodes;
+    SceneNode<float> *_root;
+    SceneNode<float>::NodeMap _nodes;
 };
 
 template <typename T>

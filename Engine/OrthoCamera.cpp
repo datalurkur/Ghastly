@@ -15,6 +15,6 @@ void OrthoCamera::setZoom(float zoom) {
     recomputeMatrices();
 }
 
-void OrthoCamera::clampEdges(const Vector2 &lowerLeft, const Vector2 &upperRight) {
+void OrthoCamera::clampEdges(const Vec2f &lowerLeft, const Vec2f &upperRight) {
     setProjection(Matrix4::MakeOrtho(lowerLeft.x, upperRight.x, lowerLeft.y, upperRight.y, _near, _far));
 }

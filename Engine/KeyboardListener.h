@@ -8,13 +8,12 @@ public:
     int modifier() const;
 
 private:
-    int _key, _modifier;
+    int _key;
+    int _modifier;
 };
 
 class KeyboardListener {
 public:
-    KeyboardListener();
-
     virtual bool keyDown(KeyboardEvent *event) = 0;
     virtual bool keyUp(KeyboardEvent *event) = 0;
 };

@@ -1,7 +1,7 @@
 #include <Base/Log.h>
 #include <Engine/PhysicsController.h>
 
-PhysicsController::PhysicsController(PhysicsEngine *engine, SceneNode *node):
+PhysicsController::PhysicsController(PhysicsEngine *engine, SceneNode<float> *node):
     Controller(node), _engine(engine), _body(0), _updates(true)
 {}
 
@@ -15,11 +15,11 @@ void PhysicsController::update(int elapsed) {
     if(_updates) {
         b2Vec2 pos = _body->GetPosition();
         //Info("Updating position of " << _node->getName() << " to " << pos.x << "," << pos.y);
-        _node->setPosition(pos.x, pos.y, 0);
+        _node->setPosition(Vec3f(pos.x, pos.y, 0.0f));
     }
 }
 
-void PhysicsController::updatePosition(const Vector2 &pos) {
+void PhysicsController::updatePosition(const Vec2f &pos) {
     _body->SetTransform(b2Vec2(pos.x, pos.y), _body->GetAngle());
 }
 

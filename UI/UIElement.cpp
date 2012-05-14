@@ -3,7 +3,7 @@
 #include <Resource/TTFManager.h>
 #include <Render/Font.h>
 
-UIElement::UIElement(const std::string &name, const Vector2 &pos, const Vector2 &dims):
+UIElement::UIElement(const std::string &name, const Vec2f &pos, const Vec2f &dims):
     SceneNode(name), _uiPosition(pos), _uiDimensions(dims), _horizontalClamp(false), _verticalClamp(false) 
 {
     int i;
@@ -23,11 +23,24 @@ UIElement::UIElement(const std::string &name, const Vector2 &pos, const Vector2 
 }
 
 void UIElement::resize(int width, int height) {
-    setPosition((_uiPosition.x - 0.5f) * width, (_uiPosition.y - 0.5f) * height, 0.0f);
-    setDimensions((_uiDimensions.w * width), (_uiDimensions.h * height), 0.0f);
+    setPosition(Vec3i((int)((_uiPosition.x - 0.5f) * width), (int)((_uiPosition.y - 0.5f) * height), 0));
+    setDimensions(Vec3i((int)(_uiDimensions.w * width), (int)(_uiDimensions.h * height), 0));
 
     NodeMap::iterator itr;
     for(itr = _children.begin(); itr != _children.end(); itr++) {
         ((UIElement*)itr->second)->resize(width, height);
     }
+}
+
+const Vec2f& UIElement::getUIPosition() const {
+    return _uiPosition;
+}
+
+void UIElement::setUIPosition(const Vec2f& pos, int width, int height) {
+    _uiPosition = pos;
+
+    // FIXME
+    // It's weird to have to pass in the dimensions
+    // It's also weird to have this piece of code duplicated
+    setPosition(Vec3i((int)((_uiPosition.x - 0.5f) * width), (int)((_uiPosition.y - 0.5f) * height), 0));
 }

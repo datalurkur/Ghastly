@@ -33,6 +33,7 @@ void Core::setup() {
     _eventHandler = new EventHandler(_window->getID());
     _eventHandler->addWindowListener(this);
     _eventHandler->addKeyboardListener(this);
+    _eventHandler->addMouseListener(this);
 	
 	// TODO - Set this with an option
 	_window->resize(640, 480);

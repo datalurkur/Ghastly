@@ -6,13 +6,13 @@
 
 class Controller {
 public:
-    Controller(SceneNode *node);
+    Controller(SceneNode<float> *node);
     virtual ~Controller();
 
     virtual void update(int elapsed) = 0;
 
 protected:
-    SceneNode* _node;
+    SceneNode<float>* _node;
 };
 
 typedef std::list<Controller*> ControllerList;

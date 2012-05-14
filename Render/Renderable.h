@@ -26,10 +26,9 @@ public:
     void render(const Matrix4 &projection, const Matrix4 &modelView);
 
 public:
-    static Renderable* OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material);
-    static Renderable* OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material);
-    static Renderable* Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material);
-    static Renderable* Lines(const std::vector<Vector2> &verts);
+    static Renderable* OrthoBox(const Vec2f &pos, const Vec2f &dims, bool texCoords, bool normals, Material *material, float z = 0);
+    static Renderable* Sprite(const Vec2f &pos, const Vec2f &dims, Material *material, float z = 0);
+    static Renderable* Lines(const std::vector<Vec2f> &verts);
 
 private:
     typedef std::map<std::string,GLuint> VertexAttribMap;

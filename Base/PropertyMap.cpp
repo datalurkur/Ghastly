@@ -78,7 +78,7 @@ void PropertyMap::ExtractValue(const std::string &source, int &value) {
 }
 
 template <>
-void PropertyMap::ExtractValue(const std::string &source, Vector4 &value) {
+void PropertyMap::ExtractValue(const std::string &source, Vec4f &value) {
     std::vector<std::string> arrValue;
     int i;
     

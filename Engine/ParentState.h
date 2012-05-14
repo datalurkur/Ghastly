@@ -19,6 +19,8 @@ public:
 
     virtual bool keyDown(KeyboardEvent *event);
     virtual bool keyUp(KeyboardEvent *event);
+    virtual bool mouseMoved(MouseMovedEvent *event);
+    virtual bool mouseButton(MouseButtonEvent *event);
 
     virtual bool update(int elapsed);
     virtual bool render(RenderContext *renderContext);

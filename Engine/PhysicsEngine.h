@@ -20,9 +20,9 @@ public:
     void destroyObject(b2Body *body);
     
     // High-level builder functions
-    b2Body *createStaticBox(const Vector2 &pos, const Vector2 &dim);
-    b2Body *createStaticChain(const std::vector<Vector2> &verts, bool loop=false);
-    b2Body *createDynamicBox(const Vector2 &pos, const Vector2 &dim, float density, float friction, bool canRotate = true);
+    b2Body *createStaticBox(const Vec2f &pos, const Vec2f &dim);
+    b2Body *createStaticChain(const std::vector<Vec2f> &verts, bool loop=false);
+    b2Body *createDynamicBox(const Vec2f &pos, const Vec2f &dim, float density, float friction, bool canRotate = true);
 
     // Contact callbacks
     // It's irritating that Box2D capitalizes all of its function names

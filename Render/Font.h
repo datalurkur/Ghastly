@@ -28,8 +28,8 @@ public:
     void setup();
     void teardown();
 
-    Renderable* createRenderable(const std::string &text, const Vector2 &maxDims, Alignment textAlignment);
-    Renderable* createRenderable(const std::list<std::string> &subStrings, const Vector2 &maxDims, Alignment textAlignment);
+    Renderable* createRenderable(const std::string &text, const Vec2i &maxDims, Alignment textAlignment);
+    Renderable* createRenderable(const std::list<std::string> &subStrings, const Vec2i &maxDims, Alignment textAlignment);
     void populateBuffers(char currentCharacter, unsigned int characterIndex, int xOffset, int yOffset, float *vertexPointer, float *texCoordPointer, unsigned int *indexPointer);
 
     int textWidth(const std::string &text);
@@ -41,8 +41,8 @@ public:
     int getSizeInPrintableChars(const std::list<std::string> &strings);
 
 protected:
-    int getAlignedX(const std::string &text, const Vector2 &maxDims, Alignment alignment);
-    int getAlignedY(int numSubStrings, const Vector2 &maxDims, Alignment alignment);
+    int getAlignedX(const std::string &text, const Vec2i &maxDims, Alignment alignment);
+    int getAlignedY(int numSubStrings, const Vec2i &maxDims, Alignment alignment);
  
 protected:
     int _fontWidth;

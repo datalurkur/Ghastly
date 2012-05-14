@@ -46,6 +46,27 @@ void EventHandler::handleEvents() {
                     (*itr)->keyUp(&keyEvent);
                 }
             } break;
+            case SDL_MOUSEMOTION: {
+                MouseMovedEvent mouseMoved(event.motion.xrel, event.motion.yrel);
+                MouseListenerList::iterator itr = _mouseListeners.begin();
+                for(; itr != _mouseListeners.end(); itr++) {
+                    (*itr)->mouseMoved(&mouseMoved);
+                }
+            } break;
+            case SDL_MOUSEBUTTONDOWN: {
+                MouseButtonEvent mouseButton(event.button.button, true);
+                MouseListenerList::iterator itr = _mouseListeners.begin();
+                for(; itr != _mouseListeners.end(); itr++) {
+                    (*itr)->mouseButton(&mouseButton);
+                }
+            } break;
+            case SDL_MOUSEBUTTONUP: {
+                MouseButtonEvent mouseButton(event.button.button, false);
+                MouseListenerList::iterator itr = _mouseListeners.begin();
+                for(; itr != _mouseListeners.end(); itr++) {
+                    (*itr)->mouseButton(&mouseButton);
+                }
+            } break;
         }
     }
 }
@@ -56,4 +77,8 @@ void EventHandler::addWindowListener(WindowListener *listener) {
 
 void EventHandler::addKeyboardListener(KeyboardListener *listener) {
     _keyboardListeners.push_back(listener);
+}
+
+void EventHandler::addMouseListener(MouseListener *listener) {
+    _mouseListeners.push_back(listener);
 }

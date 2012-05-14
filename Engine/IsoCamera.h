@@ -16,10 +16,10 @@ public:
     void setZoom(float zoom);
 
     // Normal Isometric Camera controls
-    void moveRelative(const Vector3 &dir);
+    void moveRelative(const Vec3f &dir);
 
     void zoom(float amount);
-    void scroll(const Vector3 &dir);
+    void scroll(const Vec3f &dir);
 
     void pitch(float amount);
     void roll(float amount);

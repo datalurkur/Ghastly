@@ -49,6 +49,7 @@ void Renderable::setAttribBuffer(const std::string &name, GLuint numElements, GL
     switch(elementType) {
         case GL_FLOAT:          byteSize = sizeof(GLfloat) * numElements * elementSize; break;
         case GL_UNSIGNED_INT:   byteSize = sizeof(GLuint) * numElements * elementSize;  break;
+        case GL_INT:            byteSize = sizeof(GLint) * numElements * elementSize;   break;
         default:                ASSERT(0);                                              break;
     }
     
@@ -105,16 +106,25 @@ void Renderable::render(const Matrix4 &projection, const Matrix4 &modelView) {
     _transformBuffer->disable();
 }
 
-Renderable* Renderable::OrthoBox(const Vector2 &pos, const Vector2 &dims, bool texCoords, bool normals, float z, Material *material) {
-    return OrthoBox(Vector3(pos.x, pos.y, z), Vector2(dims.x, dims.y), texCoords, normals, material);
+void Renderable::recreateTransformBuffer(Shader *shader) {
+    if(_transformBuffer) { delete _transformBuffer; }
+    _transformBuffer = new UniformBuffer(shader, "transform");
+    updateTransformBuffer(Matrix4::Identity, _viewMatrix);
 }
 
-Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool texCoords, bool normals, Material *material) {
+void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView) {
+    _transformBuffer->setParameter("projection_matrix", projection.ptr());
+    _transformBuffer->setParameter("modelview_matrix", (modelView * _viewMatrix).ptr());
+}
+
+Renderable* Renderable::OrthoBox(const Vec2f &pos, const Vec2f &dims, bool texCoords, bool normals, Material *material, float z) {
+    Vec3f position(pos.x, pos.y, z);
     Renderable *renderable = new Renderable();
-    renderable->setViewMatrix(Matrix4::MakeTranslation(pos));
+
+    renderable->setViewMatrix(Matrix4::MakeTranslation(position));
     renderable->setMaterial(material);
 
-    Vector3 disp = pos + Vector3(dims.x, dims.y, 0.0f);
+    Vec3f disp = position + Vec3f(dims.x, dims.y, 0.0f);
 
     // Determine if the vertex order needs to be flipped to preserve proper winding order
     bool flipped = ((dims.x < 0) != (dims.y < 0));
@@ -122,18 +132,18 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
     // Set the verts
     if(flipped) {
         float verts[4 * 3] = {
-            pos.x,  disp.y, pos.z,
-            disp.x, disp.y, pos.z,
-            disp.x, pos.y,  pos.z,
-            pos.x,  pos.y,  pos.z
+            pos.x,  disp.y, z,
+            disp.x, disp.y, z,
+            disp.x, pos.y,  z,
+            pos.x,  pos.y,  z
         };
         renderable->setAttribBuffer("position", 4, GL_FLOAT, 3, &verts[0]);
     } else {
         float verts[4 * 3] = {
-            pos.x,  pos.y,  pos.z,
-            disp.x, pos.y,  pos.z,
-            disp.x, disp.y, pos.z,
-            pos.x,  disp.y, pos.z
+            pos.x,  pos.y,  z,
+            disp.x, pos.y,  z,
+            disp.x, disp.y, z,
+            pos.x,  disp.y, z
         };
         renderable->setAttribBuffer("position", 4, GL_FLOAT, 3, &verts[0]);
     }
@@ -175,13 +185,13 @@ Renderable* Renderable::OrthoBox(const Vector3 &pos, const Vector2 &dims, bool t
     return renderable;
 }
 
-Renderable* Renderable::Sprite(const Vector2 &pos, const Vector2 &dims, const float z, Material *material) {
-    Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, z, material);
+Renderable* Renderable::Sprite(const Vec2f &pos, const Vec2f &dims, Material *material, float z) {
+    Renderable *renderable = Renderable::OrthoBox(pos, dims, true, true, material, z);
     renderable->setMaterial(material);
     return renderable;
 }
 
-Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
+Renderable* Renderable::Lines(const std::vector<Vec2f> &verts) {
     Renderable *renderable;
     float *vertexBuffer;
     unsigned int *indexBuffer;
@@ -210,15 +220,4 @@ Renderable* Renderable::Lines(const std::vector<Vector2> &verts) {
     delete indexBuffer;
 
     return renderable;
-}
-
-void Renderable::recreateTransformBuffer(Shader *shader) {
-    if(_transformBuffer) { delete _transformBuffer; }
-    _transformBuffer = new UniformBuffer(shader, "transform");
-    updateTransformBuffer(Matrix4::Identity, _viewMatrix);
-}
-
-void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 &modelView) {
-    _transformBuffer->setParameter("projection_matrix", projection.ptr());
-    _transformBuffer->setParameter("modelview_matrix", (modelView * _viewMatrix).ptr());
 }

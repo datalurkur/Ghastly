@@ -7,12 +7,12 @@
 
 class PhysicsController: public Controller {
 public:
-    PhysicsController(PhysicsEngine *engine, SceneNode *node);
+    PhysicsController(PhysicsEngine *engine, SceneNode<float> *node);
     virtual ~PhysicsController();
 
     void update(int elapsed);
     
-    void updatePosition(const Vector2 &pos);
+    void updatePosition(const Vector2<float> &pos);
     
     void setBody(b2Body *body);
     b2Body *getBody();

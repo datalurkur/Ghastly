@@ -16,12 +16,12 @@ void IsoCamera::recomputeMatrices() {
 }
 
 void IsoCamera::setZoom(float zoom) {
-    Vector3 position = SceneNode::getLocalPosition();
+    Vec3f position = SceneNode::getLocalPosition();
     position.z = zoom;
     SceneNode::setPosition(position);
 }
 
-void IsoCamera::moveRelative(const Vector3 &dir) {
+void IsoCamera::moveRelative(const Vec3f &dir) {
     SceneNode::moveRelative(dir);
 
     // Dirty the modelview matrix
@@ -29,10 +29,10 @@ void IsoCamera::moveRelative(const Vector3 &dir) {
 }
 
 void IsoCamera::zoom(float amount) {
-    moveRelative(Vector3(0.0f, 0.0f, amount));
+    moveRelative(Vec3f(0.0f, 0.0f, amount));
 }
 
-void IsoCamera::scroll(const Vector3 &dir) {
+void IsoCamera::scroll(const Vec3f &dir) {
     moveRelative(dir);
 }
 

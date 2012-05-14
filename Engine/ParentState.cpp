@@ -84,6 +84,22 @@ bool ParentState::keyUp(KeyboardEvent *event) {
     }
 }
 
+bool ParentState::mouseMoved(MouseMovedEvent *event) {
+    if(activeState()) {
+        return activeState()->mouseMoved(event);
+    } else {
+        return false;
+    }
+}
+
+bool ParentState::mouseButton(MouseButtonEvent *event) {
+    if(activeState()) {
+        return activeState()->mouseButton(event);
+    } else {
+        return false;
+    }
+}
+
 bool ParentState::update(int elapsed) {
     if(activeState()) {
         return activeState()->update(elapsed);

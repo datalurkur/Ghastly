@@ -5,7 +5,7 @@
 #include <Engine/SceneNode.h>
 #include <Render/ResizeListener.h>
 
-class Camera: public ResizeListener, public Frustum, public SceneNode {
+class Camera: public ResizeListener, public Frustum, public SceneNode<float> {
 public:
     Camera(const std::string &name);
     void onResize(int w, int h);

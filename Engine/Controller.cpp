@@ -1,5 +1,5 @@
 #include <Engine/Controller.h>
 
-Controller::Controller(SceneNode *node): _node(node) {}
+Controller::Controller(SceneNode<float> *node): _node(node) {}
 
 Controller::~Controller() {}

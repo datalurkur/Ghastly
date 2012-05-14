@@ -73,7 +73,7 @@ void PhysicsEngine::removeFixtureContactListener(FixtureID *id) {
     }
 }
 
-b2Body *PhysicsEngine::createStaticBox(const Vector2 &pos, const Vector2 &dim) {
+b2Body *PhysicsEngine::createStaticBox(const Vec2f &pos, const Vec2f &dim) {
     b2BodyDef def;
     b2PolygonShape shape;
     b2Body *body;
@@ -97,7 +97,7 @@ b2Body *PhysicsEngine::createStaticBox(const Vector2 &pos, const Vector2 &dim) {
     return body;
 }
 
-b2Body *PhysicsEngine::createStaticChain(const std::vector<Vector2> &verts, bool loop) {
+b2Body *PhysicsEngine::createStaticChain(const std::vector<Vec2f> &verts, bool loop) {
     b2BodyDef def;
     b2ChainShape shape;
     b2Body *body;
@@ -129,7 +129,7 @@ b2Body *PhysicsEngine::createStaticChain(const std::vector<Vector2> &verts, bool
     return body;
 }
 
-b2Body *PhysicsEngine::createDynamicBox(const Vector2 &pos, const Vector2 &dim, float density, float friction, bool canRotate) {
+b2Body *PhysicsEngine::createDynamicBox(const Vec2f &pos, const Vec2f &dim, float density, float friction, bool canRotate) {
     b2BodyDef bDef;
     b2FixtureDef fDef;
     b2PolygonShape shape;

@@ -16,11 +16,21 @@ void State::setCore(Core *core) {
 }
 
 bool State::keyDown(KeyboardEvent *event) {
-    Info("Not handling keydown event " << event->key() << ":" << event->modifier());
+    Debug("Not handling keydown event " << event->key() << ":" << event->modifier());
     return false;
 }
 
 bool State::keyUp(KeyboardEvent *event) {
-    Info("Not handling keyup event " << event->key() << ":" << event->modifier());
+    Debug("Not handling keyup event " << event->key() << ":" << event->modifier());
+    return false;
+}
+
+bool State::mouseMoved(MouseMovedEvent *event) {
+    //Debug("Not handling mouse movement event");
+    return false;
+}
+
+bool State::mouseButton(MouseButtonEvent *event) {
+    Debug("Not handling mouse button event");
     return false;
 }

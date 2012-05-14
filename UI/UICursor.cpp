@@ -15,9 +15,9 @@ void UICursor::resize(int width, int height) {
 
     // Vertex buffer
     float verts[3 * 3] = {
-                          0,                           0, 0,
-        (float)_pixelSize.x, (float)_pixelSize.y * 0.25f, 0,
-                          0, (float)_pixelSize.y,         0
+        0.0f, (float)-_pixelSize.y, 0.0f,
+        (float)_pixelSize.x, (float)-_pixelSize.y * 0.8f, 0.0f,
+        (float)_pixelSize.x * 0.15f, 0.0f, 0.0f
     };
     renderable->setAttribBuffer("position", 3, GL_FLOAT, 3, &verts[0]);
 

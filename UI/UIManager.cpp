@@ -72,21 +72,19 @@ void UIManager::onResize(int w, int h) {
 bool UIManager::mouseMoved(MouseMovedEvent *event) {
     // Translate the dimensions into UI space
     Vec2f uiPos;
-    uiPos = _cursor->getUIPosition();
 
     // Add the relative movement and clamp it within the window
-    uiPos.x += (event->relativeX() / (float)_width);
+    uiPos.x = (event->absoluteX() / (float)_width);
     if(uiPos.x < 0.0f) { uiPos.x = 0.0f; }
     else if(uiPos.x > 1.0f) { uiPos.x = 1.0f; }
     
-    uiPos.y += (event->relativeY() / (float)_height);
+    uiPos.y = 1.0f - (event->absoluteY() / (float)_height);
     if(uiPos.y < 0.0f) { uiPos.y = 0.0f; }
     else if(uiPos.y > 1.0f) { uiPos.y = 1.0f; }
 
-    Info("Moving cursor to " << uiPos << " based on relative movement " << Vec2i(event->relativeX(), event->relativeY()));
     // Set the cursor to the new position
     _cursor->setUIPosition(uiPos, _width, _height);
-
+    
     return true;
 }
 

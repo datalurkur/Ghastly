@@ -36,7 +36,7 @@ void SceneManager::addNode(T *node) {
 
 template <typename T>
 T* SceneManager::getNode(const std::string &name) const {
-    NodeMap::const_iterator itr = _nodes.find(name);
+    typename SceneNode<T>::NodeMap::const_iterator itr = _nodes.find(name);
     if(itr != _nodes.end() && itr->second->getType() == T::NodeType) {
         return static_cast<T*>(itr->second);
     } else {
@@ -46,7 +46,7 @@ T* SceneManager::getNode(const std::string &name) const {
 
 template <typename T>
 void SceneManager::deleteNode(const std::string &name) {
-    NodeMap::iterator itr = _nodes.find(name);
+    typename SceneNode<T>::NodeMap::iterator itr = _nodes.find(name);
     if(itr != _nodes.end() && itr->second->getType() == T::NodeType) {
         _nodes.erase(itr);
         delete itr->second;

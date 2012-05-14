@@ -3,12 +3,16 @@
 
 class MouseMovedEvent {
 public:
-    MouseMovedEvent(int relativeX, int relativeY);
+    MouseMovedEvent(int absoluteX, int absoluteY, int relativeX, int relativeY);
 
+    int absoluteX() const;
+    int absoluteY() const;
     int relativeX() const;
     int relativeY() const;
 
 private:
+    int _absoluteX;
+    int _absoluteY;
     int _relativeX;
     int _relativeY;
 };

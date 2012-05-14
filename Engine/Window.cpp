@@ -45,7 +45,13 @@ void Window::setup() {
 		Error("Window creation failed");
 		ASSERT(0);
 	}
-	CheckSDLErrors();
+    
+    // Set ourselves up to create our own cursor
+    // TODO - Make this a parameter of Window creation
+    SDL_ShowCursor(SDL_FALSE);
+    SDL_SetWindowGrab(_window, SDL_TRUE);
+	
+    CheckSDLErrors();
 }
 
 void Window::teardown() {

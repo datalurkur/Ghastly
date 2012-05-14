@@ -47,7 +47,7 @@ void EventHandler::handleEvents() {
                 }
             } break;
             case SDL_MOUSEMOTION: {
-                MouseMovedEvent mouseMoved(event.motion.xrel, event.motion.yrel);
+                MouseMovedEvent mouseMoved(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
                 MouseListenerList::iterator itr = _mouseListeners.begin();
                 for(; itr != _mouseListeners.end(); itr++) {
                     (*itr)->mouseMoved(&mouseMoved);

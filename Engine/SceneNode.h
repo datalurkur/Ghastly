@@ -110,7 +110,7 @@ SceneNode<T>::SceneNode(const std::string &name, const std::string &type):
 template <typename T>
 SceneNode<T>::~SceneNode() {
     clearRenderables(true);
-    NodeMap::iterator itr = _children.begin();
+    typename NodeMap::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
         delete (itr->second);
     }
@@ -184,7 +184,8 @@ void SceneNode<T>::addChild(SceneNode<T> *child) {
 
 template <typename T>
 void SceneNode<T>::deleteChild(const std::string &childName) {
-    NodeMap::iterator itr = _children.find(childName);
+    typename NodeMap::iterator itr;
+    itr = _children.find(childName);
     if(itr != _children.end()) {
         delete itr->second;
         _children.erase(itr);
@@ -200,7 +201,7 @@ void SceneNode<T>::getNodes(NodeList &list, Frustum *frustum) {
         // FIXME - Actually implement frustum culling
     }
     list.push_back(this);
-    NodeMap::iterator itr = _children.begin();
+    typename NodeMap::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
         itr->second->getNodes(list, frustum);
     }
@@ -240,6 +241,8 @@ void SceneNode<T>::updateCachedValues() {
         // Update any values dependent on the parent state
         if(_parent) {
             _absolutePosition = _position + _parent->getAbsolutePosition();
+        } else {
+            _absolutePosition = _position;
         }
 
         // Update any values dependent on other local values
@@ -254,7 +257,7 @@ void SceneNode<T>::updateCachedValues() {
         }
     }
 
-    NodeMap::iterator itr = _children.begin();
+    typename NodeMap::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
         itr->second->updateCachedValues();
     }
@@ -269,7 +272,7 @@ void SceneNode<T>::updateCachedValues() {
         );
 
         // Expand the AABB with the children's bounds
-        NodeMap::iterator itr = _children.begin();
+        typename NodeMap::iterator itr = _children.begin();
         for(; itr != _children.end(); itr++) {
             _absoluteBounds.expand(itr->second->getAbsoluteBounds());
         }
@@ -282,7 +285,7 @@ void SceneNode<T>::flagDirty(DirtyPropagation direction) {
     if(direction == Upward) {
         if(_parent) { _parent->flagDirty(direction); }
     } else {
-        NodeMap::iterator itr = _children.begin();
+        typename NodeMap::iterator itr = _children.begin();
         for(; itr != _children.end(); itr++) {
             itr->second->flagDirty(direction);
         }

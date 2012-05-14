@@ -83,7 +83,7 @@ void Core::start() {
         render(_renderContext);
         _window->swapBuffers();
 
-        CheckSDLErrors();
+        //CheckSDLErrors();
         CheckGLErrors();
         
         lastTime = currentTime;

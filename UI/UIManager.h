@@ -32,7 +32,6 @@ public:
 private:
     int _width, _height;
     OrthoCamera *_camera;
-    UIElement *_rootContainer;
 
     typedef std::list<SceneNode<int>*> LayerList;
     LayerList _layers;

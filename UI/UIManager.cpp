@@ -2,13 +2,15 @@
 #include <UI/UIManager.h>
 #include <UI/UICursor.h>
 
+#include <Resource/MaterialManager.h>
+
 UIManager::UIManager(): _camera(0), _cursorEnabled(true) {
     _camera = new OrthoCamera("UIManagerCamera");
 
     _cursor = new UICursor(Vec2f(0.5f, 0.5f));
     _layers.push_back(_cursor);
 
-    UIElement *root = new UIElement("root", Vec2f(0.5f, 0.5f));
+    UIElement *root = new UIElement("root", Vec2f(0.0f, 0.0f));
     _layers.push_back(root);
 }
 
@@ -27,13 +29,11 @@ void UIManager::toggleCursor(bool enabled) {
 
 void UIManager::render(RenderContext *context) {
     LayerList::reverse_iterator layerItr;
-
-    glDisable(GL_DEPTH_TEST);
+    RenderableList renderables;
 
     // Render the layers from bottom to top
     for(layerItr = _layers.rbegin(); layerItr != _layers.rend(); layerItr++) {
         SceneNode<int>::NodeList visibleNodes;
-        RenderableList renderables;
 
         if(!_cursorEnabled && (*layerItr) == _cursor) { continue; }
 
@@ -43,12 +43,10 @@ void UIManager::render(RenderContext *context) {
         for(nodeItr = visibleNodes.begin(); nodeItr != visibleNodes.end(); nodeItr++) {
             (*nodeItr)->getRenderables(renderables);
         }
-
-        _camera->setup();
-        context->render(_camera->getProjection(), _camera->getModelView(), renderables);
     }
-    
-    glEnable(GL_DEPTH_TEST);
+
+    _camera->setup();
+    context->render(_camera->getProjection(), _camera->getModelView(), renderables);
 }
 
 void UIManager::update() {
@@ -61,7 +59,7 @@ void UIManager::update() {
 void UIManager::onResize(int w, int h) {
     _width = w;
     _height = h;
-    _camera->clampEdges(Vec2f(-(w/2.0f),-(h/2.0f)), Vec2f((w/2.0f),(h/2.0f)));
+    _camera->clampEdges(Vec2f(0,0), Vec2f(w,h));
 
     LayerList::iterator itr;
     for(itr = _layers.begin(); itr != _layers.end(); itr++) {
@@ -82,9 +80,35 @@ bool UIManager::mouseMoved(MouseMovedEvent *event) {
     if(uiPos.y < 0.0f) { uiPos.y = 0.0f; }
     else if(uiPos.y > 1.0f) { uiPos.y = 1.0f; }
 
+    // MOVE THE CURSOR
     // Set the cursor to the new position
     _cursor->setUIPosition(uiPos, _width, _height);
     
+    // PERFORM HOVER FUNCTIONS
+    // Get a list of objects we are now hovering over, as well as a list that have been left
+    SceneNode<int>::NodeList hovering, leaving;
+    SceneNode<int>::NodeList::iterator nodeItr;
+    LayerList::iterator layerItr;
+
+    Vec3i hoverPoint( event->absoluteX()                      , (_height -  event->absoluteY()                      ), 0),
+          leavePoint((event->absoluteX() - event->relativeX()), (_height - (event->absoluteY() - event->relativeY())), 0);
+
+    AABB3<int> hoverBounds(hoverPoint),
+               leaveBounds(leavePoint);
+
+    for(layerItr = _layers.begin(); layerItr != _layers.end(); layerItr++) {
+        if(*layerItr == _cursor) { continue; }
+        (*layerItr)->getDifference(hovering, leaving, hoverBounds, leaveBounds);
+    }
+
+    for(nodeItr = hovering.begin(); nodeItr != hovering.end(); nodeItr++) {
+        // Call onHover functions
+    }
+
+    for(nodeItr = leaving.begin(); nodeItr != leaving.end(); nodeItr++) {
+        // Call onLeave functions
+    }
+
     return true;
 }
 

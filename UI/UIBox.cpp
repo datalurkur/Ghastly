@@ -10,7 +10,7 @@ UIBox::UIBox(const std::string &name, const Vec2f &pos, const Vec2f &dims, const
 }
 
 void UIBox::resize(int width, int height) {
-    Renderable *renderable;
+    //Renderable *renderable;
     float ratio = (width / (float)height);
 
     int bWidth  = (int)(_uiBorder * width),
@@ -21,13 +21,14 @@ void UIBox::resize(int width, int height) {
     clearRenderables();
 
     // Add the center box
+    Vec2f boxCenter(0, 0);
+    Vec2f boxDimensions(_dimensions.x, _dimensions.y);
     if(_uiBorder > 0) {
         // Subtract space for the border if there is a border that protrudes inwards
-        renderable = Renderable::OrthoBox(Vec2f((float)bWidth, (float)bHeight), Vec2f((float)(_dimensions.x - (bWidth * 2)), (float)(_dimensions.y - (bHeight * 2))), false, false, _material);
-    } else {
-        renderable = Renderable::OrthoBox(Vec2f(0.0f, 0.0f), Vec2f((float)_dimensions.x, (float)_dimensions.y), false, false, _material);
+        boxCenter += Vec2f(bWidth, bHeight);
+        boxDimensions -= Vec2f(bWidth * 2.0f, bHeight * 2.0f);
     }
-    addRenderable(renderable);
+    addRenderable(Renderable::OrthoBox(boxCenter, boxDimensions, false, false, _material));
 
     if(_uiBorder != 0) {
         int bXOffset = 0, bYOffset = 0;

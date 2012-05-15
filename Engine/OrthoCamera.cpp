@@ -1,6 +1,6 @@
 #include <Engine/OrthoCamera.h>
 
-OrthoCamera::OrthoCamera(const std::string &name): Camera(name), _zoom(1.0f), _near(-10.0f), _far(10.0f) {}
+OrthoCamera::OrthoCamera(const std::string &name): Camera(name), _zoom(1.0f), _near(0.0f), _far(1.0f) {}
 
 void OrthoCamera::setup() {
     glDisable(GL_DEPTH_TEST);

@@ -7,6 +7,7 @@ template <typename T>
 class AABB3 {
 public:
     AABB3();
+    AABB3(const Vector3<T> &v);
     AABB3(const Vector3<T> &v1, const Vector3<T> &v2);
     ~AABB3();
 
@@ -17,6 +18,7 @@ public:
     Vector3<T> getCenter() const;
 
     bool contains(const AABB3<T> &other) const;
+    bool contains(const Vector3<T> &vec) const;
     bool overlaps(const AABB3<T> &other) const;
 
     void expand(const AABB3<T> &other);
@@ -48,6 +50,11 @@ protected:
 template <typename T>
 AABB3<T>::AABB3():
 _lower(0, 0, 0), _upper(0, 0, 0)
+{}
+
+template <typename T>
+AABB3<T>::AABB3(const Vector3<T> &v):
+_lower(v), _upper(v)
 {}
 
 template <typename T>
@@ -88,6 +95,18 @@ bool AABB3<T>::contains(const AABB3<T> &other) const {
         (_upper.x >= other._upper.x) &&
         (_upper.y >= other._upper.y) &&
         (_upper.z >= other._upper.z)
+    );
+}
+
+template <typename T>
+bool AABB3<T>::contains(const Vector3<T> &vec) const {
+    return (
+        (_lower.x <= vec.x) &&
+        (_lower.y <= vec.y) &&
+        (_lower.z <= vec.z) &&
+        (_upper.x >= vec.x) &&
+        (_upper.y >= vec.y) &&
+        (_upper.z >= vec.z)
     );
 }
 

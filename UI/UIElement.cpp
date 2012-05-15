@@ -23,7 +23,7 @@ UIElement::UIElement(const std::string &name, const Vec2f &pos, const Vec2f &dim
 }
 
 void UIElement::resize(int width, int height) {
-    setPosition(Vec3i((int)((_uiPosition.x - 0.5f) * width), (int)((_uiPosition.y - 0.5f) * height), 0));
+    setPosition(Vec3i((int)(_uiPosition.x * width), (int)(_uiPosition.y * height), 0));
     setDimensions(Vec3i((int)(_uiDimensions.w * width), (int)(_uiDimensions.h * height), 0));
 
     NodeMap::iterator itr;
@@ -42,5 +42,5 @@ void UIElement::setUIPosition(const Vec2f& pos, int width, int height) {
     // FIXME
     // It's weird to have to pass in the dimensions
     // It's also weird to have this piece of code duplicated
-    setPosition(Vec3i((int)((_uiPosition.x - 0.5f) * width), (int)((_uiPosition.y - 0.5f) * height), 0));
+    setPosition(Vec3i((int)(_uiPosition.x * width), (int)(_uiPosition.y * height), 0));
 }

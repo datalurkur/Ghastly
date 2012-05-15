@@ -49,6 +49,14 @@ public:
     // If frustum is non-null, frustum culling will be performed
     void getNodes(NodeList &list, Frustum *frustum = 0);
 
+    // Adds this scene node and its children to the list
+    // Cull nodes based on bounding box intersection
+    void getNodes(NodeList &list, const AABB3<T> &bounds);
+
+    // Adds this scene node and its children to the list
+    // Culls nodes based on the filters supplied
+    void getDifference(NodeList &listA, NodeList &listB, const AABB3<T> &boundsA, const AABB3<T> &boundsB);
+
     // Adds the renderables to the provided list
     virtual void getRenderables(RenderableList &list);
 
@@ -204,6 +212,42 @@ void SceneNode<T>::getNodes(NodeList &list, Frustum *frustum) {
     typename NodeMap::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
         itr->second->getNodes(list, frustum);
+    }
+}
+
+template <typename T>
+void SceneNode<T>::getNodes(NodeList &list, const AABB3<T> &bounds) {
+    ASSERT(!_dirty);
+
+    if(_absoluteBounds.overlaps(bounds)) {
+        list.push_back(this);
+        typename NodeMap::iterator itr = _children.begin();
+        for(; itr != _children.end(); itr++) {
+            itr->second->getNodes(list, bounds);
+        }
+    }
+}
+
+template <typename T>
+void SceneNode<T>::getDifference(NodeList &listA, NodeList &listB, const AABB3<T> &boundsA, const AABB3<T> &boundsB) {
+    ASSERT(!_dirty);
+
+    bool groupA, groupB;
+
+    groupA = _absoluteBounds.overlaps(boundsA);
+    groupB = _absoluteBounds.overlaps(boundsB);
+
+    if(groupA && !groupB) {
+        listA.push_back(this);
+    } else if(!groupA && groupB) {
+        listB.push_back(this);
+    }
+
+    if(groupA || groupB) {
+        typename NodeMap::iterator itr = _children.begin();
+        for(; itr != _children.end(); itr++) {
+            itr->second->getDifference(listA, listB, boundsA, boundsB);
+        }
     }
 }
 

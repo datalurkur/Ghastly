@@ -2,8 +2,12 @@
 #define UIELEMENT_H
 
 #include <Engine/SceneNode.h>
+#include <Base/Log.h>
 
 class UIManager;
+
+class UIElement;
+typedef std::list<UIElement*> UIElementList;
 
 class UIElement: public SceneNode<int> {
 public:
@@ -12,6 +16,11 @@ public:
 
     const Vec2f& getUIPosition() const;
     void setUIPosition(const Vec2f& pos, int width, int height);
+
+    void getElementsAt(UIElementList &list, const Vec2f &point);
+
+    virtual void onHover() {}
+    virtual void onLeave() {}
 
 protected:
     Vec2f _uiPosition, _uiDimensions;

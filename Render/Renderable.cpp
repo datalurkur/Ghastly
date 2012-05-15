@@ -118,13 +118,13 @@ void Renderable::updateTransformBuffer(const Matrix4 &projection, const Matrix4 
 }
 
 Renderable* Renderable::OrthoBox(const Vec2f &pos, const Vec2f &dims, bool texCoords, bool normals, Material *material, float z) {
-    Vec3f position(pos.x, pos.y, z);
     Renderable *renderable = new Renderable();
 
-    renderable->setViewMatrix(Matrix4::MakeTranslation(position));
-    renderable->setMaterial(material);
+    Vec2f disp = pos + dims;
 
-    Vec3f disp = position + Vec3f(dims.x, dims.y, 0.0f);
+    // Incorrect - the view matrix is set by the scene node anytime the scene node's affine matrix changes
+    //renderable->setViewMatrix(Matrix4::MakeTranslation(Vec3f(pos.x, pos.y, z)));
+    renderable->setMaterial(material);
 
     // Determine if the vertex order needs to be flipped to preserve proper winding order
     bool flipped = ((dims.x < 0) != (dims.y < 0));
@@ -134,8 +134,8 @@ Renderable* Renderable::OrthoBox(const Vec2f &pos, const Vec2f &dims, bool texCo
         float verts[4 * 3] = {
             pos.x,  disp.y, z,
             disp.x, disp.y, z,
-            disp.x, pos.y,  z,
-            pos.x,  pos.y,  z
+            disp.x, pos.y,   z,
+            pos.x,  pos.y,   z
         };
         renderable->setAttribBuffer("position", 4, GL_FLOAT, 3, &verts[0]);
     } else {

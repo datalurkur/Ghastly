@@ -102,11 +102,11 @@ bool UIManager::mouseMoved(MouseMovedEvent *event) {
     }
 
     for(nodeItr = hovering.begin(); nodeItr != hovering.end(); nodeItr++) {
-        // Call onHover functions
+        ((UIElement*)(*nodeItr))->onHover();
     }
 
     for(nodeItr = leaving.begin(); nodeItr != leaving.end(); nodeItr++) {
-        // Call onLeave functions
+        ((UIElement*)(*nodeItr))->onLeave();
     }
 
     return true;

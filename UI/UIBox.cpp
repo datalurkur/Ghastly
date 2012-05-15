@@ -21,14 +21,14 @@ void UIBox::resize(int width, int height) {
     clearRenderables();
 
     // Add the center box
-    Vec2f boxCenter(0, 0);
+    Vec2f boxPosition(0, 0);
     Vec2f boxDimensions(_dimensions.x, _dimensions.y);
     if(_uiBorder > 0) {
         // Subtract space for the border if there is a border that protrudes inwards
-        boxCenter += Vec2f(bWidth, bHeight);
+        boxPosition += Vec2f(bWidth, bHeight);
         boxDimensions -= Vec2f(bWidth * 2.0f, bHeight * 2.0f);
     }
-    addRenderable(Renderable::OrthoBox(boxCenter, boxDimensions, false, false, _material));
+    addRenderable(Renderable::OrthoBox(boxPosition, boxDimensions, false, false, _material));
 
     if(_uiBorder != 0) {
         int bXOffset = 0, bYOffset = 0;

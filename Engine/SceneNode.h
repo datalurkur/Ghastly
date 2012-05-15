@@ -311,8 +311,8 @@ void SceneNode<T>::updateCachedValues() {
 
         // Update the absolute AABB
         _absoluteBounds = AABB3<T>(
-            _absolutePosition - (_dimensions / 2),
-            _absolutePosition + (_dimensions / 2)
+            _absolutePosition,
+            _absolutePosition + _dimensions
         );
 
         // Expand the AABB with the children's bounds

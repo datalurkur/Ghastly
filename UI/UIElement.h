@@ -16,8 +16,8 @@ public:
 
     const Vec2f& getUIPosition() const;
     void setUIPosition(const Vec2f& pos, int width, int height);
-
-    void getElementsAt(UIElementList &list, const Vec2f &point);
+    
+    void updateSceneNodeVars(int w, int h);
 
     virtual void onHover() {}
     virtual void onLeave() {}

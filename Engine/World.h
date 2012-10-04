@@ -13,8 +13,9 @@ class WorldManager;
 
 class World {
 public:
-    World(bool usesPhysics);
-    virtual ~World();
+    //World(bool usesPhysics = false);
+    World();
+	virtual ~World();
 
     virtual void load(const std::string &name) {}
 
@@ -46,13 +47,14 @@ protected:
     EntityList _entities;
     
     // Physics world object
-    PhysicsEngine *_physics;
+    // Redo this hacky shit
+	//PhysicsEngine *_physics;
 
     // Objects created by the world factory
     friend class WorldManager;
     
 private:
-    bool _usesPhysics;
+    //bool _usesPhysics;
 };
 
 template <typename T>
@@ -74,10 +76,11 @@ template <typename T>
 void World::addEntity(T* t) {
     _scene->addNode(t);
     _entities[t->getName()] = t;
-    
+/*    
     if(_usesPhysics) {
         t->setupPhysics(_physics);
     }
+*/
 }
 
 #endif

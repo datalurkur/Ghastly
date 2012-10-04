@@ -191,7 +191,14 @@ Renderable* Renderable::Sprite(const Vec2f &pos, const Vec2f &dims, Material *ma
     return renderable;
 }
 
-Renderable* Renderable::Lines(const std::vector<Vec2f> &verts) {
+Renderable* Renderable::LineSegment(const Vec3f& a, const Vec3f& b, Material *material) {
+    std::vector<Vec3f> vertices(2);
+    vertices[0] = a;
+    vertices[1] = b;
+    return Lines(vertices, material);
+}
+
+Renderable* Renderable::Lines(const std::vector<Vec3f> &verts, Material *material) {
     Renderable *renderable;
     float *vertexBuffer;
     unsigned int *indexBuffer;
@@ -208,11 +215,13 @@ Renderable* Renderable::Lines(const std::vector<Vec2f> &verts) {
     for(i=0; i < size; i++) {
         vertexBuffer[3*i  ] = verts[i].x;
         vertexBuffer[3*i+1] = verts[i].y;
-        vertexBuffer[3*i+2] = 0.0f;
+        vertexBuffer[3*i+2] = verts[i].z;
 
         indexBuffer[i] = i;
     }
-
+    
+    renderable->setMaterial(material);
+    renderable->setAttribBuffer("position", size, GL_FLOAT, 3, &vertexBuffer[0]);
     renderable->setIndexBuffer(size, &indexBuffer[0]);
     renderable->setDrawMode(GL_LINE_STRIP);
 

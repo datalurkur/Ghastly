@@ -28,7 +28,8 @@ public:
 public:
     static Renderable* OrthoBox(const Vec2f &pos, const Vec2f &dims, bool texCoords, bool normals, Material *material, float z = 0);
     static Renderable* Sprite(const Vec2f &pos, const Vec2f &dims, Material *material, float z = 0);
-    static Renderable* Lines(const std::vector<Vec2f> &verts);
+    static Renderable* LineSegment(const Vec3f& a, const Vec3f& b, Material *material);
+    static Renderable* Lines(const std::vector<Vec3f> &verts, Material *material);
 
 private:
     typedef std::map<std::string,GLuint> VertexAttribMap;

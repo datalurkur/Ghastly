@@ -13,7 +13,7 @@ class WorldManager;
 
 class World {
 public:
-    World();
+    World(bool usesPhysics);
     virtual ~World();
 
     virtual void load(const std::string &name) {}
@@ -50,6 +50,9 @@ protected:
 
     // Objects created by the world factory
     friend class WorldManager;
+    
+private:
+    bool _usesPhysics;
 };
 
 template <typename T>
@@ -71,7 +74,10 @@ template <typename T>
 void World::addEntity(T* t) {
     _scene->addNode(t);
     _entities[t->getName()] = t;
-    t->setupPhysics(_physics);
+    
+    if(_usesPhysics) {
+        t->setupPhysics(_physics);
+    }
 }
 
 #endif
